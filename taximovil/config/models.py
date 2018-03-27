@@ -139,6 +139,15 @@ class Chofer(Usuario):
         db_table = 'chofer'
 
 
+class Empresa(models.Model):
+    nombre = models.CharField(max_length=50)
+    direccion = models.CharField(max_length=100)
+
+    class Meta:
+        managed = True
+        db_table = 'empresa'
+
+
 class Personal(Usuario):
 
     class Meta:
