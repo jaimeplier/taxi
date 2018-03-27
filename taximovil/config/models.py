@@ -129,6 +129,16 @@ class Cliente(Usuario):
         db_table = 'cliente'
 
 
+class Chofer(Usuario):
+
+    def get_full_name(self):
+        return str(self.nombre) + ' ' + str(self.a_paterno) + ' ' + str(self.a_materno)
+
+    class Meta:
+        managed = True
+        db_table = 'chofer'
+
+
 class Personal(Usuario):
 
     class Meta:
