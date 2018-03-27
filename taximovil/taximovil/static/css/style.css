@@ -1,0 +1,181 @@
+.banner_rosa
+{
+	background-color: #D01E88;
+	height: 30px;
+}
+
+.sombra
+{
+	background-color: #EFF3F6 !important;
+	border-bottom: none !important;
+}
+
+.logo
+{
+	width: 50%;
+	height: 50%;
+}
+
+.sesion
+{
+	color: #000000;
+	font-size: 18px;
+}
+
+.linea
+{
+	color: #D01E88 !important;
+	width: 90px;
+	height: 3px;
+}
+
+.linea2
+{
+	color: #D01E88 !important;
+	width: 90px;
+	height: 2px;
+}
+
+.linea3
+{
+  width: 100px;
+  height: 3px;
+  margin-top: -4px;
+  background-color: #EC9C4F !important;
+}
+
+.linea4
+{
+  width: 100px;
+  height: 3px;
+  margin-top: -4px;
+  background-color: #D01E88 !important;
+}
+
+.linea5
+{
+  width: 100px;
+  height: 3px;
+  margin-top: -4px;
+  background-color: #5F4890 !important;
+}
+
+.nav_rosa
+{
+  background-color: #D01E88;
+  color: #FFFFFF !important;
+}
+
+.box_negro
+{
+  background-color: #383435;
+  height: 50px;
+}
+
+.box_naranja
+{
+  background-color: #EC9C4F;
+  height: 50px;
+}
+
+.box_morado
+{
+  background-color: #5F4890;
+  height: 50px;
+}
+
+.box_rosa
+{
+  background-color: #D01E88;
+  height: 50px;
+}
+
+.morado
+{
+  color: #5F4890;
+}
+
+.naranja
+{
+  color: #EC9C4F;
+}
+
+.rosa
+{
+  color: #D01E88;
+}
+
+.titulo_servicio
+{
+  color: #FFFFFF;
+  font-size: 25px;
+}
+
+.no_top
+{
+  margin-top: 0px !important;
+  border-top: 1px solid #383435;
+}
+
+.no_bottom 
+{
+    margin-bottom: 0px;
+}
+
+.circular--portrait {
+  position: relative;
+  width: 60px;
+  overflow: hidden;
+  border-radius: 50%;
+  max-width: 100px; 
+  height: 60px !important; 
+}
+
+.circular--portrait img {
+  width: 50%;
+  height: auto;
+}
+
+#mini-logo
+{
+	width: 50%;
+	height: 50%;
+}
+
+.nombre
+{
+	color: #FFFFFF;
+	font-size: 13px;
+}
+
+.servicio_container
+{
+  -webkit-box-shadow: 3px 10px 13px 0px rgba(0,0,0,0.43);
+  -moz-box-shadow: 3px 10px 13px 0px rgba(0,0,0,0.43);
+  box-shadow: 3px 10px 13px 0px rgba(0,0,0,0.43);
+  background-color: #FFFFFF;
+}
+
+.texto
+{
+  color: #000000;
+  font-size: 1.1rem;
+}
+
+.notificado
+{
+  background-color: #EC9C4F;
+  font-size: 10px;
+  color: #FFFFFF;
+}
+
+.fondo_negro
+{
+  background-color: #383435;
+}
+
+.btn_next
+{
+  background-color: #2AE122 !important;
+}
+
