@@ -119,7 +119,7 @@ class Usuario(AbstractBaseUser):
 
 
 class Cliente(Usuario):
-    customer_token = models.CharField(blank=True, null=True)
+    customer_token = models.CharField(blank=True, null=True, max_length=512)
 
     def get_full_name(self):
         return str(self.nombre) + ' ' + str(self.a_paterno) + ' ' + str(self.a_materno)
@@ -165,7 +165,7 @@ class Sitio(models.Model):
 
 class BitacoraEstatusServicio(models.Model):
     estatus = models.ForeignKey('EstatusServicio', on_delete=models.DO_NOTHING)
-    servicio = models.ForeignKey('Servicio', on_delete=models.DO_NOTHING)
+    #servicio = models.ForeignKey('Servicio', on_delete=models.DO_NOTHING)
     fecha = models.DateField(auto_now_add=True)
 
     class Meta:
