@@ -1,46 +1,15 @@
 <!-- SOFTIC SOLUTIONS-->
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<!--      CSS      -->
-	<link rel="stylesheet" type="text/css" href="css/materialize.css">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<link rel="stylesheet" type="text/css" href="css/menu.css">
-	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<!--      JS      -->
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js" ></script> <!-- jQuery updated-->
-	<script type="text/javascript" src="js/materialize.js"></script>
+{% extends "config/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
 	<title>Registro</title>
-</head>
-<body>
-	<div class="had-container">
-		<div class="row no_bottom">
-			<div class="col s12 banner_rosa"></div>
-		</div>
-		<nav class="nav-wrapper">
-    		<div class="nav-wrapper no_bottom">
-    			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      			<ul class="right hide-on-med-and-down ">
-      				<li><img src="images/girl.jpg" alt="" class="circular--portrait responsive-img"></li>
-      				<li><label class="nombre">&nbsp; Laura Patricia de la Vega Martínez</label></li>
-			        <li><a href="#"><i class="material-icons">notifications</i></a></li>
-			        <li><a href="#"><i class="material-icons">power_settings_new</i></a></li>
-      			</ul>
-      			<ul class="side-nav" id="mobile-demo">
-	        		<li><a href="#">Laura Patricia de la Vega Martínez</a></li>
-	       			<li><a href="#"><i class="material-icons">notifications</i>Notificaciones</a></li>
-			        <li><a href="#"><i class="material-icons">power_settings_new</i>Cerrar Sesión</a></li>
-     			</ul>
-    		</div>
-  		</nav>
-  		<div class="row"></div> <!-- dead space -->
+
+{% block content %}
+
   		<div class="row">
-  			<div class="col s2 center">
+  		<!--	<div class="col s2 center">
   				<img src="images/logo.png" class="responsive-img" id="mini-logo">
-  			</div>
+  			</div> -->    <!-- ESTAS LINEAS FUERON COMENTADAS PORQUE NO ME ACUERDO SI BORRANDO ESTO MODIFICO LA POSICION DEL TEMPLATE :P -->
   			<div class="col s8">
   				<div class="row">
   					<div class="col s12">
@@ -394,41 +363,14 @@
   			</div>
   			<div class="col s2"></div>
   		</div>
-  		<!-- menú del lado izquierdo -->
-<div class="row">
-			<div class="col s3" style="padding: 0px;">
+{% endblock %}
+<!-- aquí finaliza el block content -->
 
-				<div id='snav' class='en'>
-					<ul>
-						<li> <a href='#'> <i class="fa fa-flag-checkered"></i> <span>Vehículos Activos</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-taxi"></i> <span>Todos los Vehículos</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-phone"></i> <span>Llamada Telefónica</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-comments"></i> <span>Mensajes</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-edit"></i> <span>Reportes</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-credit-card"></i> <span>Créditos</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-cogs"></i> <span>Configuraciones</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-times-circle"></i> <span>Cerrar Sesión</span> </a> </li>
-					</ul>
-				</div>
 
-			</div>
-			<div class="col s9"></div>
-		</div>
 
-		<footer class="page-footer">
-			<div class="had-container">
-				<div class="row">
-					<div class="col s1"></div>
-					<div class="col s10 center">
-						<h6 class="black-text"><b>Taximovil</b> 2018</h6>
-						<hr class="linea2" color="#D01E88">
-					</div>
-					<div class="col s1"></div>
-				</div>
-			</div>
-		</footer>
-	</div>
-</body>
+<!-- Others Scripts -->
+{% block scripts %}
+
 <script type="text/javascript">
 	$("document").ready(function()
 	{
@@ -449,5 +391,5 @@
   });
 	});
 </script>
-</html>
+{% endblock %}
 <!-- Developed By Softic Web Team -->
