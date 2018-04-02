@@ -1,0 +1,45 @@
+{% extends "config/base.html" %}
+<div class="row">
+  					<div class="col s12">
+  						<ul id="tabs-swipe-demo" class="tabs nav_rosa">
+						    <li class="tab col s3"><a class="white-text" href="#test-swipe-1">1.Info. Personal</a></li>
+						    <li class="tab col s3"><a class="white-text" href="#test-swipe-2">2.Info. del Vehículo</a></li>
+						    <li class="tab col s3"><a class="white-text" href="#test-swipe-3">3.Documentos</a></li>
+						    <li class="tab col s3"><a class="white-text" href="#test-swipe-4">4.Titular de Cuenta</a></li>
+					  	</ul>
+					  	<div class="row">
+					  		<div id="test-swipe-1" class="col s12">
+					  			<!-- INFORMACION PERSONAL -->
+					  			<div class="row">
+					  				<div class="col s12 input-field">
+					  					<input type="text" id="nombre">
+					  					<label for="nombre">Nombre</label>
+					  				</div>
+					  			</div>
+					  		</div>
+                        </div>
+                    </div>
+</div>
+
+{% block scripts %}
+<script type="text/javascript">
+	$("document").ready(function()
+	{
+		$(".dropdown-button").dropdown();
+		$(".button-collapse").sideNav();
+		$('select').material_select();
+		$(document).ready(function() {
+    		$('select').material_select();
+  		});
+
+		 $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15, // Creates a dropdown of 15 years to control year,
+    today: 'Today',
+    clear: 'Clear',
+    close: 'Ok',
+    closeOnSelect: false // Close upon selecting a date,
+  });
+	});
+</script>
+{% endblock %}
