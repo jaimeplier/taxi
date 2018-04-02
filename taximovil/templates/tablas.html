@@ -1,191 +1,103 @@
 <!-- SOFTIC SOLUTIONS-->
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<!--      CSS      -->
-	<link rel="stylesheet" type="text/css" href="css/materialize.css">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<link rel="stylesheet" type="text/css" href="css/menu.css">
-	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<!--      JS      -->
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js" ></script> <!-- jQuery updated-->
-	<script type="text/javascript" src="js/materialize.js"></script>
-	<title>TABLAS</title>
-</head>
-<body>
-	<div class="had-container">
-		<div class="row no_bottom">
-			<div class="col s12 banner_rosa"></div>
-		</div>
-		<nav class="nav-wrapper">
-    		<div class="nav-wrapper no_bottom">
-    			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      			<ul class="right hide-on-med-and-down ">
-      				<li><img src="images/girl.jpg" alt="" class="circular--portrait responsive-img"></li>
-      				<li><label class="nombre">&nbsp; Laura Patricia de la Vega Martínez</label></li>
-			        <li><a href="#"><i class="material-icons">notifications</i></a></li>
-			        <li><a href="#"><i class="material-icons">power_settings_new</i></a></li>
-      			</ul>
-      			<ul class="side-nav" id="mobile-demo">
-	        		<li><a href="#">Laura Patricia de la Vega Martínez</a></li>
-	       			<li><a href="#"><i class="material-icons">notifications</i>Notificaciones</a></li>
-			        <li><a href="#"><i class="material-icons">power_settings_new</i>Cerrar Sesión</a></li>
-     			</ul>
-    		</div>
-  		</nav>
-  		<div class="row"></div> <!-- dead space -->
-  		<div class="row">
-  			<div class="col s2 center">
-  				<img src="images/logo.png" class="responsive-img" id="mini-logo">
-  			</div>
-  			<div class="col s10"></div>
-  		</div>
-  		<!-- menú del lado izquierdo -->
-<div class="row">
-			<div class="col s3" style="padding: 0px;">
+{% extends "config/base.html" %}
+{% load static %}
+{% block content %}
+    <!-- aquí comienza la tabla -->
+    <div class="row"></div>        <!-- dead space -->
+    <div class="row">
+        <div class="col s1"></div>
+        <div class="col s10">
+            <table class="bordered highlight centered responsive-table" id="tabla">
+                <thead class="fondo_negro white-text">
+                <tr>
+                    {% block campos %}{% endblock %}
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="col s1"></div>
+    </div>
+    <div class="row">
+        <div class="col s12 center">
+            <ul class="pagination">
+                <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_left</i></a></li>
+                <li class="active"><a href="#!">1</a></li>
+                <li class="waves-effect"><a href="#!">2</a></li>
+                <li class="waves-effect"><a href="#!">3</a></li>
+                <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_right</i></a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
 
-				<div id='snav' class='en'>
-					<ul>
-						<li> <a href='#'> <i class="fa fa-flag-checkered"></i> <span>Vehículos Activos</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-taxi"></i> <span>Todos los Vehículos</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-phone"></i> <span>Llamada Telefónica</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-comments"></i> <span>Mensajes</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-edit"></i> <span>Reportes</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-credit-card"></i> <span>Créditos</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-cogs"></i> <span>Configuraciones</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-times-circle"></i> <span>Cerrar Sesión</span> </a> </li>
-					</ul>
-				</div>
+{% block scripts %}
+    <script src="{% static 'vendor/DataTables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/crsfajax.js' %}"></script>
+    <script type="text/javascript">
 
-			</div>
-			<div class="col s9"></div>
-		</div>
+        var id = 0;
 
-			</div>
-			<div class="col s7">
-				<div class="row">
-					<div class="col s3">
-						<select>
-      						<option value="" disabled selected> <i class="material-icons">search</i>Filtros</option>
-      						<option value="1">Option 1</option>
-      						<option value="2">Option 2</option>
-      						<option value="3">Option 3</option>
-    					</select>
-					</div>
-					<div class="col s3">
-						<select>
-      						<option value="" disabled selected> <i class="material-icons">search</i>Filtros</option>
-      						<option value="1">Option 1</option>
-      						<option value="2">Option 2</option>
-      						<option value="3">Option 3</option>
-    					</select>
-					</div>
-					<div class="col s3">
-						<select>
-      						<option value="" disabled selected> <i class="material-icons">search</i>Filtros</option>
-      						<option value="1">Option 1</option>
-      						<option value="2">Option 2</option>
-      						<option value="3">Option 3</option>
-    					</select>
-					</div>
-					<div class="col s3">
-						<select>
-      						<option value="" disabled selected> <i class="material-icons">search</i>Filtros</option>
-      						<option value="1">Option 1</option>
-      						<option value="2">Option 2</option>
-      						<option value="3">Option 3</option>
-    					</select>
-					</div>
-				</div>
-			</div>
-			<div class="col s2"></div>
-		</div>
-		<!-- aquí comienza la tabla -->
-		<div class="row"></div>		<!-- dead space -->
-		<div class="row">
-			<div class="col s1"></div>
-			<div class="col s10">
-				<table class="bordered highlight centered responsive-table">
-					<thead class="fondo_negro white-text">
-						<tr>
-							<th>NOMBRE</th>
-							<th>CARACTERÍSTICAS</th>
-							<th># PASAJEROS</th>
-							<th># MALETAS</th>
-							<th>EDITAR</th>
-							<th>ELIMINAR</th>
-						</tr>
-					</thead>
+        function actualiza(uid) {
+            id = uid;
+            $('.modal').modal({
+                    dismissible: false
+                }
+            );
+            $('#modal1').modal('open');
+        }
 
-					<tbody>
-						<tr>
-							<td>Juan Perez Martinez</td>
-							<td>Lorem ipsum</td>
-							<td>3</td>
-							<td>2</td>
-							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
-							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
-						</tr>
-						<tr>
-							<td>Juan Perez Martinez</td>
-							<td>Lorem ipsum</td>
-							<td>3</td>
-							<td>2</td>
-							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
-							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
-						</tr>
-						<tr>
-							<td>Juan Perez Martinez</td>
-							<td>Lorem ipsum</td>
-							<td>3</td>
-							<td>2</td>
-							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
-							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="col s1"></div>
-		</div>
-		<div class="row">
-			<div class="col s12 center">
-				<ul class="pagination">
-				    <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_left</i></a></li>
-				    <li class="active"><a href="#!">1</a></li>
-				    <li class="waves-effect"><a href="#!">2</a></li>
-				    <li class="waves-effect"><a href="#!">3</a></li>
-				    <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_right</i></a></li>
-  				</ul>
-			</div>
-		</div>
+        {% block scripts_tabla %}
+        {% endblock %}
 
-		<footer class="page-footer">
-			<div class="had-container">
-				<div class="row">
-					<div class="col s1"></div>
-					<div class="col s10 center">
-						<h6 class="black-text"><b>Taximovil</b> 2018</h6>
-						<hr class="linea2" color="#D01E88">
-					</div>
-					<div class="col s1"></div>
-				</div>
-			</div>
-		</footer>
-	</div>
-</body>
+        $(document).ready(function () {
+            tabla = $('#tabla').DataTable({
+                dom: 'lfrtip',
+                language: {
+                    url: "{% static "datatables/spanish.json" %}"
+                },
+                buttons: ['copy', 'excel', 'pdf'],
+                processing: true,
+                serverSide: true,
+                ajax: "{% block url_ajax %}{% endblock %}",
+            });
+
+            $("#buscar").on('keyup', function () {
+                $('#usuarios').dataTable().fnFilter(this.value);
+            });
+
+            $(document).ready(function () {
+                $('select').material_select();
+            });
+
+            tabla.on('draw', function () {
+                $('select').material_select();
+            });
+
+            $('select').material_select();
+            $(".button-collapse").sideNav();
+
+            Materialize.updateTextFields();
+            $('select').material_select();
+            $('ul.tabs').tabs({
+                swipeable: true,
+                responsiveThreshold: 1920
+            });
+
+
+        });
+
+    </script>
+{% endblock %}
+
 <script type="text/javascript">
-	$("document").ready(function()
-	{
-		$(".dropdown-button").dropdown();
-		$(".button-collapse").sideNav();
+    $("document").ready(function () {
+        $(".dropdown-button").dropdown();
+        $(".button-collapse").sideNav();
 
-    	$('select').material_select();
+        $('select').material_select();
     });
-       
+
 
 </script>
-</html>
+
 <!-- Developed By Softic Web Team -->

@@ -1,0 +1,12 @@
+<!--   SOFTIC SOLUTIONS   -->
+{% extends "tablas.html" %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Empresas</h5>{% endblock %}
+{% load static %}
+{% block campos %}
+    <th>Nombre</th>
+    <th>Direccion</th>
+    <th>Editar</th>
+    <th>Eliminar</th>
+{% endblock %}
+
+{% block url_ajax %}{% url 'config:tab_list_empresa' %}{% endblock %}

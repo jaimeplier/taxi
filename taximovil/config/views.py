@@ -85,7 +85,7 @@ def usuarioListar(request):
 class UsuarioListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Usuario
-    columns = ['nombre', 'a_paterno', 'a_materno', 'email', 'password','telefono','estatus','editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono','estatus','editar', 'eliminar']
     order_columns = ['nombre']
     max_display_length = 100
 
@@ -95,6 +95,8 @@ class UsuarioListarAjaxListView(BaseDatatableView):
             return '<a class="white-text" href ="' + reverse('config:editar_usuario',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+        elif column == 'nombre':
+            return row.get_full_name()
         elif column == 'estatus':
             return 'activo' if row.activo==True else 'inactivo'
         elif column == 'eliminar':
@@ -142,7 +144,7 @@ def choferListar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'a_paterno', 'a_materno', 'email', 'password', 'telefono', 'estatus', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'password', 'telefono', 'estatus', 'editar', 'eliminar']
     order_columns = ['nombre']
     max_display_length = 100
 
@@ -152,6 +154,8 @@ class ChoferListarAjaxListView(BaseDatatableView):
             return '<a class="white-text" href ="' + reverse('config:editar_chofer',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+        elif column == 'nombre':
+            return row.get_full_name()
         elif column == 'estatus':
             return 'activo' if row.activo == True else 'inactivo'
         elif column == 'eliminar':
