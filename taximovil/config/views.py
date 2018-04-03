@@ -18,10 +18,10 @@ def index(request):
 class EmpresaCrear(CreateView):
     model = Empresa
     form_class = EmpresaForm
-    template_name = 'config/registro.html'
+    template_name = 'form_1col.html'
 
     def get_success_url(self):
-        return reverse('config:listar_empresa')
+        return reverse('config:list_empresa')
 
 def empresaListar(request):
     template_name = 'config/tab_empresa.html'
@@ -37,7 +37,7 @@ class EmpresaListarAjaxListView(BaseDatatableView):
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="white-text" href ="' + reverse('config:editar_empresa',
+            return '<a class="white-text" href ="' + reverse('config:edit_empresa',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
         elif column == 'eliminar':
@@ -53,16 +53,15 @@ class EmpresaListarAjaxListView(BaseDatatableView):
 class EmpresaActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Empresa
-    template_name = 'config/registro.html'
+    template_name = 'form_1col.html'
     form_class = EmpresaForm
 
     def get_success_url(self):
-        return reverse('config:listar_empresa')
+        return reverse('config:list_empresa')
 
 def empresa_eliminar(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
     e.delete()
-    e.save()
     return JsonResponse({'result': 1})
 
 class UsuarioCrear(CreateView):

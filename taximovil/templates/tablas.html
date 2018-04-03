@@ -28,6 +28,14 @@
             </ul>
         </div>
     </div>
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <p>¿Seguro que deseas eliminarlo?</p>
+        </div>
+        <div class="modal-footer">
+            <a onclick="eliminar()" class="modal-action modal-close waves-effect btn-flat">Aceptar</a>
+        </div>
+    </div>
 {% endblock %}
 
 {% block scripts %}
@@ -45,6 +53,7 @@
             );
             $('#modal1').modal('open');
         }
+
 
         {% block scripts_tabla %}
         {% endblock %}
