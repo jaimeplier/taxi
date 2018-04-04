@@ -19,13 +19,13 @@ urlpatterns = [
     path('usuario/listar/', views.usuarioListar, name='list_usuario'),
     path('tabla_usuario/', UsuarioListarAjaxListView.as_view(), name='tab_list_usuario'),
     path('usuario/editar/<int:pk>', UsuarioActualizar.as_view(), name='edit_usuario'),
-    path('usuario/delete/<int:pk>', views.usuario_eliminar, name='delete_usuario'),
+    path('usuario/listar/delete/<int:pk>', views.usuario_eliminar, name='delete_usuario'),
 
     path('chofer/nuevo/', ChoferCrear.as_view(), name='nuevo_chofer'),
     path('chofer/listar/', views.choferListar, name='list_chofer'),
     path('tabla_chofer/', ChoferListarAjaxListView.as_view(), name='tab_list_chofer'),
     path('chofer/editar/<int:pk>', ChoferActualizar.as_view(), name='edit_chofer'),
-    path('chofer/delete/<int:pk>', views.chofer_eliminar, name='delete_chofer'),
+    path('chofer/listar/delete/<int:pk>', views.chofer_eliminar, name='delete_chofer'),
 
 
 ]

@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from config.forms import EmpresaForm, UsuarioForm
+from config.forms import EmpresaForm, UsuarioForm, ChoferForm
 from config.models import Empresa, Usuario, Rol, Chofer
 
 
@@ -67,7 +67,7 @@ def empresa_eliminar(request, pk):
 class UsuarioCrear(CreateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = 'config/registro.html'
+    template_name = 'form_1col.html'
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -75,7 +75,7 @@ class UsuarioCrear(CreateView):
         return super(UsuarioCrear,self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('config:listar_usuario')
+        return reverse('config:list_usuario')
 
 def usuarioListar(request):
     template_name = 'config/tab_usuario.html'
@@ -91,13 +91,11 @@ class UsuarioListarAjaxListView(BaseDatatableView):
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="white-text" href ="' + reverse('config:editar_usuario',
+            return '<a class="white-text" href ="' + reverse('config:edit_usuario',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
         elif column == 'nombre':
             return row.get_full_name()
-        elif column == 'estatus':
-            return 'activo' if row.activo==True else 'inactivo'
         elif column == 'eliminar':
             return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
@@ -105,16 +103,16 @@ class UsuarioListarAjaxListView(BaseDatatableView):
         return super(UsuarioListarAjaxListView, self).render_column(row, column)
 
     def get_initial_queryset(self):
-        return Usuario.objects.all()
+        return Usuario.objects.filter(estatus=True)
 
 class UsuarioActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Usuario
-    template_name = 'config/registro.html'
+    template_name = 'form_1col.html'
     form_class = UsuarioForm
 
     def get_success_url(self):
-        return reverse('config:listar_usuario')
+        return reverse('config:list_usuario')
 
 def usuario_eliminar(request, pk):
     u = get_object_or_404(Usuario, pk=pk)
@@ -125,8 +123,9 @@ def usuario_eliminar(request, pk):
 
 class ChoferCrear(CreateView):
     model = Chofer
-    form_class = UsuarioForm
-    template_name = 'config/registro.html'
+    form_class = ChoferForm
+
+    template_name = 'form_1col.html'
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -134,7 +133,7 @@ class ChoferCrear(CreateView):
         return super(ChoferCrear, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('config:listar_chofer')
+        return reverse('config:list_chofer')
 
 def choferListar(request):
     template_name = 'config/tab_chofer.html'
@@ -143,20 +142,18 @@ def choferListar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'email', 'password', 'telefono', 'estatus', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus', 'editar', 'eliminar']
     order_columns = ['nombre']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="white-text" href ="' + reverse('config:editar_chofer',
+            return '<a class="white-text" href ="' + reverse('config:edit_chofer',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
         elif column == 'nombre':
             return row.get_full_name()
-        elif column == 'estatus':
-            return 'activo' if row.activo == True else 'inactivo'
         elif column == 'eliminar':
             return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
@@ -164,17 +161,17 @@ class ChoferListarAjaxListView(BaseDatatableView):
         return super(ChoferListarAjaxListView, self).render_column(row, column)
 
     def get_initial_queryset(self):
-        return Chofer.objects.all()
+        return Chofer.objects.filter(estatus=True)
 
 
 class ChoferActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Chofer
-    template_name = 'config/registro.html'
+    template_name = 'form_1col.html'
     form_class = UsuarioForm
 
     def get_success_url(self):
-        return reverse('config:listar_chofer')
+        return reverse('config:list_chofer')
 
 
 def chofer_eliminar(request, pk):
