@@ -1,5 +1,5 @@
 from django.forms import ModelForm, CharField, EmailField, NumberInput, PasswordInput, CheckboxSelectMultiple, forms
-from config.models import Empresa, Usuario, Chofer
+from config.models import Empresa, Usuario, Chofer, Sitio
 
 
 class EmpresaForm(ModelForm):
@@ -48,4 +48,12 @@ class ChoferForm(ModelForm):
                   'email': 'Correo electronico',
                   'password': 'Contraseña',
                   'telefono': 'Telefono',
+                  }
+
+class SitioForm(ModelForm):
+    class Meta:
+        model = Sitio
+        fields = ['nombre',
+                  ]
+        labels = {'nombre': 'Nombre',
                   }

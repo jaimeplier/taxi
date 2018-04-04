@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from config.forms import EmpresaForm, UsuarioForm, ChoferForm
-from config.models import Empresa, Usuario, Rol, Chofer
+from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm
+from config.models import Empresa, Usuario, Rol, Chofer, Sitio
 
 
 def index(request):
@@ -178,4 +178,54 @@ def chofer_eliminar(request, pk):
     u = get_object_or_404(Chofer, pk=pk)
     u.estatus = False
     u.save()
+    return JsonResponse({'result': 1})
+
+
+class SitioCrear(CreateView):
+    model = Sitio
+    form_class = SitioForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_sitio')
+
+def sitioListar(request):
+    template_name = 'config/tab_sitio.html'
+    return render(request, template_name)
+
+class SitioListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Sitio
+    columns = ['nombre', 'editar', 'eliminar']
+    order_columns = ['nombre']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="white-text" href ="' + reverse('config:edit_sitio',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+        elif column == 'eliminar':
+            return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
+
+        return super(SitioListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Sitio.objects.all()
+
+
+class SitioActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Sitio
+    template_name = 'form_1col.html'
+    form_class = SitioForm
+
+    def get_success_url(self):
+        return reverse('config:list_sitio')
+
+def sitio_eliminar(request, pk):
+    e = get_object_or_404(Sitio, pk=pk)
+    e.delete()
     return JsonResponse({'result': 1})

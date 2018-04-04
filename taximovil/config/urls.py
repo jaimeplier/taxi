@@ -1,7 +1,8 @@
 from django.urls import path
 
 from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActualizar, EmpresaCrear, \
-    EmpresaListarAjaxListView, EmpresaActualizar, ChoferCrear, ChoferListarAjaxListView, ChoferActualizar
+    EmpresaListarAjaxListView, EmpresaActualizar, ChoferCrear, ChoferListarAjaxListView, ChoferActualizar, SitioCrear, \
+    SitioListarAjaxListView, SitioActualizar
 from . import views
 
 app_name = 'config'
@@ -27,5 +28,10 @@ urlpatterns = [
     path('chofer/editar/<int:pk>', ChoferActualizar.as_view(), name='edit_chofer'),
     path('chofer/listar/delete/<int:pk>', views.chofer_eliminar, name='delete_chofer'),
 
+    path('sitio/nuevo/', SitioCrear.as_view(), name='nuevo_sitio'),
+    path('sitio/listar/', views.sitioListar, name='list_sitio'),
+    path('tabla_sitio/', SitioListarAjaxListView.as_view(), name='tab_list_sitio'),
+    path('sitio/editar/<int:pk>', SitioActualizar.as_view(), name='edit_sitio'),
+    path('sitio/listar/delete/<int:pk>', views.sitio_eliminar, name='delete_sitio'),
 
 ]
