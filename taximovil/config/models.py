@@ -155,6 +155,9 @@ class Empresa(models.Model):
     nombre = models.CharField(max_length=50)
     direccion = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = True
         db_table = 'empresa'
@@ -468,6 +471,23 @@ class Sucursal(models.Model):
     direccion = models.CharField(max_length=200)
     usuario = models.ForeignKey('Usuario', models.DO_NOTHING)
     empresa = models.ForeignKey('Empresa', models.DO_NOTHING)
+
+    def __str__(self):
+        return self.nombre
+
+    @property
+    def latitud(self):
+        """I'm the 'x' property."""
+        if self.coordenadas is None:
+            return None
+        return str(self.coordenadas.coords[1])
+
+    @property
+    def longitud(self):
+        """I'm the 'x' property."""
+        if self.coordenadas is None:
+            return None
+        return str(self.coordenadas.coords[0])
 
     class Meta:
         managed = True

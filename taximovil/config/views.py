@@ -7,8 +7,8 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm
-from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad
+    CiudadForm, SucursalForm
+from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal
 from django.contrib.gis.geos import Point
 
 
@@ -39,11 +39,11 @@ class EmpresaListarAjaxListView(BaseDatatableView):
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="white-text" href ="' + reverse('config:edit_empresa',
+            return '<a class="" href ="' + reverse('config:edit_empresa',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
-            return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(EmpresaListarAjaxListView, self).render_column(row, column)
@@ -93,13 +93,13 @@ class UsuarioListarAjaxListView(BaseDatatableView):
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="white-text" href ="' + reverse('config:edit_usuario',
+            return '<a class="" href ="' + reverse('config:edit_usuario',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'eliminar':
-            return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(UsuarioListarAjaxListView, self).render_column(row, column)
@@ -151,13 +151,13 @@ class ChoferListarAjaxListView(BaseDatatableView):
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="white-text" href ="' + reverse('config:edit_chofer',
+            return '<a class="" href ="' + reverse('config:edit_chofer',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'eliminar':
-            return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(ChoferListarAjaxListView, self).render_column(row, column)
@@ -170,7 +170,7 @@ class ChoferActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Chofer
     template_name = 'form_1col.html'
-    form_class = UsuarioForm
+    form_class = ChoferForm
 
     def get_success_url(self):
         return reverse('config:list_chofer')
@@ -205,11 +205,11 @@ class SitioListarAjaxListView(BaseDatatableView):
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="white-text" href ="' + reverse('config:edit_sitio',
+            return '<a class="" href ="' + reverse('config:edit_sitio',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
-            return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(SitioListarAjaxListView, self).render_column(row, column)
@@ -476,4 +476,72 @@ class CiudadActualizar(UpdateView):
 def ciudad_eliminar(request, pk):
     c = get_object_or_404(Ciudad, pk=pk)
     c.delete()
+    return JsonResponse({'result': 1})
+
+class SucursalCrear(CreateView):
+    model = Sucursal
+    form_class = SucursalForm
+    template_name = 'formMap.html'
+
+    def form_valid(self, form):
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        pnt = Point(float(lon), float(lat))
+        form.instance.coordenadas = pnt
+        return super(SucursalCrear, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('config:list_sucursal')
+
+def sucursalListar(request):
+    template_name = 'config/tab_sucursal.html'
+    return render(request, template_name)
+
+class SucursalListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Sucursal
+    columns = ['nombre','clave', 'direccion', 'usuario','empresa', 'editar', 'eliminar']
+    order_columns = ['nombre','clave', 'direccion', 'usuario','empresa']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_sucursal',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class="modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+        elif column == 'empresa':
+            return row.empresa.__str__()
+        elif column == 'usuario':
+            return row.usuario.get_full_name()
+
+
+        return super(SucursalListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Sucursal.objects.all()
+
+
+class SucursalActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Sucursal
+    template_name = 'formMap.html'
+    form_class = SucursalForm
+
+    def form_valid(self, form):
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        pnt = Point(float(lon), float(lat))
+        form.instance.coordenadas = pnt
+        return super(SucursalActualizar, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('config:list_sucursal')
+
+def sucursal_eliminar(request, pk):
+    s = get_object_or_404(Sucursal, pk=pk)
+    s.delete()
     return JsonResponse({'result': 1})
