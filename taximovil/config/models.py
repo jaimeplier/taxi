@@ -172,11 +172,14 @@ class Sitio(models.Model):
     num_espacio = models.IntegerField()
     pv = models.CharField(max_length=45)
     #estatus_permiso
-    estatus_sesion = models.IntegerField()
+    estatus_sesion = models.BooleanField(default=True)
 
     class Meta:
         managed = True
         db_table = 'sitio'
+
+    def __str__(self):
+        return self.nombre
 
 
 class BitacoraEstatusServicio(models.Model):
@@ -337,12 +340,15 @@ class TipoServicio(models.Model):
 class Direccion(models.Model):
     colonia = models.CharField(max_length=100)
     calle = models.CharField(max_length=100)
-    numero_interior = models.CharField(max_length=20)
+    numero_interior = models.CharField(max_length=20, null=True, blank=True)
     numero_exterior = models.CharField(max_length=50)
     cp = models.CharField(max_length=10)
 
     latlgn = models.PointField()
     municipio = models.ForeignKey('Municipio',models.DO_NOTHING)
+
+    def get_address(self):
+        return 'Calle: ' + str(self.calle) + ' Num ext: ' + str(self.numero_exterior) + ' Col: ' + str(self.colonia) + ' Municipio: ' + str(self.municipio)
 
     @property
     def latitud(self):
@@ -415,12 +421,15 @@ class Base(models.Model):
     telefono = models.CharField(max_length=25, unique=True)
 
     #horario = models.ManyToManyField('Horario', models.DO_NOTHING)
-    #sitio = models.ForeignKey('Sitio', models.DO_NOTHING)
+    sitio = models.ForeignKey('Sitio', models.DO_NOTHING)
     #puerta = models.ManyToOneRel('Puerta', models.DO_NOTHING)
 
     class Meta:
         managed = True
         db_table = 'base'
+
+    def __str__(self):
+        return self.identificador
 
 
 class Puerta(models.Model):
@@ -468,6 +477,23 @@ class Zona(models.Model):
     nombre = models.CharField(max_length=45)
     centro = models.PointField()
     radio = models.FloatField()
+
+    def __str__(self):
+        return self.nombre
+
+    @property
+    def latitud(self):
+        """I'm the 'x' property."""
+        if self.centro is None:
+            return None
+        return str(self.centro.coords[1])
+
+    @property
+    def longitud(self):
+        """I'm the 'x' property."""
+        if self.centro is None:
+            return None
+        return str(self.centro.coords[0])
 
     class Meta:
         managed = True
