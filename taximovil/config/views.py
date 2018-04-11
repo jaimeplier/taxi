@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm
-from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base
+from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm
+from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais
 from django.contrib.gis.geos import Point
 
 
@@ -40,10 +40,10 @@ class EmpresaListarAjaxListView(BaseDatatableView):
         if column == 'editar':
             return '<a class="white-text" href ="' + reverse('config:edit_empresa',
                                                              kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
-                row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(EmpresaListarAjaxListView, self).render_column(row, column)
 
@@ -94,12 +94,12 @@ class UsuarioListarAjaxListView(BaseDatatableView):
         if column == 'editar':
             return '<a class="white-text" href ="' + reverse('config:edit_usuario',
                                                              kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'eliminar':
             return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
-                row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(UsuarioListarAjaxListView, self).render_column(row, column)
 
@@ -152,12 +152,12 @@ class ChoferListarAjaxListView(BaseDatatableView):
         if column == 'editar':
             return '<a class="white-text" href ="' + reverse('config:edit_chofer',
                                                              kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'eliminar':
             return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
-                row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(ChoferListarAjaxListView, self).render_column(row, column)
 
@@ -206,10 +206,10 @@ class SitioListarAjaxListView(BaseDatatableView):
         if column == 'editar':
             return '<a class="white-text" href ="' + reverse('config:edit_sitio',
                                                              kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class="white-text modal-trigger" href ="#" onclick="actualiza(' + str(
-                row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(SitioListarAjaxListView, self).render_column(row, column)
 
@@ -263,10 +263,10 @@ class ZonaListarAjaxListView(BaseDatatableView):
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_zona',
                                                              kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
-                row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
 
         return super(ZonaListarAjaxListView, self).render_column(row, column)
 
@@ -346,10 +346,10 @@ class BaseListarAjaxListView(BaseDatatableView):
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_zona',
                                                              kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i>Editar</a>'
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
-                row.pk) + ')"><i class="material-icons">delete_forever</i>Eliminar</a>'
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
         elif column == 'direccion':
             return row.direccion.get_address()
         elif column == 'sitio':
@@ -359,3 +359,53 @@ class BaseListarAjaxListView(BaseDatatableView):
 
     def get_initial_queryset(self):
         return Base.objects.all()
+
+
+class PaisCrear(CreateView):
+    model = Pais
+    form_class = PaisForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_pais')
+
+def paisListar(request):
+    template_name = 'config/tab_pais.html'
+    return render(request, template_name)
+
+class PaisListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Pais
+    columns = ['nombre', 'editar', 'eliminar']
+    order_columns = ['nombre']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_pais',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class="modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(PaisListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Pais.objects.all()
+
+
+class PaisActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Pais
+    template_name = 'form_1col.html'
+    form_class = PaisForm
+
+    def get_success_url(self):
+        return reverse('config:list_pais')
+
+def pais_eliminar(request, pk):
+    p = get_object_or_404(Pais, pk=pk)
+    p.delete()
+    return JsonResponse({'result': 1})
