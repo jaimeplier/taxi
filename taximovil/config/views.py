@@ -198,8 +198,8 @@ def sitioListar(request):
 class SitioListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Sitio
-    columns = ['nombre', 'editar', 'eliminar']
-    order_columns = ['nombre']
+    columns = ['nombre','num_espacio','pv', 'editar', 'eliminar']
+    order_columns = ['nombre','num_espacio','pv']
     max_display_length = 100
 
     def render_column(self, row, column):
