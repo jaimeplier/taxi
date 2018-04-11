@@ -2,7 +2,8 @@ from django.urls import path
 
 from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActualizar, EmpresaCrear, \
     EmpresaListarAjaxListView, EmpresaActualizar, ChoferCrear, ChoferListarAjaxListView, ChoferActualizar, SitioCrear, \
-    SitioListarAjaxListView, SitioActualizar
+    SitioListarAjaxListView, SitioActualizar, ZonaCrear, ZonaListarAjaxListView, ZonaActualizar, BaseCrear, \
+    BaseListarAjaxListView
 from . import views
 
 app_name = 'config'
@@ -33,5 +34,15 @@ urlpatterns = [
     path('tabla_sitio/', SitioListarAjaxListView.as_view(), name='tab_list_sitio'),
     path('sitio/editar/<int:pk>', SitioActualizar.as_view(), name='edit_sitio'),
     path('sitio/listar/delete/<int:pk>', views.sitio_eliminar, name='delete_sitio'),
+
+    path('zona/nuevo/', ZonaCrear.as_view(), name='nuevo_zona'),
+    path('zona/listar/', views.zonaListar, name='list_zona'),
+    path('tabla_zona/', ZonaListarAjaxListView.as_view(), name='tab_list_zona'),
+    path('zona/editar/<int:pk>', ZonaActualizar.as_view(), name='edit_zona'),
+    path('zona/listar/delete/<int:pk>', views.zona_eliminar, name='delete_zona'),
+
+    path('base/nuevo/', BaseCrear.as_view(), name='nuevo_base'),
+    path('base/listar/', views.baseListar, name='list_base'),
+    path('tabla_base/', BaseListarAjaxListView.as_view(), name='tab_list_base'),
 
 ]
