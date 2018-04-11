@@ -4,7 +4,8 @@ from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     EmpresaListarAjaxListView, EmpresaActualizar, ChoferCrear, ChoferListarAjaxListView, ChoferActualizar, SitioCrear, \
     SitioListarAjaxListView, SitioActualizar, ZonaCrear, ZonaListarAjaxListView, ZonaActualizar, BaseCrear, \
     BaseListarAjaxListView, PaisCrear, PaisListarAjaxListView, PaisActualizar, CiudadCrear, CiudadListarAjaxListView, \
-    CiudadActualizar, SucursalCrear, SucursalListarAjaxListView, SucursalActualizar
+    CiudadActualizar, SucursalCrear, SucursalListarAjaxListView, SucursalActualizar, FormaPagoCrear, \
+    FormaPagoListarAjaxListView, FormaPagoActualizar
 from . import views
 
 app_name = 'config'
@@ -63,5 +64,11 @@ urlpatterns = [
     path('tabla_sucursal/', SucursalListarAjaxListView.as_view(), name='tab_list_sucursal'),
     path('sucursal/editar/<int:pk>', SucursalActualizar.as_view(), name='edit_sucursal'),
     path('sucursal/listar/delete/<int:pk>', views.sucursal_eliminar, name='delete_sucursal'),
+
+    path('forma_pago/nuevo/', FormaPagoCrear.as_view(), name='nuevo_forma_pago'),
+    path('forma_pago/listar/', views.formaPagoListar, name='list_forma_pago'),
+    path('tabla_forma_pago/', FormaPagoListarAjaxListView.as_view(), name='tab_list_forma_pago'),
+    path('forma_pago/editar/<int:pk>', FormaPagoActualizar.as_view(), name='edit_forma_pago'),
+    path('forma_pago/listar/delete/<int:pk>', views.forma_pago_eliminar, name='delete_forma_pago'),
 
 ]

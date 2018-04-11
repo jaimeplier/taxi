@@ -7,8 +7,8 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm
-from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal
+    CiudadForm, SucursalForm, TipoPagoForm
+from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago
 from django.contrib.gis.geos import Point
 
 
@@ -544,4 +544,53 @@ class SucursalActualizar(UpdateView):
 def sucursal_eliminar(request, pk):
     s = get_object_or_404(Sucursal, pk=pk)
     s.delete()
+    return JsonResponse({'result': 1})
+
+class FormaPagoCrear(CreateView):
+    model = TipoPago
+    form_class = TipoPagoForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_forma_pago')
+
+def formaPagoListar(request):
+    template_name = 'config/tab_forma_pago.html'
+    return render(request, template_name)
+
+class FormaPagoListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = TipoPago
+    columns = ['nombre', 'precio','plan', 'editar', 'eliminar']
+    order_columns = ['nombre', 'precio','plan']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_forma_pago',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(FormaPagoListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return TipoPago.objects.all()
+
+
+class FormaPagoActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = TipoPago
+    template_name = 'form_1col.html'
+    form_class = TipoPagoForm
+
+    def get_success_url(self):
+        return reverse('config:list_forma_pago')
+
+def forma_pago_eliminar(request, pk):
+    tp = get_object_or_404(TipoPago, pk=pk)
+    tp.delete()
     return JsonResponse({'result': 1})
