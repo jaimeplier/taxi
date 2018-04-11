@@ -7,8 +7,9 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm, TipoPagoForm
-from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago
+    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm
+from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
+    TipoVehiculo
 from django.contrib.gis.geos import Point
 
 
@@ -593,4 +594,53 @@ class FormaPagoActualizar(UpdateView):
 def forma_pago_eliminar(request, pk):
     tp = get_object_or_404(TipoPago, pk=pk)
     tp.delete()
+    return JsonResponse({'result': 1})
+
+class TipoVehiculoCrear(CreateView):
+    model = TipoVehiculo
+    form_class = TipoVehiculoForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_tipo_vehiculo')
+
+def tipoVehiculoListar(request):
+    template_name = 'config/tab_tipo_vehiculo.html'
+    return render(request, template_name)
+
+class TipoVehiculoListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = TipoVehiculo
+    columns = ['nombre', 'num_max_pasajeros','num_maletas', 'editar', 'eliminar']
+    order_columns = ['nombre', 'num_max_pasajeros','num_maletas']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_tipo_vehiculo',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(TipoVehiculoListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return TipoVehiculo.objects.all()
+
+
+class TipoVehiculoActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = TipoVehiculo
+    template_name = 'form_1col.html'
+    form_class = TipoVehiculoForm
+
+    def get_success_url(self):
+        return reverse('config:list_tipo_vehiculo')
+
+def tipoVehiculoEliminar(request, pk):
+    tv = get_object_or_404(TipoVehiculo, pk=pk)
+    tv.delete()
     return JsonResponse({'result': 1})

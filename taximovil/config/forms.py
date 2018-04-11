@@ -1,5 +1,6 @@
 from django.forms import ModelForm, CharField, EmailField, NumberInput, PasswordInput, CheckboxSelectMultiple, forms, Select
-from config.models import Empresa, Usuario, Chofer, Sitio, Zona, Base, Direccion, Pais, Ciudad, Sucursal, TipoPago
+from config.models import Empresa, Usuario, Chofer, Sitio, Zona, Base, Direccion, Pais, Ciudad, Sucursal, TipoPago, \
+    TipoVehiculo
 
 
 class EmpresaForm(ModelForm):
@@ -121,4 +122,13 @@ class TipoPagoForm(ModelForm):
         fields = ['nombre',
                   'precio',
                   'plan',
+                  ]
+
+class TipoVehiculoForm(ModelForm):
+    class Meta:
+        model = TipoVehiculo
+        fields = ['nombre',
+                  'caracteristicas',
+                  'num_max_pasajeros',
+                  'num_maletas',
                   ]

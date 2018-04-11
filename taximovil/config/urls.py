@@ -5,7 +5,8 @@ from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     SitioListarAjaxListView, SitioActualizar, ZonaCrear, ZonaListarAjaxListView, ZonaActualizar, BaseCrear, \
     BaseListarAjaxListView, PaisCrear, PaisListarAjaxListView, PaisActualizar, CiudadCrear, CiudadListarAjaxListView, \
     CiudadActualizar, SucursalCrear, SucursalListarAjaxListView, SucursalActualizar, FormaPagoCrear, \
-    FormaPagoListarAjaxListView, FormaPagoActualizar
+    FormaPagoListarAjaxListView, FormaPagoActualizar, TipoVehiculoCrear, TipoVehiculoListarAjaxListView, \
+    TipoVehiculoActualizar
 from . import views
 
 app_name = 'config'
@@ -71,4 +72,9 @@ urlpatterns = [
     path('forma_pago/editar/<int:pk>', FormaPagoActualizar.as_view(), name='edit_forma_pago'),
     path('forma_pago/listar/delete/<int:pk>', views.forma_pago_eliminar, name='delete_forma_pago'),
 
+    path('tipo_vehiculo/nuevo/', TipoVehiculoCrear.as_view(), name='nuevo_tipo_vehiculo'),
+    path('tipo_vehiculo/listar/', views.tipoVehiculoListar, name='list_tipo_vehiculo'),
+    path('tabla_tipo_vehiculo/', TipoVehiculoListarAjaxListView.as_view(), name='tab_list_tipo_vehiculo'),
+    path('tipo_vehiculo/editar/<int:pk>', TipoVehiculoActualizar.as_view(), name='edit_tipo_vehiculo'),
+    path('tipo_vehiculo/listar/delete/<int:pk>', views.tipoVehiculoEliminar, name='delete_tipo_vehiculo'),
 ]
