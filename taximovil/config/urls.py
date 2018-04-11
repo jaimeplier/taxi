@@ -3,7 +3,8 @@ from django.urls import path
 from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActualizar, EmpresaCrear, \
     EmpresaListarAjaxListView, EmpresaActualizar, ChoferCrear, ChoferListarAjaxListView, ChoferActualizar, SitioCrear, \
     SitioListarAjaxListView, SitioActualizar, ZonaCrear, ZonaListarAjaxListView, ZonaActualizar, BaseCrear, \
-    BaseListarAjaxListView, PaisCrear, PaisListarAjaxListView, PaisActualizar
+    BaseListarAjaxListView, PaisCrear, PaisListarAjaxListView, PaisActualizar, CiudadCrear, CiudadListarAjaxListView, \
+    CiudadActualizar
 from . import views
 
 app_name = 'config'
@@ -51,5 +52,10 @@ urlpatterns = [
     path('pais/editar/<int:pk>', PaisActualizar.as_view(), name='edit_pais'),
     path('pais/listar/delete/<int:pk>', views.pais_eliminar, name='delete_pais'),
 
+    path('ciudad/nuevo/', CiudadCrear.as_view(), name='nuevo_ciudad'),
+    path('ciudad/listar/', views.ciudadListar, name='list_ciudad'),
+    path('tabla_ciudad/', CiudadListarAjaxListView.as_view(), name='tab_list_ciudad'),
+    path('ciudad/editar/<int:pk>', CiudadActualizar.as_view(), name='edit_ciudad'),
+    path('ciudad/listar/delete/<int:pk>', views.ciudad_eliminar, name='delete_ciudad'),
 
 ]

@@ -6,8 +6,9 @@ from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm
-from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais
+from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
+    CiudadForm
+from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad
 from django.contrib.gis.geos import Point
 
 
@@ -408,4 +409,71 @@ class PaisActualizar(UpdateView):
 def pais_eliminar(request, pk):
     p = get_object_or_404(Pais, pk=pk)
     p.delete()
+    return JsonResponse({'result': 1})
+
+
+class CiudadCrear(CreateView):
+    model = Ciudad
+    form_class = CiudadForm
+    template_name = 'formMap.html'
+
+    def form_valid(self, form):
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        pnt = Point(float(lon), float(lat))
+        form.instance.centro = pnt
+        return super(CiudadCrear, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('config:list_ciudad')
+
+def ciudadListar(request):
+    template_name = 'config/tab_ciudad.html'
+    return render(request, template_name)
+
+class CiudadListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Ciudad
+    columns = ['nombre','factor_tiempo', 'radio', 'pais', 'editar', 'eliminar']
+    order_columns = ['nombre']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_ciudad',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class="modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+        elif column == 'pais':
+            return row.pais.__str__()
+
+
+        return super(CiudadListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Ciudad.objects.all()
+
+
+class CiudadActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Ciudad
+    template_name = 'formMap.html'
+    form_class = CiudadForm
+
+    def form_valid(self, form):
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        pnt = Point(float(lon), float(lat))
+        form.instance.centro = pnt
+        return super(CiudadActualizar, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('config:list_ciudad')
+
+def ciudad_eliminar(request, pk):
+    c = get_object_or_404(Ciudad, pk=pk)
+    c.delete()
     return JsonResponse({'result': 1})

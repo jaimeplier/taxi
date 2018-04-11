@@ -528,6 +528,23 @@ class Ciudad(models.Model):
     radio = models.IntegerField()
     pais = models.ForeignKey('Pais', models.DO_NOTHING)
 
+    def __str__(self):
+        return self.nombre
+
+    @property
+    def latitud(self):
+        """I'm the 'x' property."""
+        if self.centro is None:
+            return None
+        return str(self.centro.coords[1])
+
+    @property
+    def longitud(self):
+        """I'm the 'x' property."""
+        if self.centro is None:
+            return None
+        return str(self.centro.coords[0])
+
     class Meta:
         managed = True
         db_table = 'ciudad'
