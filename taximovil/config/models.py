@@ -420,7 +420,7 @@ class TipoVehiculo(models.Model):
 class Base(models.Model):
     identificador = models.CharField(max_length=15)
     numero_espacio = models.IntegerField()
-    direccion = models.ForeignKey('Direccion', models.DO_NOTHING)
+    direccion = models.ForeignKey('Direccion',on_delete=models.CASCADE,)
     telefono = models.CharField(max_length=25, unique=True)
 
     #horario = models.ManyToManyField('Horario', models.DO_NOTHING)

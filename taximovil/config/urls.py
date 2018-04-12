@@ -6,7 +6,7 @@ from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     BaseListarAjaxListView, PaisCrear, PaisListarAjaxListView, PaisActualizar, CiudadCrear, CiudadListarAjaxListView, \
     CiudadActualizar, SucursalCrear, SucursalListarAjaxListView, SucursalActualizar, FormaPagoCrear, \
     FormaPagoListarAjaxListView, FormaPagoActualizar, TipoVehiculoCrear, TipoVehiculoListarAjaxListView, \
-    TipoVehiculoActualizar
+    TipoVehiculoActualizar, BaseActualizar
 from . import views
 
 app_name = 'config'
@@ -47,6 +47,8 @@ urlpatterns = [
     path('base/nuevo/', BaseCrear.as_view(), name='nuevo_base'),
     path('base/listar/', views.baseListar, name='list_base'),
     path('tabla_base/', BaseListarAjaxListView.as_view(), name='tab_list_base'),
+    path('base/editar/<int:pk>', BaseActualizar.as_view(), name='edit_base'),
+    path('base/listar/delete/<int:pk>', views.base_eliminar, name='delete_base'),
 
     path('pais/nuevo/', PaisCrear.as_view(), name='nuevo_pais'),
     path('pais/listar/', views.paisListar, name='list_pais'),

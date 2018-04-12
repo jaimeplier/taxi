@@ -9,7 +9,7 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo
+    TipoVehiculo, Direccion
 from django.contrib.gis.geos import Point
 
 
@@ -346,7 +346,7 @@ class BaseListarAjaxListView(BaseDatatableView):
     def render_column(self, row, column):
 
         if column == 'editar':
-            return '<a class="" href ="' + reverse('config:edit_zona',
+            return '<a class="" href ="' + reverse('config:edit_base',
                                                              kwargs={
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
@@ -362,6 +362,82 @@ class BaseListarAjaxListView(BaseDatatableView):
     def get_initial_queryset(self):
         return Base.objects.all()
 
+class BaseActualizar(UpdateView):
+    model = Base
+    segundoModelo = Direccion
+    template_name = 'formBase.html'
+    form_class = BaseForm
+    segundo_form = DireccionForm
+    id_base =  0
+    def get_context_data(self, **kwargs):
+        context = super(BaseActualizar,self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        base = self.model.objects.get(id=pk)
+        direccion = self.segundoModelo.objects.get(id= base.direccion_id)
+        print(direccion.latitud)
+        print(direccion.longitud)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'form2' not in context:
+            self.segundo_form
+            context['form2'] = self.segundo_form(instance=direccion)
+
+            context['latitud'] = direccion.latitud
+            context['longitud'] = direccion.longitud
+            print(context)
+            #lon= self.request.POST.get('lgn')
+            #lat = self.request.POST.get('lat')
+            #pnt = Point(float(lon), float(lat))
+            #self.segundo_form.instance.latlgn = pnt
+
+        context['id'] = pk
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_base = kwargs['pk']
+        base = self.model.objects.get(id=id_base)
+        direccion = self.segundoModelo.objects.get(id=base.direccion_id)
+        # pk = self.kwargs.get('pk', 0)
+        # base = self.model.objects.get(id=pk)
+        # direccion = self.segundoModelo.objects.get(id=base.direccion_id)
+        form = self.form_class(request.POST, instance=base)
+        form2 = self.segundo_form(request.POST, instance=direccion)
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        if form.is_valid() and form2.is_valid():
+
+            pnt = Point(float(lon), float(lat))
+            form2.instance.latlgn = pnt
+
+            base = form.save(commit=False)
+            base.direccion = form2.save()
+            base.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form, form2=form2))
+
+    def get_success_url(self):
+        return reverse('config:list_base')
+
+
+    def form_valid(self, form):
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        pnt = Point(float(lon), float(lat))
+        form.instance.latlgn = pnt
+        return super(BaseActualizar, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('config:list_base')
+
+def base_eliminar(request, pk):
+    b = get_object_or_404(Base, pk=pk)
+    id_direccion = b.direccion.id
+    d = get_object_or_404(Direccion, pk= id_direccion)
+    d.delete()
+    b.delete()
+    return JsonResponse({'result': 1})
 
 class PaisCrear(CreateView):
     model = Pais
