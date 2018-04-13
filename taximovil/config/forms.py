@@ -42,6 +42,9 @@ class ChoferForm(ModelForm):
                   'telefono',
                   'email',
                   'password',
+                  'numero_licencia',
+                  'turno',
+                  'saldo'
                   ]
         labels = {'nombre': 'Nombre',
                   'a_paterno': 'Apellido paterno',

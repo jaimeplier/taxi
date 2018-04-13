@@ -127,13 +127,42 @@ def usuario_eliminar(request, pk):
 class ChoferCrear(CreateView):
     model = Chofer
     form_class = ChoferForm
+    segundo_form = DireccionForm
+    template_name = 'formMap.html'
 
-    template_name = 'form_1col.html'
+    def get_context_data(self, **kwargs):
+        context = super(ChoferCrear,self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class(self.request.GET)
+        if 'formDireccion' not in context:
+            context['form2'] = self.segundo_form(self.request.GET)
+        return context
 
-    def form_valid(self, form):
-        form.instance.set_password(form.cleaned_data['password'])
-        form.instance.rol = Rol(pk=3)
-        return super(ChoferCrear, self).form_valid(form)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        form = self.form_class(request.POST)
+        form2 = self.segundo_form(request.POST)
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        if form.is_valid() and form2.is_valid():
+
+            pnt = Point(float(lon), float(lat))
+            form2.instance.latlgn = pnt
+
+            #form.instance.set_password(form.cleaned_data['password'])
+            form.instance.rol = Rol(pk=3)
+
+            base = form.save(commit=False)
+            base.direccion = form2.save()
+            base.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form, form2=form2))
+
+    # def form_valid(self, form):
+    #     form.instance.set_password(form.cleaned_data['password'])
+    #     form.instance.rol = Rol(pk=3)
+    #     return super(ChoferCrear, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('config:list_chofer')
@@ -146,7 +175,7 @@ class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
     columns = ['nombre', 'email', 'telefono', 'estatus', 'editar', 'eliminar']
-    order_columns = ['nombre']
+    order_columns = ['nombre', 'email', 'telefono', 'estatus']
     max_display_length = 100
 
     def render_column(self, row, column):
@@ -157,6 +186,8 @@ class ChoferListarAjaxListView(BaseDatatableView):
                                                                  'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
+        elif column == 'foto':
+            return '<img src="' + row.foto.url + '" class="responsive-img dimension_fija" width="50" />'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -168,11 +199,49 @@ class ChoferListarAjaxListView(BaseDatatableView):
 
 
 class ChoferActualizar(UpdateView):
-    redirect_field_name = 'next'
     model = Chofer
-    template_name = 'form_1col.html'
+    segundoModelo = Direccion
+    template_name = 'formBase.html'
     form_class = ChoferForm
+    segundo_form = DireccionForm
 
+    def get_context_data(self, **kwargs):
+        context = super(ChoferActualizar,self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        chofer = self.model.objects.get(id=pk)
+        direccion = self.segundoModelo.objects.get(id= chofer.direccion_id)
+
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'form2' not in context:
+            self.segundo_form
+            context['form2'] = self.segundo_form(instance=direccion)
+            context['latitud'] = direccion.latitud
+            context['longitud'] = direccion.longitud
+        context['id'] = pk
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_chofer = kwargs['pk']
+        chofer = self.model.objects.get(id=id_chofer)
+        direccion = self.segundoModelo.objects.get(id=chofer.direccion_id)
+        form = self.form_class(request.POST, instance=chofer)
+        form2 = self.segundo_form(request.POST, instance=direccion)
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        if form.is_valid() and form2.is_valid():
+
+            pnt = Point(float(lon), float(lat))
+            form2.instance.latlgn = pnt
+
+            chofer = form.save(commit=False)
+            chofer.direccion = form2.save()
+            chofer.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form, form2=form2))
+        
     def get_success_url(self):
         return reverse('config:list_chofer')
 
@@ -416,10 +485,6 @@ class BaseActualizar(UpdateView):
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form, form2=form2))
-
-    def get_success_url(self):
-        return reverse('config:list_base')
-
 
     def form_valid(self, form):
         lon = self.request.POST.get('lgn')
