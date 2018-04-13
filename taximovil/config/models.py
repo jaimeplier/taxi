@@ -121,9 +121,9 @@ class Usuario(AbstractBaseUser):
 
 class Cliente(Usuario):
     rfc = models.CharField(max_length=45)
-    #cp = models.IntegerField()
-    #lada = models.IntegerField()
-    customer_token = models.CharField(blank=True, null=True, max_length=512)
+    cp = models.IntegerField()
+    lada = models.IntegerField()
+    #customer_token = models.CharField(blank=True, null=True, max_length=512)
 
     def get_full_name(self):
         return str(self.nombre) + ' ' + str(self.a_paterno) + ' ' + str(self.a_materno)
@@ -443,27 +443,6 @@ class Puerta(models.Model):
         managed = True
         db_table = 'puerta'
 
-class Servicio(models.Model):
-    hora_registro = models.DateTimeField
-    #direccion_usuario = ('Direccion', models.DO_NOTHING)
-    cliente = ('Cliente', models.DO_NOTHING)
-    tipo_servicio = ('TipoServicio', models.DO_NOTHING)
-    vehiculo = ('Vehiculo', models.DO_NOTHING)
-    tiempo_aproximado = models.CharField(max_length=20)
-    sitio = ('Sitio', models.DO_NOTHING)
-    ref_lugar = models.CharField(max_length=200)
-    ref_persona = models.CharField(max_length=200)
-    direccion_destino = ('Direccion', models.DO_NOTHING)
-    distancia = models.CharField(max_length=20)
-    costo = models.CharField(max_length=20)
-    forma_pago = models.ForeignKey(TipoPago, models.DO_NOTHING)
-    tarifa = models.ForeignKey('Tarifa', models.DO_NOTHING)
-    estatus = models.IntegerField()
-
-    class Meta:
-        managed = True
-        db_table = 'servicio'
-
 class Sucursal(models.Model):
     clave = models.CharField(max_length=50)
     nombre = models.CharField(max_length=200)
@@ -592,3 +571,57 @@ class Documentos(models.Model):
     class Meta:
         managed = True
         db_table = 'documentos'
+
+
+class Servicio(models.Model):
+    hora_registro = models.DateTimeField(auto_now_add=True)
+    ubicacion_usuario = models.PointField()
+    destino = models.PointField()
+    direccion_servicio = models.CharField(max_length=400)
+    direccion_destino = models.CharField(max_length=400)
+    tiempo_aproximado = models.CharField(max_length=20)
+    ref_lugar = models.CharField(max_length=200)
+    ref_persona = models.CharField(max_length=200)
+    distancia = models.CharField(max_length=20)
+    costo = models.CharField(max_length=20)
+    estatus = models.IntegerField()
+
+    cliente = models.ForeignKey('Cliente', models.DO_NOTHING)
+    tipo_servicio = models.ForeignKey('TipoServicio', models.DO_NOTHING)
+    vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING)
+    sitio = models.ForeignKey('Sitio', models.DO_NOTHING)
+
+    forma_pago = models.ForeignKey(TipoPago, models.DO_NOTHING)
+    tarifa = models.ForeignKey('Tarifa', models.DO_NOTHING)
+
+    @property
+    def latitudUsuario(self):
+        """I'm the 'x' property."""
+        if self.ubicacion_usuario is None:
+            return None
+        return str(self.ubicacion_usuario.coords[1])
+
+    @property
+    def longitudUsuario(self):
+        """I'm the 'x' property."""
+        if self.ubicacion_usuario is None:
+            return None
+        return str(self.ubicacion_usuario.coords[0])
+
+    @property
+    def latitudDestino(self):
+        """I'm the 'x' property."""
+        if self.destino is None:
+            return None
+        return str(self.destino.coords[1])
+
+    @property
+    def longitudDestino(self):
+        """I'm the 'x' property."""
+        if self.destino is None:
+            return None
+        return str(self.destino.coords[0])
+
+    class Meta:
+        managed = True
+        db_table = 'servicio'

@@ -7,9 +7,9 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm
+    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion
+    TipoVehiculo, Direccion, Cliente
 from django.contrib.gis.geos import Point
 
 
@@ -784,4 +784,62 @@ class TipoVehiculoActualizar(UpdateView):
 def tipoVehiculoEliminar(request, pk):
     tv = get_object_or_404(TipoVehiculo, pk=pk)
     tv.delete()
+    return JsonResponse({'result': 1})
+
+
+
+class ClienteCrear(CreateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'form_1col.html'
+
+    def form_valid(self, form):
+        form.instance.set_password(form.cleaned_data['password'])
+        form.instance.rol = Rol(pk=2)
+        return super(ClienteCrear,self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('config:list_cliente')
+
+def clienteListar(request):
+    template_name = 'config/tab_cliente.html'
+    return render(request, template_name)
+
+class ClienteListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Cliente
+    columns = ['nombre', 'email', 'telefono','rfc','estatus','editar', 'eliminar']
+    order_columns = ['nombre', 'email', 'telefono','rfc','estatus']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_cliente',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'nombre':
+            return row.get_full_name()
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(ClienteListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Cliente.objects.filter(estatus=True, rol=2)
+
+class ClienteActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Cliente
+    template_name = 'form_1col.html'
+    form_class = ClienteForm
+
+    def get_success_url(self):
+        return reverse('config:list_cliente')
+
+def cliente_eliminar(request, pk):
+    u = get_object_or_404(Cliente, pk=pk)
+    u.estatus = False
+    u.save()
     return JsonResponse({'result': 1})
