@@ -8,9 +8,9 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
-    PropietarioForm
+    PropietarioForm, VehiculoForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo
 from django.contrib.gis.geos import Point
 
 
@@ -1046,4 +1046,59 @@ def propietario_eliminar(request, pk):
     u = get_object_or_404(Propietario, pk=pk)
     u.estatus = False
     u.save()
+    return JsonResponse({'result': 1})
+
+class VehiculoCrear(CreateView):
+    model = Vehiculo
+    form_class = VehiculoForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_vehiculo')
+
+def vehiculoListar(request):
+    template_name = 'config/tab_vehiculo.html'
+    return render(request, template_name)
+
+class VehiculoListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Vehiculo
+    columns = ['placa', 'anio','modelo', 'cromatica','propietario','economico', 'ciudad','editar', 'eliminar']
+    order_columns = ['placa', 'anio','modelo', 'cromatica','propietario','economico', 'ciudad']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_vehiculo',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'propietario':
+            return row.propietario.get_full_name()
+        elif column == 'modelo':
+            return row.modelo.nombre
+        elif column == 'ciudad':
+            return row.ciudad.nombre
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(VehiculoListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Vehiculo.objects.filter(estatus=True)
+
+class VehiculoActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Vehiculo
+    template_name = 'form_1col.html'
+    form_class = VehiculoForm
+
+    def get_success_url(self):
+        return reverse('config:list_vehiculo')
+
+def vehiculo_eliminar(request, pk):
+    v = get_object_or_404(Vehiculo, pk=pk)
+    v.estatus = False
+    v.save()
     return JsonResponse({'result': 1})

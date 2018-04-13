@@ -400,7 +400,7 @@ class Vehiculo(models.Model):
     modelo = models.ForeignKey('Modelo', models.DO_NOTHING)
     propietario = models.ForeignKey('Propietario', models.DO_NOTHING)
     economico = models.CharField(max_length=15,unique=True)
-    ciudad = models.CharField(max_length=100)
+    ciudad = models.ForeignKey('Ciudad', models.DO_NOTHING)
     activo = models.BooleanField(default=True)
 
     class Meta:

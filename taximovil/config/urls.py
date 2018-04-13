@@ -9,7 +9,7 @@ from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     TipoVehiculoActualizar, BaseActualizar, ClienteCrear, ClienteListarAjaxListView, ClienteActualizar, \
     TipoServicioCrear, TipoServicioListarAjaxListView, TipoServicioActualizar, MarcaCrear, MarcaListarAjaxListView, \
     MarcaActualizar, ModeloCrear, ModeloListarAjaxListView, ModeloActualizar, PropietarioCrear, \
-    PropietarioListarAjaxListView, PropietarioActualizar
+    PropietarioListarAjaxListView, PropietarioActualizar, VehiculoCrear, VehiculoListarAjaxListView, VehiculoActualizar
 from . import views
 
 app_name = 'config'
@@ -112,4 +112,10 @@ urlpatterns = [
     path('tabla_propietario/', PropietarioListarAjaxListView.as_view(), name='tab_list_propietario'),
     path('propietario/editar/<int:pk>', PropietarioActualizar.as_view(), name='edit_propietario'),
     path('propietario/listar/delete/<int:pk>', views.propietario_eliminar, name='delete_propietario'),
+
+    path('vehiculo/nuevo/', VehiculoCrear.as_view(), name='nuevo_vehiculo'),
+    path('vehiculo/listar/', views.vehiculoListar, name='list_vehiculo'),
+    path('tabla_vehiculo/', VehiculoListarAjaxListView.as_view(), name='tab_list_vehiculo'),
+    path('vehiculo/editar/<int:pk>', VehiculoActualizar.as_view(), name='edit_vehiculo'),
+    path('vehiculo/listar/delete/<int:pk>', views.vehiculo_eliminar, name='delete_vehiculo'),
 ]
