@@ -7,9 +7,9 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm
+    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente
+    TipoVehiculo, Direccion, Cliente, TipoServicio
 from django.contrib.gis.geos import Point
 
 
@@ -842,4 +842,53 @@ def cliente_eliminar(request, pk):
     u = get_object_or_404(Cliente, pk=pk)
     u.estatus = False
     u.save()
+    return JsonResponse({'result': 1})
+
+
+class TipoServicioCrear(CreateView):
+    model = TipoServicio
+    form_class = TipoServicioForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_tipoServicio')
+
+def tipoServicioListar(request):
+    template_name = 'config/tab_tipo_servicio.html'
+    return render(request, template_name)
+
+class TipoServicioListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = TipoServicio
+    columns = ['nombre','editar', 'eliminar']
+    order_columns = ['nombre']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_tipoServicio',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(TipoServicioListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return TipoServicio.objects.all()
+
+class TipoServicioActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = TipoServicio
+    template_name = 'form_1col.html'
+    form_class = TipoServicioForm
+
+    def get_success_url(self):
+        return reverse('config:list_tipoServicio')
+
+def tipoServicio_eliminar(request, pk):
+    ts = get_object_or_404(TipoServicio, pk=pk)
+    ts.delete()
     return JsonResponse({'result': 1})

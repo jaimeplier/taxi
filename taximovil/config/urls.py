@@ -6,7 +6,8 @@ from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     BaseListarAjaxListView, PaisCrear, PaisListarAjaxListView, PaisActualizar, CiudadCrear, CiudadListarAjaxListView, \
     CiudadActualizar, SucursalCrear, SucursalListarAjaxListView, SucursalActualizar, FormaPagoCrear, \
     FormaPagoListarAjaxListView, FormaPagoActualizar, TipoVehiculoCrear, TipoVehiculoListarAjaxListView, \
-    TipoVehiculoActualizar, BaseActualizar, ClienteCrear, ClienteListarAjaxListView, ClienteActualizar
+    TipoVehiculoActualizar, BaseActualizar, ClienteCrear, ClienteListarAjaxListView, ClienteActualizar, \
+    TipoServicioCrear, TipoServicioListarAjaxListView, TipoServicioActualizar
 from . import views
 
 app_name = 'config'
@@ -85,4 +86,10 @@ urlpatterns = [
     path('tabla_cliente/', ClienteListarAjaxListView.as_view(), name='tab_list_cliente'),
     path('cliente/editar/<int:pk>', ClienteActualizar.as_view(), name='edit_cliente'),
     path('cliente/listar/delete/<int:pk>', views.cliente_eliminar, name='delete_cliente'),
+
+    path('tipo_servicio/nuevo/', TipoServicioCrear.as_view(), name='nuevo_tipoServicio'),
+    path('tipo_servicio/listar/', views.tipoServicioListar, name='list_tipoServicio'),
+    path('tabla_tipo_servicio/', TipoServicioListarAjaxListView.as_view(), name='tab_list_tipoServicio'),
+    path('tipo_servicio/editar/<int:pk>', TipoServicioActualizar.as_view(), name='edit_tipoServicio'),
+    path('tipo_servicio/listar/delete/<int:pk>', views.tipoServicio_eliminar, name='delete_tipoServicio'),
 ]
