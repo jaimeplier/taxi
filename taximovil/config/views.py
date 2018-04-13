@@ -7,9 +7,9 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm
+    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca
 from django.contrib.gis.geos import Point
 
 
@@ -891,4 +891,52 @@ class TipoServicioActualizar(UpdateView):
 def tipoServicio_eliminar(request, pk):
     ts = get_object_or_404(TipoServicio, pk=pk)
     ts.delete()
+    return JsonResponse({'result': 1})
+
+class MarcaCrear(CreateView):
+    model = Marca
+    form_class = MarcaForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_marca')
+
+def marcaListar(request):
+    template_name = 'config/tab_marca.html'
+    return render(request, template_name)
+
+class MarcaListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Marca
+    columns = ['nombre','editar', 'eliminar']
+    order_columns = ['nombre']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_marca',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(MarcaListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Marca.objects.all()
+
+class MarcaActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Marca
+    template_name = 'form_1col.html'
+    form_class = MarcaForm
+
+    def get_success_url(self):
+        return reverse('config:list_marca')
+
+def marca_eliminar(request, pk):
+    m = get_object_or_404(Marca, pk=pk)
+    m.delete()
     return JsonResponse({'result': 1})

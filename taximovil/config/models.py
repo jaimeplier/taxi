@@ -397,8 +397,8 @@ class Vehiculo(models.Model):
     cromatica = models.CharField(max_length=45)
     estatus =  models.BooleanField(default=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
-    #modelo = models.ForeignKey('Modelo', models.DO_NOTHING)
-    #propietario = models.ForeignKey('Propietario', models.DO_NOTHING)
+    modelo = models.ForeignKey('Modelo', models.DO_NOTHING)
+    propietario = models.ForeignKey('Propietario', models.DO_NOTHING)
     economico = models.CharField(max_length=15,unique=True)
     ciudad = models.CharField(max_length=100)
     activo = models.BooleanField(default=True)
@@ -625,3 +625,33 @@ class Servicio(models.Model):
     class Meta:
         managed = True
         db_table = 'servicio'
+
+class Marca (models.Model):
+    nombre = models.CharField(max_length=45)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        managed = True
+        db_table = 'marca'
+
+class Modelo(models.Model):
+    nombre = models.CharField(max_length=45)
+    marca = models.ForeignKey('Marca', models.DO_NOTHING)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        managed = True
+        db_table = 'modelo'
+
+class Propietario(Usuario):
+    tipo_persona = models.CharField(max_length=45)
+    razon_social = models.CharField(max_length=45)
+    direccion_fiscal = models.CharField(max_length=45)
+    nombre_banco = models.CharField(max_length=45)
+    titular_cuenta = models.CharField(max_length=45)
+    clabe = models.CharField(max_length=45)
+    numero_cuenta = models.CharField(max_length=45)
