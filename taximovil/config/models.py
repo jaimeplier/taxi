@@ -655,3 +655,7 @@ class Propietario(Usuario):
     titular_cuenta = models.CharField(max_length=45)
     clabe = models.CharField(max_length=45)
     numero_cuenta = models.CharField(max_length=45)
+
+    class Meta:
+        managed = True
+        db_table = 'propietario'

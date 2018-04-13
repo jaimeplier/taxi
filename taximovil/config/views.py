@@ -7,9 +7,10 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm
+    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
+    PropietarioForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario
 from django.contrib.gis.geos import Point
 
 
@@ -989,4 +990,60 @@ class ModeloActualizar(UpdateView):
 def modelo_eliminar(request, pk):
     m = get_object_or_404(Modelo, pk=pk)
     m.delete()
+    return JsonResponse({'result': 1})
+
+class PropietarioCrear(CreateView):
+    model = Propietario
+    form_class = PropietarioForm
+    template_name = 'form_1col.html'
+
+    def form_valid(self, form):
+        form.instance.set_password(form.cleaned_data['password'])
+        form.instance.rol = Rol(pk=4)
+        return super(PropietarioCrear,self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('config:list_propietario')
+
+def propietarioListar(request):
+    template_name = 'config/tab_propietario.html'
+    return render(request, template_name)
+
+class PropietarioListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Propietario
+    columns = ['nombre', 'email', 'telefono','razon_social','estatus','editar', 'eliminar']
+    order_columns = ['nombre', 'email', 'telefono','razon_social','estatus']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_propietario',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'nombre':
+            return row.get_full_name()
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(PropietarioListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Propietario.objects.filter(estatus=True, rol=4)
+
+class PropietarioActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Propietario
+    template_name = 'form_1col.html'
+    form_class = PropietarioForm
+
+    def get_success_url(self):
+        return reverse('config:list_propietario')
+
+def propietario_eliminar(request, pk):
+    u = get_object_or_404(Propietario, pk=pk)
+    u.estatus = False
+    u.save()
     return JsonResponse({'result': 1})
