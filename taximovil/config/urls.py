@@ -8,7 +8,7 @@ from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     FormaPagoListarAjaxListView, FormaPagoActualizar, TipoVehiculoCrear, TipoVehiculoListarAjaxListView, \
     TipoVehiculoActualizar, BaseActualizar, ClienteCrear, ClienteListarAjaxListView, ClienteActualizar, \
     TipoServicioCrear, TipoServicioListarAjaxListView, TipoServicioActualizar, MarcaCrear, MarcaListarAjaxListView, \
-    MarcaActualizar
+    MarcaActualizar, ModeloCrear, ModeloListarAjaxListView, ModeloActualizar
 from . import views
 
 app_name = 'config'
@@ -99,4 +99,10 @@ urlpatterns = [
     path('tabla_marca/', MarcaListarAjaxListView.as_view(), name='tab_list_marca'),
     path('marca/editar/<int:pk>', MarcaActualizar.as_view(), name='edit_marca'),
     path('marca/listar/delete/<int:pk>', views.marca_eliminar, name='delete_marca'),
+
+    path('modelo/nuevo/', ModeloCrear.as_view(), name='nuevo_modelo'),
+    path('modelo/listar/', views.modeloListar, name='list_modelo'),
+    path('tabla_modelo/', ModeloListarAjaxListView.as_view(), name='tab_list_modelo'),
+    path('modelo/editar/<int:pk>', ModeloActualizar.as_view(), name='edit_modelo'),
+    path('modelo/listar/delete/<int:pk>', views.modelo_eliminar, name='delete_modelo'),
 ]

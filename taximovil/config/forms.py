@@ -179,6 +179,6 @@ class ModeloForm(ModelForm):
         fields = ['nombre',
                   'marca',
                   ]
-        labels = {'nombre': 'Nombre',
+        labels = {'nombre': 'Modelo',
                   'marca': 'Marca'
                   }

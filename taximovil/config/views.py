@@ -7,9 +7,9 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm
+    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo
 from django.contrib.gis.geos import Point
 
 
@@ -938,5 +938,55 @@ class MarcaActualizar(UpdateView):
 
 def marca_eliminar(request, pk):
     m = get_object_or_404(Marca, pk=pk)
+    m.delete()
+    return JsonResponse({'result': 1})
+
+class ModeloCrear(CreateView):
+    model = Modelo
+    form_class = ModeloForm
+    template_name = 'form_1col.html'
+
+    def get_success_url(self):
+        return reverse('config:list_modelo')
+
+def modeloListar(request):
+    template_name = 'config/tab_modelo.html'
+    return render(request, template_name)
+
+class ModeloListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Modelo
+    columns = ['nombre','marca','editar', 'eliminar']
+    order_columns = ['nombre','marca']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('config:edit_modelo',
+                                                             kwargs={
+                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+        elif column == 'marca':
+            return row.marca.nombre
+
+        return super(ModeloListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Modelo.objects.all()
+
+class ModeloActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Modelo
+    template_name = 'form_1col.html'
+    form_class = ModeloForm
+
+    def get_success_url(self):
+        return reverse('config:list_modelo')
+
+def modelo_eliminar(request, pk):
+    m = get_object_or_404(Modelo, pk=pk)
     m.delete()
     return JsonResponse({'result': 1})
