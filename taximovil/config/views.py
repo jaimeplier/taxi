@@ -106,7 +106,7 @@ class UsuarioListarAjaxListView(BaseDatatableView):
         return super(UsuarioListarAjaxListView, self).render_column(row, column)
 
     def get_initial_queryset(self):
-        return Usuario.objects.filter(estatus=True)
+        return Usuario.objects.filter(estatus=True, rol=2)
 
 class UsuarioActualizar(UpdateView):
     redirect_field_name = 'next'
