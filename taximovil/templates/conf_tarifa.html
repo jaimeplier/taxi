@@ -1,0 +1,244 @@
+<!-- SOFTIC SOLUTIONS-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<!--      CSS      -->
+	<link rel="stylesheet" type="text/css" href="css/materialize.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/menu.css">
+	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<!--      JS      -->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js" ></script> <!-- jQuery updated-->
+	<script type="text/javascript" src="js/materialize.js"></script>
+	
+	<title>BASE</title>
+</head>
+<body>
+	<div class="had-container">
+		<div class="row no_bottom">
+			<div class="col s12 banner_rosa"></div>
+		</div>
+		<nav class="nav-wrapper">
+    		<div class="nav-wrapper no_bottom">
+    			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      			<ul class="right hide-on-med-and-down ">
+      				<li><img src="images/girl.jpg" alt="" class="circular--portrait responsive-img"></li>
+      				<li><label class="nombre">&nbsp; Laura Patricia de la Vega Martínez</label></li>
+			        <li><a href="#"><i class="material-icons">notifications</i></a></li>
+			        <li><a href="#"><i class="material-icons">power_settings_new</i></a></li>
+      			</ul>
+      			<ul class="side-nav" id="mobile-demo">
+	        		<li><a href="#">Laura Patricia de la Vega Martínez</a></li>
+	       			<li><a href="#"><i class="material-icons">notifications</i>Notificaciones</a></li>
+			        <li><a href="#"><i class="material-icons">power_settings_new</i>Cerrar Sesión</a></li>
+     			</ul>
+    		</div>
+  		</nav>
+  		<div class="row"></div> <!-- dead space -->
+  		<div class="row">
+  			<div class="col s2 center">
+  				<img src="images/logo.png" class="responsive-img" id="mini-logo">
+  			</div>
+  			<div class="col s10">
+  				<h3 style="margin-left: 15%;">Configuración del Tarifario</h3>
+  			</div>
+  		</div>
+  		<!-- menú del lado izquierdo -->
+<div class="row">
+			<div class="col s3" style="padding: 0px;">
+
+				<div id='snav' class='en'>
+					<ul>
+						<li> <a href='#'> <i class="fa fa-home"></i> <span>Todos los Vehículos</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-css3"></i> <span>CSS3</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-html5"></i> <span>HTML5</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-git"></i> <span>Git</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-android"></i> <span>Android</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-apple"></i> <span>Apple</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-bitcoin"></i> <span>Bitcoin</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-facebook"></i> <span>Facebook</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-twitter"></i> <span>Twitter</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-google"></i> <span>Google</span> </a> </li>
+					</ul>
+				</div>
+
+			</div>
+			<div class="col s9"></div>
+		</div>
+		<!-- aqui empieza tarifa -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10 center">
+				<h5>Realiza consultas, agrega, modifica o elimina tarifas.</h5>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<br/> <!-- dead space -->
+		<!-- aquí empiezan los select -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4">
+						<select>
+							<option disabled selected value="">País</option>
+							<option value="1">México</option>
+							<option value="2">canadá</option>
+						</select>
+					</div>
+					<div class="col s4">
+						<select>
+							<option disabled selected value="">Ciudad</option>
+							<option value="1">CDMX</option>
+							<option value="2">Toronto</option>
+						</select>
+					</div>
+					<div class="col s4">
+						<select>
+							<option disabled selected value="">Tipo de Vehículo</option>
+							<option value="1">Sedán</option>
+							<option value="2">Camioneta</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<!-- segunda columna -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4">
+					<select>
+						<option disabled selected value="">Empresa</option>
+						<option value="1">Taximovil</option>
+						<option value="2">Avant</option>
+					</select>
+				</div>
+				<div class="col s4">
+					<select>
+						<option disabled selected value="">Sucursal</option>
+						<option value="1">Reforma</option>
+						<option>Roma Sur</option>
+					</select>
+				</div>
+				<div class="col s4">
+					<select>
+						<option disabled selected value="">Zona</option>
+						<option value="1">Norte</option>
+						<option value="2">Sur</option>
+					</select>
+				</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<!-- end -->
+		<!-- agregamos botones para consultar y registrar tarifa -->
+		<div class="row">
+			<div class="col s2"></div>
+			<div class="col s8">
+				<div class="row center">
+					<div class="col s6">
+						<a class="waves-effect waves-light btn-large"><i class="material-icons">search</i>         Consultar Tarifario</a>
+					</div>
+					<div class="col s6">
+						<a class="waves-effect waves-light btn-large"><i class="material-icons">add_to_queue</i>       Registrar Tarifario</a>
+					</div>
+				</div>
+			</div>
+			<div class="col s2"></div>
+		</div>
+		<!-- fin -->
+		<!-- aquí debe de ir la tablita -->
+		<!-- aquí comienza la tabla -->
+		<div class="row"></div>		<!-- dead space -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<table class="bordered highlight centered responsive-table">
+					<thead class="fondo_negro white-text">
+						<tr>
+							<th>PAÍS</th>
+							<th>CIUDAD</th>
+							<th>VEHÍCULO</th>
+							<th>SUCURSAL</th>
+							<th>ZONA</th>
+							<th>HORARIOS</th>
+							<th>TARIFAS</th>
+							<th>EDITAR</th>
+							<th>ELIMINAR</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>Juan Perez Martinez</td>
+							<td>Lorem ipsum</td>
+							<td>3</td>
+							<td>2</td>
+							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
+							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
+						</tr>
+						<tr>
+							<td>Juan Perez Martinez</td>
+							<td>Lorem ipsum</td>
+							<td>3</td>
+							<td>2</td>
+							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
+							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
+						</tr>
+						<tr>
+							<td>Juan Perez Martinez</td>
+							<td>Lorem ipsum</td>
+							<td>3</td>
+							<td>2</td>
+							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
+							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s12 center">
+				<ul class="pagination">
+				    <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_left</i></a></li>
+				    <li class="active"><a href="#!">1</a></li>
+				    <li class="waves-effect"><a href="#!">2</a></li>
+				    <li class="waves-effect"><a href="#!">3</a></li>
+				    <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_right</i></a></li>
+  				</ul>
+			</div>
+		<!-- finaliza la tabla -->
+
+
+		<footer class="page-footer">
+			<div class="had-container">
+				<div class="row">
+					<div class="col s1"></div>
+					<div class="col s10 center">
+						<h6 class="black-text"><b>Taximovil</b> 2018</h6>
+						<hr class="linea2" color="#D01E88">
+					</div>
+					<div class="col s1"></div>
+				</div>
+			</div>
+		</footer>
+	</div>
+</body>
+<script type="text/javascript">
+	$("document").ready(function()
+	{
+		$(".dropdown-button").dropdown();
+		$(".button-collapse").sideNav();
+		$('select').material_select();
+	});
+</script>
+</html>
+<!-- Developed By Softic Web Team -->
