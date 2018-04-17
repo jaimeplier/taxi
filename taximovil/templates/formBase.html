@@ -1,0 +1,180 @@
+{% extends 'config/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block style %}
+{% endblock style %}
+{% block content %}
+    <div class="row">
+        <div class=" col s2"></div>
+        <div class="col s8 center">
+            <h4>FORMULARIO DE ZONA</h4>
+        </div>
+        <div class="col s2"></div>
+    </div>
+    <div class="row">
+    <div id="test-swipe-1" class="col s12">
+    {% if form.errors %}
+        <div class="row">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+    <form action="" method="post" id="persona">
+        <div class="row col s7">
+
+            {% csrf_token %}
+            <div class="row center">
+
+                {% for field in form %}
+
+                    <div class="row">
+                        <div class="col s2"></div>
+                        <div class="col s2">{{ field.label }}</div>
+                        <div class="col s4">
+                            {% render_field field class+="validate" placeholder=field.label %}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if form2 %}
+                    {% for field2 in form2 %}
+                    <div class="row">
+                        <div class="col s2"></div>
+                        <div class="col s2">{{ field2.label }}</div>
+                        <div class="col s4">
+                            {% render_field field2 class+="validate" placeholder=field2.label %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                {% endif %}
+                <input type="hidden" name="lat" id="lat"
+                       value="{% if latitud %}{{ latitud }}{% endif %}" required>
+                <input type="hidden" name="lgn" id="lgn"
+                       value="{% if longitud %}{{ longitud }}{% endif %}" required>
+            </div>
+            <div class="row">
+                <div class="col s4"></div>
+                <div class="col s4 center">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">GUARDAR
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+                <div class="col s4"></div>
+            </div>
+
+        </div>
+    </form>
+    <div class="col s3">
+        <div class="row">
+            <div class="col s2">Ubicacion:</div>
+            <div class="col s8">
+                <input type="text" id="searchTextField"/>
+            </div>
+        </div>
+        <div id="map" style="width:100%;height:450px;border:1px solid #DCDCDC;"></div>
+        <!-- /.panel -->
+    </div>
+
+
+
+{% endblock content %}
+{% block scripts %}
+    <script src="{% static "vendor/jquery-ui/jquery-ui.min.js" %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places"></script>
+    <script type="text/javascript">
+        var map;
+        {% if  latitud %}
+            var lat = {{ latitud }};
+            var lgn = {{ longitud }};
+        {% else %}
+            var lat = 19.419260;
+            var lgn = -99.164379;
+        {% endif %}
+        var marker;
+
+        function initMap() {
+            if (map !== undefined)
+                return;
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: lat, lng: lgn},
+                zoom: 14
+            });
+
+            var input = /** @type {!HTMLInputElement} */(
+                document.getElementById('searchTextField'));
+
+            var types = [];
+
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.setTypes(types);
+            autocomplete.bindTo('bounds', map);
+
+            var infowindow = new google.maps.InfoWindow();
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                anchorPoint: new google.maps.Point(0, -29),
+                position: {lat: lat, lng: lgn},
+            });
+
+            marker.addListener('dragend', function () {
+                lat = this.position.lat();
+                lgn = this.position.lng();
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+            });
+            marker.setVisible(true);
+
+            autocomplete.addListener('place_changed', function () {
+                infowindow.close();
+                marker.setVisible(false);
+                var place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    window.alert("Autocomplete's returned place contains no geometry");
+                    return;
+                }
+
+                // If the place has a geometry, then present it on a map.
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);  // Why 17? Because it looks good.
+                }
+                marker.setPosition(place.geometry.location);
+                marker.setVisible(true);
+
+                lat = place.geometry.location.lat()
+                lgn = place.geometry.location.lng();
+
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
+            });
+        }
+
+
+        $(document).ready(function () {
+            initMap();
+            $('select').material_select();
+
+
+            Materialize.updateTextFields();
+            $('select').material_select();
+
+
+        });
+
+    </script>
+{% endblock scripts %}
