@@ -125,11 +125,42 @@
 				</div>
 				<div class="col s4">
 					<select>
-						<option disabled selected value="">Zona</option>
+						<option disabled selected value="">Tipo de Servicio</option>
+						<option value="1">Pool</option>
+						<option>Suv</option>
+					</select>
+				</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<!-- end -->
+		<!-- tercera columna -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4">
+					<select>
+						<option disabled selected value="">Zona Origen</option>
 						<option value="1">Norte</option>
 						<option value="2">Sur</option>
 					</select>
 				</div>
+			<div class="col s4">
+				<select>
+					<option disabled selected value="">Zona Destino</option>
+					<option value="1">Este</option>
+					<option value="2">Oeste</option>
+				</select>
+			</div>
+			<div class="col s4">
+				<select>
+					<option disabled selected value="">Base</option>
+					<option value="1">Basesita</option>
+					<option value="2">Basesota</option>
+				</select>
+			</div>
 				</div>
 			</div>
 			<div class="col s1"></div>
@@ -232,6 +263,62 @@
 				</div>
 				<div class="col s1"></div>
 			</div>
+		<!-- end -->
+		<!-- tercera parte -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4"></div>
+					<div class="col s4 input-field">
+						<input type="text" id="comision">
+						<label for="comision">Comisión</label>
+					</div>
+					<div class="col s4"></div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<!-- end -->
+		<!-- comisiones -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10 left">
+				<h4>Comisiones</h4>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s12">
+						<table class="bordered highlight centered responsive-table">
+							<thead class="fondo_negro white-text">
+								<tr>
+									<th>NOMBRE DE COMISIÓN</th>
+									<th> $ CANTIDAD</th>
+									<th>AGREGAR</th>
+									<th>ELIMINAR</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" id="n_comision" placeholder="Comisión">
+									</td>
+									<td> <input type="text" id="cantidad" placeholder="$ Cantidad"> </td>
+									<td><a href="#"><i class="material-icons">add</i></a></td>
+									<td><a href="#"><i class="material-icons">delete</i></a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
 		<!-- end -->
 		<!-- formas de pago -->
 		<div class="row">
