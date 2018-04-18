@@ -15,7 +15,7 @@ from django.contrib.gis.geos import Point
 
 
 def index(request):
-    template_name = 'tablas.html'
+    template_name = 'tab_base.html'
     return render(request, template_name)
 
 
