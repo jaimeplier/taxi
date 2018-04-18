@@ -118,4 +118,6 @@ urlpatterns = [
     path('tabla_vehiculo/', VehiculoListarAjaxListView.as_view(), name='tab_list_vehiculo'),
     path('vehiculo/editar/<int:pk>', VehiculoActualizar.as_view(), name='edit_vehiculo'),
     path('vehiculo/listar/delete/<int:pk>', views.vehiculo_eliminar, name='delete_vehiculo'),
+
+    path('tarifa/nuevo/', views.tarifaCrear, name='nuevo_tarifa'),
 ]
