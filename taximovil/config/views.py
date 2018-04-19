@@ -10,7 +10,7 @@ from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaFo
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
     PropietarioForm, VehiculoForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo
 from django.contrib.gis.geos import Point
 
 
@@ -1102,22 +1102,3 @@ def vehiculo_eliminar(request, pk):
     v.estatus = False
     v.save()
     return JsonResponse({'result': 1})
-
-
-def tarifaCrear(request):
-    template_name = 'conf_tarifa.html'
-    return render(request, template_name)
-
-def tarifaAdd(request):
-    response_data = {}
-    try:
-        tarifa = Tarifa(tarifaBase = request.POST.get('tarifaBase'), costoMinimo = request.POST.get('costoMinimo'), costoKm = request.POST.get('costoKm'),
-                        distanciaMax=request.POST.get('distanciaMax'), incrementoDistancia=request.POST.get('incrementoDistancia'),
-                        costoMinuto=request.POST.get('costoMinuto'), ciudad=request.POST.get('ciudad'), sucursal=request.POST.get('sucursal'),
-                        zonaOrigen=request.POST.get('zonaOrigen'), sitio=request.POST.get('sitio'), base=request.POST.get('base'),
-                        pago=request.POST.get('pago'), tipoVehiculo=request.POST.get('tipoVehiculo'),)
-        tarifa.save()
-        response_data['success'] = 'success'
-    except:
-        response_data['error'] = 'error'
-    return JsonResponse(response_data)

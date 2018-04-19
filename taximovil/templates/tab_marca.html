@@ -1,0 +1,30 @@
+<!--   SOFTIC SOLUTIONS   -->
+{% extends "config/tab_base.html" %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Marca</h5>{% endblock %}
+{% load static %}
+{% block campos %}
+    <th>Nombre</th>
+    <th>Editar</th>
+    <th>Eliminar</th>
+{% endblock %}
+
+{% block scripts_tabla %}
+        function eliminar() {
+            $.ajax({
+                url: "delete/" + id,
+                type: "POST", // http method
+                // handle a successful response
+                success: function (aData) {
+                    $('#tabla').dataTable()._fnAjaxUpdate();
+                },
+
+                // handle a non-successful response
+                error: function (xhr, errmsg, err) {
+                    alert("Ocurrio un error");
+                }
+            });
+        }
+{% endblock %}
+
+{% block url_ajax %}{% url 'config:tab_list_marca' %}{% endblock %}
+
