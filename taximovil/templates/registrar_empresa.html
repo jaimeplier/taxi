@@ -1,0 +1,96 @@
+<!-- SOFTIC SOLUTIONS-->
+{% extends 'config/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s4 left">
+				<h5>Registro de Datos de la Empresa.</h5>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4 input-field">
+						<select>
+							<option disabled selected value="">País</option>
+							<option value="1">México</option>
+							<option value="2">USA</option>
+						</select>
+						<label>Seleccione el País</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="nombre_txt">
+						<label for="nombre_txt">Nombre</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="r_social">
+						<label for="r_social">Razón Social</label>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4 input-field">
+						<input type="text" id="rfc">
+						<label for="rfc">RFC</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="dir_fis">
+						<label for="dir_fis">Dirección Fiscal</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="telefono">
+						<label for="telefono">Teléfono</label>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4 input-field">
+						<input type="text" id="n_contacto">
+						<label for="n_contacto">Nombre del contacto</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="mail_contacto">
+						<label for="mail_contacto">Correo del contacto</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="telefono_contacto">
+						<label for="telefono_contacto">Teléfono del contacto</label>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s12 center">
+				<a class="waves-effect waves-light btn btn-large pulse btn_next"><i class="material-icons left">playlist_add_check</i>Finalizar</a>
+			</div>
+		</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	$("document").ready(function()
+	{
+		$(".dropdown-button").dropdown();
+		$(".button-collapse").sideNav();
+		$('select').material_select();
+	});
+</script>
+{% endblock %}
+<!-- Developed By Softic Web Team -->
