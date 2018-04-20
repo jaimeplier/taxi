@@ -1,0 +1,132 @@
+{% extends 'config/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+		<!-- aqui empiza el registro del dueño -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10 center">
+				<h4>Registra los datos de los dueños de las unidades.</h4>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s4 left">
+				<h5>Datos Personales del Dueño.</h5>
+			</div>
+			<div class="col s7"></div>
+		</div>
+		<!-- form de registro -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4 input-field">
+						<input type="text" id="nombre_txt">
+						<label for="nombre_txt">Nombre</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="apaterno">
+						<label for="apaterno">Apellido Paterno</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="amaterno">
+						<label for="amaterno">Apellido Materno</label>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<!-- segunda fila -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s4 input-field">
+						<input type="text" class="datepicker" id="f_nacimiento">
+						<label for="f_nacimiento">Fecha de Nacimiento</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="rfc">
+						<label for="rfc">RFC</label>
+					</div>
+					<div class="col s4 input-field">
+						<input type="text" id="cp">
+						<label for="cp">C.P</label>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<!-- fin -->
+		<!-- tercera fila -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s6 input-field">
+						<input type="text" id="celular">
+						<label for="celular">Número de Celular</label>
+					</div>
+					<div class="col s6 input-field">
+						<input type="text" id="email">
+						<label for="email">Correo Electrónico</label>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<!-- fin -->
+		<!-- info_laboral -->
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s4 left">
+				<h5>Información Laboral del Dueño.</h5>
+			</div>
+			<div class="col s7"></div>
+		</div>
+		<div class="row">
+			<div class="col s1"></div>
+			<div class="col s10">
+				<div class="row">
+					<div class="col s6 input-field">
+						<input type="text" id="placas">
+						<label for="placas">Placas del Vehículo</label>
+					</div>
+					<div class="col s6 input-field">
+						<input type="password" id="password">
+						<label for="password">Contraseña</label>
+					</div>
+				</div>
+			</div>
+			<div class="col s1"></div>
+		</div>
+		<div class="row">
+			<div class="col s12 center">
+				<a class="waves-effect waves-light btn btn-large pulse btn_next"><i class="material-icons left">playlist_add_check</i>Finalizar</a>
+			</div>
+		</div>
+		<!-- fin -->
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	$("document").ready(function()
+	{
+		$(".dropdown-button").dropdown();
+		$(".button-collapse").sideNav();
+	});
+	$('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15, // Creates a dropdown of 15 years to control year,
+    today: 'Today',
+    clear: 'Clear',
+    close: 'Ok',
+    closeOnSelect: false // Close upon selecting a date,
+  });
+</script>
+{% endblock %}
+<!-- Developed By Softic Web Team -->
