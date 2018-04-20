@@ -8,14 +8,14 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
-    PropietarioForm, VehiculoForm
+    PropietarioForm, VehiculoForm, TarifaForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa
 from django.contrib.gis.geos import Point
 
 
 def index(request):
-    template_name = 'reportes.html'
+    template_name = 'registro_tarifario.html'
     return render(request, template_name)
 
 
@@ -28,7 +28,7 @@ class EmpresaCrear(CreateView):
         return reverse('config:list_empresa')
 
 def empresaListar(request):
-    template_name = 'config/tab_empresa.html'
+    template_name = 'tab_empresa.html'
     return render(request, template_name)
 
 class EmpresaListarAjaxListView(BaseDatatableView):
@@ -82,7 +82,7 @@ class UsuarioCrear(CreateView):
         return reverse('config:list_usuario')
 
 def usuarioListar(request):
-    template_name = 'config/tab_usuario.html'
+    template_name = 'tab_usuario.html'
     return render(request, template_name)
 
 class UsuarioListarAjaxListView(BaseDatatableView):
@@ -169,7 +169,7 @@ class ChoferCrear(CreateView):
         return reverse('config:list_chofer')
 
 def choferListar(request):
-    template_name = 'config/tab_chofer.html'
+    template_name = 'tab_chofer.html'
     return render(request, template_name)
 
 class ChoferListarAjaxListView(BaseDatatableView):
@@ -263,7 +263,7 @@ class SitioCrear(CreateView):
         return reverse('config:list_sitio')
 
 def sitioListar(request):
-    template_name = 'config/tab_sitio.html'
+    template_name = 'tab_sitio.html'
     return render(request, template_name)
 
 class SitioListarAjaxListView(BaseDatatableView):
@@ -320,7 +320,7 @@ class ZonaCrear(CreateView):
         return super(ZonaCrear, self).form_valid(form)
 
 def zonaListar(request):
-    template_name = 'config/tab_zona.html'
+    template_name = 'tab_zona.html'
     return render(request, template_name)
 
 class ZonaListarAjaxListView(BaseDatatableView):
@@ -403,7 +403,7 @@ class BaseCrear(CreateView):
         return reverse('config:list_base')
 
 def baseListar(request):
-    template_name = 'config/tab_base.html'
+    template_name = 'tab_base.html'
     return render(request, template_name)
 
 class BaseListarAjaxListView(BaseDatatableView):
@@ -514,7 +514,7 @@ class PaisCrear(CreateView):
         return reverse('config:list_pais')
 
 def paisListar(request):
-    template_name = 'config/tab_pais.html'
+    template_name = 'tab_pais.html'
     return render(request, template_name)
 
 class PaisListarAjaxListView(BaseDatatableView):
@@ -571,7 +571,7 @@ class CiudadCrear(CreateView):
         return reverse('config:list_ciudad')
 
 def ciudadListar(request):
-    template_name = 'config/tab_ciudad.html'
+    template_name = 'tab_ciudad.html'
     return render(request, template_name)
 
 class CiudadListarAjaxListView(BaseDatatableView):
@@ -637,7 +637,7 @@ class SucursalCrear(CreateView):
         return reverse('config:list_sucursal')
 
 def sucursalListar(request):
-    template_name = 'config/tab_sucursal.html'
+    template_name = 'tab_sucursal.html'
     return render(request, template_name)
 
 class SucursalListarAjaxListView(BaseDatatableView):
@@ -698,7 +698,7 @@ class FormaPagoCrear(CreateView):
         return reverse('config:list_forma_pago')
 
 def formaPagoListar(request):
-    template_name = 'config/tab_forma_pago.html'
+    template_name = 'tab_forma_pago.html'
     return render(request, template_name)
 
 class FormaPagoListarAjaxListView(BaseDatatableView):
@@ -747,7 +747,7 @@ class TipoVehiculoCrear(CreateView):
         return reverse('config:list_tipo_vehiculo')
 
 def tipoVehiculoListar(request):
-    template_name = 'config/tab_tipo_vehiculo.html'
+    template_name = 'tab_tipo_vehiculo.html'
     return render(request, template_name)
 
 class TipoVehiculoListarAjaxListView(BaseDatatableView):
@@ -803,7 +803,7 @@ class ClienteCrear(CreateView):
         return reverse('config:list_cliente')
 
 def clienteListar(request):
-    template_name = 'config/tab_cliente.html'
+    template_name = 'tab_cliente.html'
     return render(request, template_name)
 
 class ClienteListarAjaxListView(BaseDatatableView):
@@ -855,7 +855,7 @@ class TipoServicioCrear(CreateView):
         return reverse('config:list_tipoServicio')
 
 def tipoServicioListar(request):
-    template_name = 'config/tab_tipo_servicio.html'
+    template_name = 'tab_tipo_servicio.html'
     return render(request, template_name)
 
 class TipoServicioListarAjaxListView(BaseDatatableView):
@@ -903,7 +903,7 @@ class MarcaCrear(CreateView):
         return reverse('config:list_marca')
 
 def marcaListar(request):
-    template_name = 'config/tab_marca.html'
+    template_name = 'tab_marca.html'
     return render(request, template_name)
 
 class MarcaListarAjaxListView(BaseDatatableView):
@@ -951,7 +951,7 @@ class ModeloCrear(CreateView):
         return reverse('config:list_modelo')
 
 def modeloListar(request):
-    template_name = 'config/tab_modelo.html'
+    template_name = 'tab_modelo.html'
     return render(request, template_name)
 
 class ModeloListarAjaxListView(BaseDatatableView):
@@ -1006,7 +1006,7 @@ class PropietarioCrear(CreateView):
         return reverse('config:list_propietario')
 
 def propietarioListar(request):
-    template_name = 'config/tab_propietario.html'
+    template_name = 'tab_propietario.html'
     return render(request, template_name)
 
 class PropietarioListarAjaxListView(BaseDatatableView):
@@ -1057,7 +1057,7 @@ class VehiculoCrear(CreateView):
         return reverse('config:list_vehiculo')
 
 def vehiculoListar(request):
-    template_name = 'config/tab_vehiculo.html'
+    template_name = 'tab_vehiculo.html'
     return render(request, template_name)
 
 class VehiculoListarAjaxListView(BaseDatatableView):
@@ -1102,3 +1102,75 @@ def vehiculo_eliminar(request, pk):
     v.estatus = False
     v.save()
     return JsonResponse({'result': 1})
+
+class TarifaCrear(CreateView):
+    model = Tarifa
+    form_class = TarifaForm
+    template_name = 'administrador/registro.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TarifaCrear, self).get_context_data(**kwargs)
+        context['tipoPago'] = TipoPago.objects.all()
+        #context['municipio'] = Municipio.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse('administrador:list_nani')
+
+def tarifaCrear(request):
+    template_name = 'registro_tarifario.html'
+    c = Ciudad.objects.all()
+    s = Sucursal.objects.all()
+    z = Zona.objects.all()
+    p = Pais.objects.all()
+    tv = TipoVehiculo.objects.all()
+    e = Empresa.objects.all()
+    ts = TipoServicio.objects.all()
+    z = Zona.objects.all()
+    b = Base.objects.all()
+    si = Sitio.objects.all()
+    fp = TipoPago.objects.all()
+    context = dict(sucursales=s, ciudades=c, zonas=z, paises=p, vehiculos=tv, empresas=e, servicios=ts, bases=b, sitios=si, pagos=fp)
+    return render(request, template_name, context)
+
+def tarifaAdd(request):
+    response_data = {}
+    try:
+        pago = request.POST.get('pago')
+        print(pago)
+        pago = pago.split(",")
+        pago.pop(0)
+        print(pago)
+        pagoList = []
+        for i in pago:
+            pagoList.append(int(i))
+        print(pagoList)
+        tarifa = Tarifa(tarifa_base=request.POST.get('tarifaBase'), costo_minimo=request.POST.get('costoMinimo'),
+                        costo_km=request.POST.get('costoKm'),
+                        distancia_max=request.POST.get('distanciaMaxima'),
+                        incremento_distancia=request.POST.get('incrementoDistancia'),
+                        costo_minuto=request.POST.get('costoMinuto'),
+                        ciudad=Ciudad.objects.get(pk=request.POST.get('ciudad')),
+                        pais= Pais.objects.get(pk=request.POST.get('pais')),
+                        empresa=Empresa.objects.get(pk=request.POST.get('empresa')),
+                        sucursal=Sucursal.objects.get(pk=request.POST.get('sucursal')),
+                        zona_origen=Zona.objects.get(pk=request.POST.get('zonaOrigen')),
+                        zona_destino=Zona.objects.get(pk=request.POST.get('zonaDestino')),
+                        sitio=Sitio.objects.get(pk=request.POST.get('sitio')),
+                        base=Base.objects.get(pk=request.POST.get('base')),
+                        tipo_vehiculo=TipoVehiculo.objects.get(pk=request.POST.get('tipoVehiculo')),
+                        tipo_servicio=TipoServicio.objects.get(pk=request.POST.get('servicio')))
+        print(tarifa)
+        tarifa.save()
+        print(pago)
+        try:
+            for i in range(len(pagoList)):
+
+                pk_pago = TipoPago.objects.get(pk=pagoList[i])
+                tarifa.pago.add(pk_pago)
+        except ValueError:
+            print("no se puede convertir")
+        response_data['success'] = 'success'
+    except:
+        response_data['error'] = 'error'
+    return JsonResponse(response_data)

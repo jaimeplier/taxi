@@ -119,5 +119,7 @@ urlpatterns = [
     path('vehiculo/editar/<int:pk>', VehiculoActualizar.as_view(), name='edit_vehiculo'),
     path('vehiculo/listar/delete/<int:pk>', views.vehiculo_eliminar, name='delete_vehiculo'),
 
+    #path('tarifa/nuevo/', TarifaCrear.as_view(), name='nuevo_tarifa'),
     path('tarifa/nuevo/', views.tarifaCrear, name='nuevo_tarifa'),
+    path('tarifa/add/', views.tarifaAdd, name='tarifa_add')
 ]

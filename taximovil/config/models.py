@@ -139,7 +139,10 @@ class Chofer(Usuario):
     turno = models.CharField(max_length=3)
     saldo = models.FloatField()
     direccion = models.ForeignKey('Direccion', models.DO_NOTHING)
-    #taxi = models.ForeignKey('Taxi', models.DO_NOTHING)
+    #estatusChofer
+    #cuenta (historial)
+    #documentos
+    #taxi = models.ManyToMany('Taxi', models.DO_NOTHING)
 
 
 
@@ -241,7 +244,7 @@ class Horario(models.Model):
     diasemana = models.IntegerField()
     horainicio = models.TimeField()
     horafin = models.TimeField()
-    tarifa = models.ForeignKey
+    tarifa = models.ForeignKey('Tarifa', models.DO_NOTHING)
 
     def get_dia(self):
         return Dia(self.diasemana).name
@@ -250,19 +253,17 @@ class Horario(models.Model):
         managed = True
         db_table = 'horario'
 
-
-class Idioma(models.Model):
-    nombre = models.CharField(unique=True, max_length=100)
+class Comisiones(models.Model):
+    nombre = models.CharField(max_length=100)
+    tipo = models.IntegerField()
+    factor = models.FloatField()
 
     def __str__(self):
         return self.nombre
 
     class Meta:
         managed = True
-        db_table = 'idioma'
-
-
-
+        db_table = 'comisiones'
 
 class Pais(models.Model):
     nombre = models.CharField(max_length=45)
@@ -477,6 +478,7 @@ class Zona(models.Model):
     centro = models.PointField()
     radio = models.FloatField()
 
+
     def __str__(self):
         return self.nombre
 
@@ -507,13 +509,16 @@ class Tarifa(models.Model):
     costo_minuto = models.FloatField()
 
     ciudad = models.ForeignKey('Ciudad', models.DO_NOTHING)
+    pais = models.ForeignKey('Pais', models.DO_NOTHING)
+    empresa = models.ForeignKey('Empresa', models.DO_NOTHING)
     sucursal = models.ForeignKey('Sucursal', models.DO_NOTHING)
-    zona_origen = models.ForeignKey('Zona', models.DO_NOTHING)
-    #zona_destino = models.ForeignKey('Zona', models.DO_NOTHING)
+    zona_origen = models.ForeignKey('Zona', models.DO_NOTHING, related_name='zona_origen')
+    zona_destino =models.ForeignKey('Zona', models.DO_NOTHING, related_name='zona_destino')
     sitio = models.ForeignKey('Sitio', models.DO_NOTHING)
     base = models.ForeignKey('Base', models.DO_NOTHING)
-    pago = models.ForeignKey('TipoPago', models.DO_NOTHING)
+    pago = models.ManyToManyField('TipoPago')
     tipo_vehiculo = models.ForeignKey('TipoVehiculo', models.DO_NOTHING)
+    tipo_servicio = models.ForeignKey('TipoServicio', models.DO_NOTHING)
 
     class Meta:
         managed = True
@@ -566,7 +571,7 @@ class Documentos(models.Model):
     verificacion = models.CharField(max_length=200)
     penales = models.CharField(max_length=200)
     toxicologico = models.CharField(max_length=200)
-    chofer = ('Chofer', models.DO_NOTHING)
+    chofer = models.OneToOneField('Chofer', models.DO_NOTHING)
 
     class Meta:
         managed = True
