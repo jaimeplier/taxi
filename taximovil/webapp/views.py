@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from config.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
+from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
     PropietarioForm, VehiculoForm, TarifaForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
@@ -27,9 +27,11 @@ class EmpresaCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_empresa')
 
-def empresaListar(request):
+
+def empresa_listar(request):
     template_name = 'tab_empresa.html'
     return render(request, template_name)
+
 
 class EmpresaListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
@@ -42,8 +44,8 @@ class EmpresaListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_empresa',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -63,10 +65,12 @@ class EmpresaActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_empresa')
 
+
 def empresa_eliminar(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
     e.delete()
     return JsonResponse({'result': 1})
+
 
 class UsuarioCrear(CreateView):
     model = Usuario
@@ -76,19 +80,21 @@ class UsuarioCrear(CreateView):
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
         form.instance.rol = Rol(pk=2)
-        return super(UsuarioCrear,self).form_valid(form)
+        return super(UsuarioCrear, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('config:list_usuario')
 
-def usuarioListar(request):
+
+def usuario_listar(request):
     template_name = 'tab_usuario.html'
     return render(request, template_name)
+
 
 class UsuarioListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Usuario
-    columns = ['nombre', 'email', 'telefono','estatus','editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus', 'editar', 'eliminar']
     order_columns = ['nombre']
     max_display_length = 100
 
@@ -96,8 +102,8 @@ class UsuarioListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_usuario',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'eliminar':
@@ -109,6 +115,7 @@ class UsuarioListarAjaxListView(BaseDatatableView):
     def get_initial_queryset(self):
         return Usuario.objects.filter(estatus=True, rol=2)
 
+
 class UsuarioActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Usuario
@@ -117,6 +124,7 @@ class UsuarioActualizar(UpdateView):
 
     def get_success_url(self):
         return reverse('config:list_usuario')
+
 
 def usuario_eliminar(request, pk):
     u = get_object_or_404(Usuario, pk=pk)
@@ -132,7 +140,7 @@ class ChoferCrear(CreateView):
     template_name = 'formMap.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ChoferCrear,self).get_context_data(**kwargs)
+        context = super(ChoferCrear, self).get_context_data(**kwargs)
         if 'form' not in context:
             context['form'] = self.form_class(self.request.GET)
         if 'formDireccion' not in context:
@@ -150,7 +158,7 @@ class ChoferCrear(CreateView):
             pnt = Point(float(lon), float(lat))
             form2.instance.latlgn = pnt
 
-            #form.instance.set_password(form.cleaned_data['password'])
+            # form.instance.set_password(form.cleaned_data['password'])
             form.instance.rol = Rol(pk=3)
 
             base = form.save(commit=False)
@@ -168,9 +176,11 @@ class ChoferCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_chofer')
 
-def choferListar(request):
+
+def chofer_listar(request):
     template_name = 'tab_chofer.html'
     return render(request, template_name)
+
 
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
@@ -183,8 +193,8 @@ class ChoferListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_chofer',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'foto':
@@ -207,10 +217,10 @@ class ChoferActualizar(UpdateView):
     segundo_form = DireccionForm
 
     def get_context_data(self, **kwargs):
-        context = super(ChoferActualizar,self).get_context_data(**kwargs)
+        context = super(ChoferActualizar, self).get_context_data(**kwargs)
         pk = self.kwargs.get('pk', 0)
         chofer = self.model.objects.get(id=pk)
-        direccion = self.segundoModelo.objects.get(id= chofer.direccion_id)
+        direccion = self.segundoModelo.objects.get(id=chofer.direccion_id)
 
         if 'form' not in context:
             context['form'] = self.form_class()
@@ -242,7 +252,7 @@ class ChoferActualizar(UpdateView):
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form, form2=form2))
-        
+
     def get_success_url(self):
         return reverse('config:list_chofer')
 
@@ -262,23 +272,25 @@ class SitioCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_sitio')
 
-def sitioListar(request):
+
+def sitio_listar(request):
     template_name = 'tab_sitio.html'
     return render(request, template_name)
+
 
 class SitioListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Sitio
-    columns = ['nombre','num_espacio','pv', 'editar', 'eliminar']
-    order_columns = ['nombre','num_espacio','pv']
+    columns = ['nombre', 'num_espacio', 'pv', 'editar', 'eliminar']
+    order_columns = ['nombre', 'num_espacio', 'pv']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_sitio',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -297,6 +309,7 @@ class SitioActualizar(UpdateView):
 
     def get_success_url(self):
         return reverse('config:list_sitio')
+
 
 def sitio_eliminar(request, pk):
     e = get_object_or_404(Sitio, pk=pk)
@@ -319,9 +332,11 @@ class ZonaCrear(CreateView):
         form.instance.centro = pnt
         return super(ZonaCrear, self).form_valid(form)
 
-def zonaListar(request):
+
+def zona_listar(request):
     template_name = 'tab_zona.html'
     return render(request, template_name)
+
 
 class ZonaListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
@@ -334,8 +349,8 @@ class ZonaListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_zona',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -362,10 +377,12 @@ class ZonaActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_zona')
 
+
 def zona_eliminar(request, pk):
     z = get_object_or_404(Zona, pk=pk)
     z.delete()
     return JsonResponse({'result': 1})
+
 
 class BaseCrear(CreateView):
     model = Base
@@ -402,14 +419,16 @@ class BaseCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_base')
 
-def baseListar(request):
+
+def base_listar(request):
     template_name = 'tab_base.html'
     return render(request, template_name)
+
 
 class BaseListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Base
-    columns = ['identificador', 'numero_espacio','telefono', 'direccion', 'sitio', 'editar', 'eliminar']
+    columns = ['identificador', 'numero_espacio', 'telefono', 'direccion', 'sitio', 'editar', 'eliminar']
     order_columns = ['identificador']
     max_display_length = 100
 
@@ -417,20 +436,21 @@ class BaseListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_base',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
         elif column == 'direccion':
             return row.direccion.get_address()
         elif column == 'sitio':
-            return  row.sitio.__str__()
+            return row.sitio.__str__()
 
         return super(BaseListarAjaxListView, self).render_column(row, column)
 
     def get_initial_queryset(self):
         return Base.objects.all()
+
 
 class BaseActualizar(UpdateView):
     model = Base
@@ -438,12 +458,13 @@ class BaseActualizar(UpdateView):
     template_name = 'formBase.html'
     form_class = BaseForm
     segundo_form = DireccionForm
-    id_base =  0
+    id_base = 0
+
     def get_context_data(self, **kwargs):
-        context = super(BaseActualizar,self).get_context_data(**kwargs)
+        context = super(BaseActualizar, self).get_context_data(**kwargs)
         pk = self.kwargs.get('pk', 0)
         base = self.model.objects.get(id=pk)
-        direccion = self.segundoModelo.objects.get(id= base.direccion_id)
+        direccion = self.segundoModelo.objects.get(id=base.direccion_id)
         print(direccion.latitud)
         print(direccion.longitud)
         if 'form' not in context:
@@ -455,10 +476,10 @@ class BaseActualizar(UpdateView):
             context['latitud'] = direccion.latitud
             context['longitud'] = direccion.longitud
             print(context)
-            #lon= self.request.POST.get('lgn')
-            #lat = self.request.POST.get('lat')
-            #pnt = Point(float(lon), float(lat))
-            #self.segundo_form.instance.latlgn = pnt
+            # lon= self.request.POST.get('lgn')
+            # lat = self.request.POST.get('lat')
+            # pnt = Point(float(lon), float(lat))
+            # self.segundo_form.instance.latlgn = pnt
 
         context['id'] = pk
         return context
@@ -497,13 +518,15 @@ class BaseActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_base')
 
+
 def base_eliminar(request, pk):
     b = get_object_or_404(Base, pk=pk)
     id_direccion = b.direccion.id
-    d = get_object_or_404(Direccion, pk= id_direccion)
+    d = get_object_or_404(Direccion, pk=id_direccion)
     d.delete()
     b.delete()
     return JsonResponse({'result': 1})
+
 
 class PaisCrear(CreateView):
     model = Pais
@@ -513,9 +536,11 @@ class PaisCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_pais')
 
-def paisListar(request):
+
+def pais_listar(request):
     template_name = 'tab_pais.html'
     return render(request, template_name)
+
 
 class PaisListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
@@ -528,8 +553,8 @@ class PaisListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_pais',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class="modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -548,6 +573,7 @@ class PaisActualizar(UpdateView):
 
     def get_success_url(self):
         return reverse('config:list_pais')
+
 
 def pais_eliminar(request, pk):
     p = get_object_or_404(Pais, pk=pk)
@@ -570,14 +596,16 @@ class CiudadCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_ciudad')
 
-def ciudadListar(request):
+
+def ciudad_listar(request):
     template_name = 'tab_ciudad.html'
     return render(request, template_name)
+
 
 class CiudadListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Ciudad
-    columns = ['nombre','factor_tiempo', 'radio', 'pais', 'editar', 'eliminar']
+    columns = ['nombre', 'factor_tiempo', 'radio', 'pais', 'editar', 'eliminar']
     order_columns = ['nombre']
     max_display_length = 100
 
@@ -585,14 +613,13 @@ class CiudadListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_ciudad',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class="modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
         elif column == 'pais':
             return row.pais.__str__()
-
 
         return super(CiudadListarAjaxListView, self).render_column(row, column)
 
@@ -616,10 +643,12 @@ class CiudadActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_ciudad')
 
+
 def ciudad_eliminar(request, pk):
     c = get_object_or_404(Ciudad, pk=pk)
     c.delete()
     return JsonResponse({'result': 1})
+
 
 class SucursalCrear(CreateView):
     model = Sucursal
@@ -636,23 +665,25 @@ class SucursalCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_sucursal')
 
-def sucursalListar(request):
+
+def sucursal_listar(request):
     template_name = 'tab_sucursal.html'
     return render(request, template_name)
+
 
 class SucursalListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Sucursal
-    columns = ['nombre','clave', 'direccion', 'usuario','empresa', 'editar', 'eliminar']
-    order_columns = ['nombre','clave', 'direccion', 'usuario','empresa']
+    columns = ['nombre', 'clave', 'direccion', 'usuario', 'empresa', 'editar', 'eliminar']
+    order_columns = ['nombre', 'clave', 'direccion', 'usuario', 'empresa']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_sucursal',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class="modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -660,7 +691,6 @@ class SucursalListarAjaxListView(BaseDatatableView):
             return row.empresa.__str__()
         elif column == 'usuario':
             return row.usuario.get_full_name()
-
 
         return super(SucursalListarAjaxListView, self).render_column(row, column)
 
@@ -684,10 +714,12 @@ class SucursalActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_sucursal')
 
+
 def sucursal_eliminar(request, pk):
     s = get_object_or_404(Sucursal, pk=pk)
     s.delete()
     return JsonResponse({'result': 1})
+
 
 class FormaPagoCrear(CreateView):
     model = TipoPago
@@ -697,23 +729,25 @@ class FormaPagoCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_forma_pago')
 
-def formaPagoListar(request):
+
+def forma_pago_listar(request):
     template_name = 'tab_forma_pago.html'
     return render(request, template_name)
+
 
 class FormaPagoListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = TipoPago
-    columns = ['nombre', 'precio','plan', 'editar', 'eliminar']
-    order_columns = ['nombre', 'precio','plan']
+    columns = ['nombre', 'precio', 'plan', 'editar', 'eliminar']
+    order_columns = ['nombre', 'precio', 'plan']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_forma_pago',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -733,10 +767,12 @@ class FormaPagoActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_forma_pago')
 
+
 def forma_pago_eliminar(request, pk):
     tp = get_object_or_404(TipoPago, pk=pk)
     tp.delete()
     return JsonResponse({'result': 1})
+
 
 class TipoVehiculoCrear(CreateView):
     model = TipoVehiculo
@@ -746,23 +782,25 @@ class TipoVehiculoCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_tipo_vehiculo')
 
-def tipoVehiculoListar(request):
+
+def tipo_vehiculo_listar(request):
     template_name = 'tab_tipo_vehiculo.html'
     return render(request, template_name)
+
 
 class TipoVehiculoListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = TipoVehiculo
-    columns = ['nombre', 'num_max_pasajeros','num_maletas', 'editar', 'eliminar']
-    order_columns = ['nombre', 'num_max_pasajeros','num_maletas']
+    columns = ['nombre', 'num_max_pasajeros', 'num_maletas', 'editar', 'eliminar']
+    order_columns = ['nombre', 'num_max_pasajeros', 'num_maletas']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_tipo_vehiculo',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -782,11 +820,11 @@ class TipoVehiculoActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_tipo_vehiculo')
 
+
 def tipoVehiculoEliminar(request, pk):
     tv = get_object_or_404(TipoVehiculo, pk=pk)
     tv.delete()
     return JsonResponse({'result': 1})
-
 
 
 class ClienteCrear(CreateView):
@@ -797,28 +835,30 @@ class ClienteCrear(CreateView):
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
         form.instance.rol = Rol(pk=2)
-        return super(ClienteCrear,self).form_valid(form)
+        return super(ClienteCrear, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('config:list_cliente')
 
-def clienteListar(request):
+
+def cliente_listar(request):
     template_name = 'tab_cliente.html'
     return render(request, template_name)
+
 
 class ClienteListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Cliente
-    columns = ['nombre', 'email', 'telefono','rfc','estatus','editar', 'eliminar']
-    order_columns = ['nombre', 'email', 'telefono','rfc','estatus']
+    columns = ['nombre', 'email', 'telefono', 'rfc', 'estatus', 'editar', 'eliminar']
+    order_columns = ['nombre', 'email', 'telefono', 'rfc', 'estatus']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_cliente',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'eliminar':
@@ -830,6 +870,7 @@ class ClienteListarAjaxListView(BaseDatatableView):
     def get_initial_queryset(self):
         return Cliente.objects.filter(estatus=True, rol=2)
 
+
 class ClienteActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Cliente
@@ -838,6 +879,7 @@ class ClienteActualizar(UpdateView):
 
     def get_success_url(self):
         return reverse('config:list_cliente')
+
 
 def cliente_eliminar(request, pk):
     u = get_object_or_404(Cliente, pk=pk)
@@ -854,14 +896,16 @@ class TipoServicioCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_tipoServicio')
 
-def tipoServicioListar(request):
+
+def tipo_servicio_listar(request):
     template_name = 'tab_tipo_servicio.html'
     return render(request, template_name)
+
 
 class TipoServicioListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = TipoServicio
-    columns = ['nombre','editar', 'eliminar']
+    columns = ['nombre', 'editar', 'eliminar']
     order_columns = ['nombre']
     max_display_length = 100
 
@@ -869,8 +913,8 @@ class TipoServicioListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_tipoServicio',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -879,6 +923,7 @@ class TipoServicioListarAjaxListView(BaseDatatableView):
 
     def get_initial_queryset(self):
         return TipoServicio.objects.all()
+
 
 class TipoServicioActualizar(UpdateView):
     redirect_field_name = 'next'
@@ -889,10 +934,12 @@ class TipoServicioActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_tipoServicio')
 
+
 def tipoServicio_eliminar(request, pk):
     ts = get_object_or_404(TipoServicio, pk=pk)
     ts.delete()
     return JsonResponse({'result': 1})
+
 
 class MarcaCrear(CreateView):
     model = Marca
@@ -902,14 +949,16 @@ class MarcaCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_marca')
 
-def marcaListar(request):
+
+def marca_listar(request):
     template_name = 'tab_marca.html'
     return render(request, template_name)
+
 
 class MarcaListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Marca
-    columns = ['nombre','editar', 'eliminar']
+    columns = ['nombre', 'editar', 'eliminar']
     order_columns = ['nombre']
     max_display_length = 100
 
@@ -917,8 +966,8 @@ class MarcaListarAjaxListView(BaseDatatableView):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_marca',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -927,6 +976,7 @@ class MarcaListarAjaxListView(BaseDatatableView):
 
     def get_initial_queryset(self):
         return Marca.objects.all()
+
 
 class MarcaActualizar(UpdateView):
     redirect_field_name = 'next'
@@ -937,10 +987,12 @@ class MarcaActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_marca')
 
+
 def marca_eliminar(request, pk):
     m = get_object_or_404(Marca, pk=pk)
     m.delete()
     return JsonResponse({'result': 1})
+
 
 class ModeloCrear(CreateView):
     model = Modelo
@@ -950,23 +1002,25 @@ class ModeloCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_modelo')
 
-def modeloListar(request):
+
+def modelo_listar(request):
     template_name = 'tab_modelo.html'
     return render(request, template_name)
+
 
 class ModeloListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Modelo
-    columns = ['nombre','marca','editar', 'eliminar']
-    order_columns = ['nombre','marca']
+    columns = ['nombre', 'marca', 'editar', 'eliminar']
+    order_columns = ['nombre', 'marca']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_modelo',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -978,6 +1032,7 @@ class ModeloListarAjaxListView(BaseDatatableView):
     def get_initial_queryset(self):
         return Modelo.objects.all()
 
+
 class ModeloActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Modelo
@@ -987,10 +1042,12 @@ class ModeloActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_modelo')
 
+
 def modelo_eliminar(request, pk):
     m = get_object_or_404(Modelo, pk=pk)
     m.delete()
     return JsonResponse({'result': 1})
+
 
 class PropietarioCrear(CreateView):
     model = Propietario
@@ -1000,28 +1057,30 @@ class PropietarioCrear(CreateView):
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
         form.instance.rol = Rol(pk=4)
-        return super(PropietarioCrear,self).form_valid(form)
+        return super(PropietarioCrear, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('config:list_propietario')
 
-def propietarioListar(request):
+
+def propietario_listar(request):
     template_name = 'tab_propietario.html'
     return render(request, template_name)
+
 
 class PropietarioListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Propietario
-    columns = ['nombre', 'email', 'telefono','razon_social','estatus','editar', 'eliminar']
-    order_columns = ['nombre', 'email', 'telefono','razon_social','estatus']
+    columns = ['nombre', 'email', 'telefono', 'razon_social', 'estatus', 'editar', 'eliminar']
+    order_columns = ['nombre', 'email', 'telefono', 'razon_social', 'estatus']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_propietario',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'eliminar':
@@ -1033,6 +1092,7 @@ class PropietarioListarAjaxListView(BaseDatatableView):
     def get_initial_queryset(self):
         return Propietario.objects.filter(estatus=True, rol=4)
 
+
 class PropietarioActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Propietario
@@ -1042,11 +1102,13 @@ class PropietarioActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_propietario')
 
+
 def propietario_eliminar(request, pk):
     u = get_object_or_404(Propietario, pk=pk)
     u.estatus = False
     u.save()
     return JsonResponse({'result': 1})
+
 
 class VehiculoCrear(CreateView):
     model = Vehiculo
@@ -1056,23 +1118,25 @@ class VehiculoCrear(CreateView):
     def get_success_url(self):
         return reverse('config:list_vehiculo')
 
-def vehiculoListar(request):
+
+def vehiculo_listar(request):
     template_name = 'tab_vehiculo.html'
     return render(request, template_name)
+
 
 class VehiculoListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Vehiculo
-    columns = ['placa', 'anio','modelo', 'cromatica','propietario','economico', 'ciudad','editar', 'eliminar']
-    order_columns = ['placa', 'anio','modelo', 'cromatica','propietario','economico', 'ciudad']
+    columns = ['placa', 'anio', 'modelo', 'cromatica', 'propietario', 'economico', 'ciudad', 'editar', 'eliminar']
+    order_columns = ['placa', 'anio', 'modelo', 'cromatica', 'propietario', 'economico', 'ciudad']
     max_display_length = 100
 
     def render_column(self, row, column):
 
         if column == 'editar':
             return '<a class="" href ="' + reverse('config:edit_vehiculo',
-                                                             kwargs={
-                                                                 'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
         elif column == 'propietario':
             return row.propietario.get_full_name()
         elif column == 'modelo':
@@ -1088,6 +1152,7 @@ class VehiculoListarAjaxListView(BaseDatatableView):
     def get_initial_queryset(self):
         return Vehiculo.objects.filter(estatus=True)
 
+
 class VehiculoActualizar(UpdateView):
     redirect_field_name = 'next'
     model = Vehiculo
@@ -1097,11 +1162,13 @@ class VehiculoActualizar(UpdateView):
     def get_success_url(self):
         return reverse('config:list_vehiculo')
 
+
 def vehiculo_eliminar(request, pk):
     v = get_object_or_404(Vehiculo, pk=pk)
     v.estatus = False
     v.save()
     return JsonResponse({'result': 1})
+
 
 class TarifaCrear(CreateView):
     model = Tarifa
@@ -1111,13 +1178,14 @@ class TarifaCrear(CreateView):
     def get_context_data(self, **kwargs):
         context = super(TarifaCrear, self).get_context_data(**kwargs)
         context['tipoPago'] = TipoPago.objects.all()
-        #context['municipio'] = Municipio.objects.all()
+        # context['municipio'] = Municipio.objects.all()
         return context
 
     def get_success_url(self):
         return reverse('administrador:list_nani')
 
-def tarifaCrear(request):
+
+def tarifa_crear(request):
     template_name = 'registro_tarifario.html'
     c = Ciudad.objects.all()
     s = Sucursal.objects.all()
@@ -1130,10 +1198,12 @@ def tarifaCrear(request):
     b = Base.objects.all()
     si = Sitio.objects.all()
     fp = TipoPago.objects.all()
-    context = dict(sucursales=s, ciudades=c, zonas=z, paises=p, vehiculos=tv, empresas=e, servicios=ts, bases=b, sitios=si, pagos=fp)
+    context = dict(sucursales=s, ciudades=c, zonas=z, paises=p, vehiculos=tv, empresas=e, servicios=ts, bases=b,
+                   sitios=si, pagos=fp)
     return render(request, template_name, context)
 
-def tarifaAdd(request):
+
+def tarifa_add(request):
     response_data = {}
     try:
         pago = request.POST.get('pago')
@@ -1151,7 +1221,7 @@ def tarifaAdd(request):
                         incremento_distancia=request.POST.get('incrementoDistancia'),
                         costo_minuto=request.POST.get('costoMinuto'),
                         ciudad=Ciudad.objects.get(pk=request.POST.get('ciudad')),
-                        pais= Pais.objects.get(pk=request.POST.get('pais')),
+                        pais=Pais.objects.get(pk=request.POST.get('pais')),
                         empresa=Empresa.objects.get(pk=request.POST.get('empresa')),
                         sucursal=Sucursal.objects.get(pk=request.POST.get('sucursal')),
                         zona_origen=Zona.objects.get(pk=request.POST.get('zonaOrigen')),
@@ -1165,7 +1235,6 @@ def tarifaAdd(request):
         print(pago)
         try:
             for i in range(len(pagoList)):
-
                 pk_pago = TipoPago.objects.get(pk=pagoList[i])
                 tarifa.pago.add(pk_pago)
         except ValueError:
