@@ -1,10 +1,12 @@
 <!--   SOFTIC SOLUTIONS   -->
 {% extends "config/tab_base.html" %}
-{% block titulo_tabla %}<h5 class="black-text margin_114">Modelo</h5>{% endblock %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Pais</h5>{% endblock %}
 {% load static %}
 {% block campos %}
-    <th>Modelo</th>
-    <th>Marca</th>
+    <th>Nombre</th>
+    <th>Tiempo</th>
+    <th>Radio (Km)</th>
+    <th>Pais</th>
     <th>Editar</th>
     <th>Eliminar</th>
 {% endblock %}
@@ -27,5 +29,5 @@
         }
 {% endblock %}
 
-{% block url_ajax %}{% url 'config:tab_list_modelo' %}{% endblock %}
+{% block url_ajax %}{% url 'webapp:tab_list_ciudad' %}{% endblock %}
 

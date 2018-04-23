@@ -1,6 +1,6 @@
 <!--   SOFTIC SOLUTIONS   -->
 {% extends "config/tab_base.html" %}
-{% block titulo_tabla %}<h5 class="black-text margin_114">Choferes</h5>{% endblock %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Usuarios</h5>{% endblock %}
 {% load static %}
 {% block campos %}
     <th>Nombre</th>
@@ -29,4 +29,6 @@
         }
 {% endblock %}
 
-{% block url_ajax %}{% url 'config:tab_list_chofer' %}{% endblock %}
+{% block url_ajax %}{% url 'webapp:tab_list_usuario' %}{% endblock %}
+
+
