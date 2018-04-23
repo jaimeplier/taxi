@@ -1,6 +1,6 @@
 from django.urls import path
 
-from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActualizar, EmpresaCrear, \
+from webapp.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActualizar, EmpresaCrear, \
     EmpresaListarAjaxListView, EmpresaActualizar, ChoferCrear, ChoferListarAjaxListView, ChoferActualizar, SitioCrear, \
     SitioListarAjaxListView, SitioActualizar, ZonaCrear, ZonaListarAjaxListView, ZonaActualizar, BaseCrear, \
     BaseListarAjaxListView, PaisCrear, PaisListarAjaxListView, PaisActualizar, CiudadCrear, CiudadListarAjaxListView, \
@@ -12,110 +12,114 @@ from config.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     PropietarioListarAjaxListView, PropietarioActualizar, VehiculoCrear, VehiculoListarAjaxListView, VehiculoActualizar
 from . import views
 
-app_name = 'config'
+app_name = 'webapp'
 
 urlpatterns = [
     path('', views.index, name='index'),
 
     path('empresa/nuevo/', EmpresaCrear.as_view(), name='nuevo_empresa'),
-    path('empresa/listar/', views.empresaListar, name='list_empresa'),
+    path('empresa/listar/', views.empresa_listar, name='list_empresa'),
     path('tabla_empresa/', EmpresaListarAjaxListView.as_view(), name='tab_list_empresa'),
     path('empresa/editar/<int:pk>', EmpresaActualizar.as_view(), name='edit_empresa'),
     path('empresa/listar/delete/<int:pk>', views.empresa_eliminar, name='delete_empresa'),
 
     path('usuario/nuevo/', UsuarioCrear.as_view(), name='nuevo_usuario'),
-    path('usuario/listar/', views.usuarioListar, name='list_usuario'),
+    path('usuario/listar/', views.usuario_listar, name='list_usuario'),
     path('tabla_usuario/', UsuarioListarAjaxListView.as_view(), name='tab_list_usuario'),
     path('usuario/editar/<int:pk>', UsuarioActualizar.as_view(), name='edit_usuario'),
     path('usuario/listar/delete/<int:pk>', views.usuario_eliminar, name='delete_usuario'),
 
     path('chofer/nuevo/', ChoferCrear.as_view(), name='nuevo_chofer'),
-    path('chofer/listar/', views.choferListar, name='list_chofer'),
+    path('chofer/listar/', views.chofer_listar, name='list_chofer'),
     path('tabla_chofer/', ChoferListarAjaxListView.as_view(), name='tab_list_chofer'),
     path('chofer/editar/<int:pk>', ChoferActualizar.as_view(), name='edit_chofer'),
     path('chofer/listar/delete/<int:pk>', views.chofer_eliminar, name='delete_chofer'),
 
     path('sitio/nuevo/', SitioCrear.as_view(), name='nuevo_sitio'),
-    path('sitio/listar/', views.sitioListar, name='list_sitio'),
+    path('sitio/listar/', views.sitio_listar, name='list_sitio'),
     path('tabla_sitio/', SitioListarAjaxListView.as_view(), name='tab_list_sitio'),
     path('sitio/editar/<int:pk>', SitioActualizar.as_view(), name='edit_sitio'),
     path('sitio/listar/delete/<int:pk>', views.sitio_eliminar, name='delete_sitio'),
 
     path('zona/nuevo/', ZonaCrear.as_view(), name='nuevo_zona'),
-    path('zona/listar/', views.zonaListar, name='list_zona'),
+    path('zona/listar/', views.zona_listar, name='list_zona'),
     path('tabla_zona/', ZonaListarAjaxListView.as_view(), name='tab_list_zona'),
     path('zona/editar/<int:pk>', ZonaActualizar.as_view(), name='edit_zona'),
     path('zona/listar/delete/<int:pk>', views.zona_eliminar, name='delete_zona'),
 
     path('base/nuevo/', BaseCrear.as_view(), name='nuevo_base'),
-    path('base/listar/', views.baseListar, name='list_base'),
+    path('base/listar/', views.base_listar, name='list_base'),
     path('tabla_base/', BaseListarAjaxListView.as_view(), name='tab_list_base'),
     path('base/editar/<int:pk>', BaseActualizar.as_view(), name='edit_base'),
     path('base/listar/delete/<int:pk>', views.base_eliminar, name='delete_base'),
 
     path('pais/nuevo/', PaisCrear.as_view(), name='nuevo_pais'),
-    path('pais/listar/', views.paisListar, name='list_pais'),
+    path('pais/listar/', views.pais_listar, name='list_pais'),
     path('tabla_pais/', PaisListarAjaxListView.as_view(), name='tab_list_pais'),
     path('pais/editar/<int:pk>', PaisActualizar.as_view(), name='edit_pais'),
     path('pais/listar/delete/<int:pk>', views.pais_eliminar, name='delete_pais'),
 
     path('ciudad/nuevo/', CiudadCrear.as_view(), name='nuevo_ciudad'),
-    path('ciudad/listar/', views.ciudadListar, name='list_ciudad'),
+    path('ciudad/listar/', views.ciudad_listar, name='list_ciudad'),
     path('tabla_ciudad/', CiudadListarAjaxListView.as_view(), name='tab_list_ciudad'),
     path('ciudad/editar/<int:pk>', CiudadActualizar.as_view(), name='edit_ciudad'),
     path('ciudad/listar/delete/<int:pk>', views.ciudad_eliminar, name='delete_ciudad'),
 
     path('sucursal/nuevo/', SucursalCrear.as_view(), name='nuevo_sucursal'),
-    path('sucursal/listar/', views.sucursalListar, name='list_sucursal'),
+    path('sucursal/listar/', views.sucursal_listar, name='list_sucursal'),
     path('tabla_sucursal/', SucursalListarAjaxListView.as_view(), name='tab_list_sucursal'),
     path('sucursal/editar/<int:pk>', SucursalActualizar.as_view(), name='edit_sucursal'),
     path('sucursal/listar/delete/<int:pk>', views.sucursal_eliminar, name='delete_sucursal'),
 
     path('forma_pago/nuevo/', FormaPagoCrear.as_view(), name='nuevo_forma_pago'),
-    path('forma_pago/listar/', views.formaPagoListar, name='list_forma_pago'),
+    path('forma_pago/listar/', views.forma_pago_listar, name='list_forma_pago'),
     path('tabla_forma_pago/', FormaPagoListarAjaxListView.as_view(), name='tab_list_forma_pago'),
     path('forma_pago/editar/<int:pk>', FormaPagoActualizar.as_view(), name='edit_forma_pago'),
     path('forma_pago/listar/delete/<int:pk>', views.forma_pago_eliminar, name='delete_forma_pago'),
 
     path('tipo_vehiculo/nuevo/', TipoVehiculoCrear.as_view(), name='nuevo_tipo_vehiculo'),
-    path('tipo_vehiculo/listar/', views.tipoVehiculoListar, name='list_tipo_vehiculo'),
+    path('tipo_vehiculo/listar/', views.tipo_vehiculo_listar, name='list_tipo_vehiculo'),
     path('tabla_tipo_vehiculo/', TipoVehiculoListarAjaxListView.as_view(), name='tab_list_tipo_vehiculo'),
     path('tipo_vehiculo/editar/<int:pk>', TipoVehiculoActualizar.as_view(), name='edit_tipo_vehiculo'),
     path('tipo_vehiculo/listar/delete/<int:pk>', views.tipoVehiculoEliminar, name='delete_tipo_vehiculo'),
 
     path('cliente/nuevo/', ClienteCrear.as_view(), name='nuevo_cliente'),
-    path('cliente/listar/', views.clienteListar, name='list_cliente'),
+    path('cliente/listar/', views.cliente_listar, name='list_cliente'),
     path('tabla_cliente/', ClienteListarAjaxListView.as_view(), name='tab_list_cliente'),
     path('cliente/editar/<int:pk>', ClienteActualizar.as_view(), name='edit_cliente'),
     path('cliente/listar/delete/<int:pk>', views.cliente_eliminar, name='delete_cliente'),
 
     path('tipo_servicio/nuevo/', TipoServicioCrear.as_view(), name='nuevo_tipoServicio'),
-    path('tipo_servicio/listar/', views.tipoServicioListar, name='list_tipoServicio'),
+    path('tipo_servicio/listar/', views.tipo_servicio_listar, name='list_tipoServicio'),
     path('tabla_tipo_servicio/', TipoServicioListarAjaxListView.as_view(), name='tab_list_tipoServicio'),
     path('tipo_servicio/editar/<int:pk>', TipoServicioActualizar.as_view(), name='edit_tipoServicio'),
     path('tipo_servicio/listar/delete/<int:pk>', views.tipoServicio_eliminar, name='delete_tipoServicio'),
 
     path('marca/nuevo/', MarcaCrear.as_view(), name='nuevo_marca'),
-    path('marca/listar/', views.marcaListar, name='list_marca'),
+    path('marca/listar/', views.marca_listar, name='list_marca'),
     path('tabla_marca/', MarcaListarAjaxListView.as_view(), name='tab_list_marca'),
     path('marca/editar/<int:pk>', MarcaActualizar.as_view(), name='edit_marca'),
     path('marca/listar/delete/<int:pk>', views.marca_eliminar, name='delete_marca'),
 
     path('modelo/nuevo/', ModeloCrear.as_view(), name='nuevo_modelo'),
-    path('modelo/listar/', views.modeloListar, name='list_modelo'),
+    path('modelo/listar/', views.modelo_listar, name='list_modelo'),
     path('tabla_modelo/', ModeloListarAjaxListView.as_view(), name='tab_list_modelo'),
     path('modelo/editar/<int:pk>', ModeloActualizar.as_view(), name='edit_modelo'),
     path('modelo/listar/delete/<int:pk>', views.modelo_eliminar, name='delete_modelo'),
 
     path('propietario/nuevo/', PropietarioCrear.as_view(), name='nuevo_propietario'),
-    path('propietario/listar/', views.propietarioListar, name='list_propietario'),
+    path('propietario/listar/', views.propietario_listar, name='list_propietario'),
     path('tabla_propietario/', PropietarioListarAjaxListView.as_view(), name='tab_list_propietario'),
     path('propietario/editar/<int:pk>', PropietarioActualizar.as_view(), name='edit_propietario'),
     path('propietario/listar/delete/<int:pk>', views.propietario_eliminar, name='delete_propietario'),
 
     path('vehiculo/nuevo/', VehiculoCrear.as_view(), name='nuevo_vehiculo'),
-    path('vehiculo/listar/', views.vehiculoListar, name='list_vehiculo'),
+    path('vehiculo/listar/', views.vehiculo_listar, name='list_vehiculo'),
     path('tabla_vehiculo/', VehiculoListarAjaxListView.as_view(), name='tab_list_vehiculo'),
     path('vehiculo/editar/<int:pk>', VehiculoActualizar.as_view(), name='edit_vehiculo'),
     path('vehiculo/listar/delete/<int:pk>', views.vehiculo_eliminar, name='delete_vehiculo'),
+
+    #path('tarifa/nuevo/', TarifaCrear.as_view(), name='nuevo_tarifa'),
+    path('tarifa/nuevo/', views.tarifa_crear, name='nuevo_tarifa'),
+    path('tarifa/add/', views.tarifa_add, name='tarifa_add')
 ]

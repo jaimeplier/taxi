@@ -1,9 +1,12 @@
 <!--   SOFTIC SOLUTIONS   -->
 {% extends "config/tab_base.html" %}
-{% block titulo_tabla %}<h5 class="black-text margin_114">Tipo de servicio</h5>{% endblock %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Choferes</h5>{% endblock %}
 {% load static %}
 {% block campos %}
     <th>Nombre</th>
+    <th>Correo</th>
+    <th>Telefono</th>
+    <th>Estatus</th>
     <th>Editar</th>
     <th>Eliminar</th>
 {% endblock %}
@@ -26,5 +29,4 @@
         }
 {% endblock %}
 
-{% block url_ajax %}{% url 'config:tab_list_tipoServicio' %}{% endblock %}
-
+{% block url_ajax %}{% url 'webapp:tab_list_chofer' %}{% endblock %}

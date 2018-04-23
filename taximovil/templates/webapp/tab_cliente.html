@@ -6,6 +6,7 @@
     <th>Nombre</th>
     <th>Correo</th>
     <th>Telefono</th>
+    <th>RFC</th>
     <th>Estatus</th>
     <th>Editar</th>
     <th>Eliminar</th>
@@ -29,6 +30,6 @@
         }
 {% endblock %}
 
-{% block url_ajax %}{% url 'config:tab_list_usuario' %}{% endblock %}
+{% block url_ajax %}{% url 'webapp:tab_list_cliente' %}{% endblock %}
 
 

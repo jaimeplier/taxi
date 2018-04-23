@@ -1,13 +1,10 @@
 <!--   SOFTIC SOLUTIONS   -->
 {% extends "config/tab_base.html" %}
-{% block titulo_tabla %}<h5 class="black-text margin_114">Propietario</h5>{% endblock %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Zonas</h5>{% endblock %}
 {% load static %}
 {% block campos %}
     <th>Nombre</th>
-    <th>Correo</th>
-    <th>Telefono</th>
-    <th>Razón social</th>
-    <th>Estatus</th>
+    <th>Radio(Km)</th>
     <th>Editar</th>
     <th>Eliminar</th>
 {% endblock %}
@@ -30,6 +27,5 @@
         }
 {% endblock %}
 
-{% block url_ajax %}{% url 'config:tab_list_propietario' %}{% endblock %}
-
+{% block url_ajax %}{% url 'webapp:tab_list_zona' %}{% endblock %}
 

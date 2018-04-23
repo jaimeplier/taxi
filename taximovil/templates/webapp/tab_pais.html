@@ -4,10 +4,6 @@
 {% load static %}
 {% block campos %}
     <th>Nombre</th>
-    <th>Clave</th>
-    <th>Direccion</th>
-    <th>Usuario</th>
-    <th>Empresa</th>
     <th>Editar</th>
     <th>Eliminar</th>
 {% endblock %}
@@ -30,5 +26,5 @@
         }
 {% endblock %}
 
-{% block url_ajax %}{% url 'config:tab_list_sucursal' %}{% endblock %}
+{% block url_ajax %}{% url 'webapp:tab_list_pais' %}{% endblock %}
 
