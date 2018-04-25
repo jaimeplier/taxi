@@ -1,5 +1,5 @@
 from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.urls import reverse
@@ -8,14 +8,14 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
-    PropietarioForm, VehiculoForm, TarifaForm
+    PropietarioForm, VehiculoForm, TarifaForm, ComisionForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Horario
 from django.contrib.gis.geos import Point
 
 
 def index(request):
-    template_name = 'webapp/registro_tarifario.html'
+    template_name = 'webapp/registro.html'
     return render(request, template_name)
 
 
@@ -185,7 +185,7 @@ def chofer_listar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'email', 'telefono', 'estatus', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus','documentos', 'vehiculos', 'editar', 'eliminar']
     order_columns = ['nombre', 'email', 'telefono', 'estatus']
     max_display_length = 100
 
@@ -195,6 +195,14 @@ class ChoferListarAjaxListView(BaseDatatableView):
             return '<a class="" href ="' + reverse('webapp:edit_chofer',
                                                    kwargs={
                                                        'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'documentos':
+            return '<a class="" href ="' + reverse('webapp:edit_chofer',
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">assignment_ind</i></a>'
+        elif column == 'vehiculos':
+            return '<a class="" href ="' + reverse('webapp:edit_chofer',
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">directions_car</i></a>'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'foto':
@@ -1173,34 +1181,54 @@ def vehiculo_eliminar(request, pk):
 class TarifaCrear(CreateView):
     model = Tarifa
     form_class = TarifaForm
-    template_name = 'webapp/administrador/registro.html'
+    template_name = 'webapp/registro_tarifario.html'
 
     def get_context_data(self, **kwargs):
         context = super(TarifaCrear, self).get_context_data(**kwargs)
         context['tipoPago'] = TipoPago.objects.all()
-        # context['municipio'] = Municipio.objects.all()
         return context
 
     def get_success_url(self):
-        return reverse('administrador:list_nani')
+        return reverse('webapp:list_tarifa')
 
+class TarifaActualizar(UpdateView):
+    redirect_field_name = 'webapp:list_tarifa'
+    model = Tarifa
+    template_name = 'webapp/registro_tarifario.html'
+    form_class = TarifaForm
+
+    def get_success_url(self):
+        return reverse('webapp:list_tarifa')
 
 def tarifa_crear(request):
     template_name = 'webapp/registro_tarifario.html'
-    c = Ciudad.objects.all()
-    s = Sucursal.objects.all()
-    z = Zona.objects.all()
-    p = Pais.objects.all()
-    tv = TipoVehiculo.objects.all()
-    e = Empresa.objects.all()
-    ts = TipoServicio.objects.all()
-    z = Zona.objects.all()
-    b = Base.objects.all()
-    si = Sitio.objects.all()
-    fp = TipoPago.objects.all()
-    context = dict(sucursales=s, ciudades=c, zonas=z, paises=p, vehiculos=tv, empresas=e, servicios=ts, bases=b,
-                   sitios=si, pagos=fp)
-    return render(request, template_name, context)
+    if request.method == 'POST':
+        form = TarifaForm(request.POST)
+        print(form)
+        if form.is_valid():
+            form.save()
+            return reverse('webapp:list_tarifa')
+        return render(request, template_name, {'form': form})
+    else:
+        form = TarifaForm()
+        print(form)
+    # elif request.method == 'GET':
+    #     c = Ciudad.objects.all()
+    #     s = Sucursal.objects.all()
+    #     z = Zona.objects.all()
+    #     p = Pais.objects.all()
+    #     tv = TipoVehiculo.objects.all()
+    #     e = Empresa.objects.all()
+    #     ts = TipoServicio.objects.all()
+    #     z = Zona.objects.all()
+    #     b = Base.objects.all()
+    #     si = Sitio.objects.all()
+    #     fp = TipoPago.objects.all()
+    #     context = dict(sucursales=s, ciudades=c, zonas=z, paises=p, vehiculos=tv, empresas=e, servicios=ts, bases=b,
+    #                    sitios=si, pagos=fp)
+    #     return render(request, template_name, context)
+    # form = TarifaForm()
+        return render(request, template_name, {'form': form})
 
 
 def tarifa_add(request):
@@ -1243,3 +1271,143 @@ def tarifa_add(request):
     except:
         response_data['error'] = 'error'
     return JsonResponse(response_data)
+
+def tarifa_listar(request):
+    template_name = 'webapp/tab_tarifa.html'
+    return render(request, template_name)
+
+
+class TarifaListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Tarifa
+    columns = ['tarifa_base', 'ciudad', 'sitio', 'empresa', 'sucursal', 'pais', 'horario', 'editar', 'eliminar']
+    order_columns = ['tarifa_base', 'ciudad', 'sitio', 'empresa', 'sucursal', 'pais']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('webapp:edit_tarifa',
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'horario':
+            return '<a class="" href ="' + reverse('webapp:horario_tarifa',
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">access_time</i></a>'
+        elif column == 'ciudad':
+            return row.ciudad.nombre
+        elif column == 'sitio':
+            return row.sitio.nombre
+        elif column == 'empresa':
+            return row.empresa.nombre
+        elif column == 'sucursal':
+            return row.sucursal.nombre
+        elif column == 'pais':
+            return row.pais.nombre
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(TarifaListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Tarifa.objects.all()
+
+def horarios_tarifa(request, pk):
+    template_name = 'webapp/horario_tarifa.html'
+    t = get_object_or_404(Tarifa, pk=pk)
+    horarios = t.horario_set.all()
+    context = {"horarios": horarios, "tarifa": t}
+    return render(request, template_name, context)
+
+def agregar_horario(request):
+    response_data = {}
+    try:
+        t = Tarifa.objects.get(pk=request.POST.get('tarifa'))
+        h = Horario(horainicio=request.POST.get('horainicio'),
+                    horafin=request.POST.get('horafin'), diasemana=request.POST.get('diasemana'),
+                    tarifa=t)
+        h.save()
+        response_data['success'] = 'success'
+        return redirect(
+            reverse('webapp:horario_tarifa', kwargs={'pk': t.pk}))
+    except Exception as e:
+        response_data['error'] = 'error'
+    return JsonResponse(response_data)
+
+def editar_horario(request, pk):
+    response_data = {}
+    try:
+        h = Horario.objects.get(pk=pk)
+        h.horainicio = request.POST.get('horainicio')
+        h.horafin = request.POST.get('horafin')
+        h.diasemana = request.POST.get('diasemana')
+        h.save()
+        response_data['success'] = 'success'
+    except Horario.DoesNotExist:
+        response_data['error'] = 'error'
+    return JsonResponse(response_data)
+
+def eliminar_horario(request, pk):
+    response_data = {}
+    try:
+        h = Horario.objects.get(pk=pk)
+        h.delete()
+        response_data['success'] = 'success'
+    except Horario.DoesNotExist:
+        response_data['error'] = 'error'
+    return JsonResponse(response_data)
+
+class ComisionCrear(CreateView):
+    model = Comisiones
+    form_class = ComisionForm
+    template_name = 'config/form_1col.html'
+
+    def get_success_url(self):
+        return reverse('webapp:list_comision')
+
+
+def comision_listar(request):
+    template_name = 'webapp/tab_comision.html'
+    return render(request, template_name)
+
+
+class ComisionListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Comisiones
+    columns = ['nombre', 'tipo', 'factor', 'editar', 'eliminar']
+    order_columns = ['nombre', 'tipo', 'factor']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('webapp:edit_comision',
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'tipo':
+            return '%' if row.tipo == 1 else '$'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(ComisionListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Comisiones.objects.all()
+
+
+class ComisionActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Comisiones
+    template_name = 'config/form_1col.html'
+    form_class = ComisionForm
+
+    def get_success_url(self):
+        return reverse('webapp:list_comision')
+
+
+def comision_eliminar(request, pk):
+    c = get_object_or_404(Comisiones, pk=pk)
+    c.delete()
+    return JsonResponse({'result': 1})
