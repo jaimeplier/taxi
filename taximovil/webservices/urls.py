@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from webservices.cliente import RegistrarUsuario
-from webservices.views import EnviarCodigo, VerificaCodigo
+from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario
 
 app_name = 'webservices'
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('enviarCodigo/', EnviarCodigo.as_view(), name='enviar_codigo'),
     path('verificarCodigo/', VerificaCodigo.as_view(), name='verifica_codigo'),
     path('registrar/', RegistrarUsuario.as_view(), name='registrar'),
+    path('login/', LoginUsuario.as_view(), name='login'),
 ]
