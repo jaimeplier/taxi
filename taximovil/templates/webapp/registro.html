@@ -16,8 +16,7 @@
   						<ul id="tabs-swipe-demo" class="tabs nav_rosa">
 						    <li class="tab col s3"><a class="white-text" href="#test-swipe-1">1.Info. Personal</a></li>
 						    <li class="tab col s3"><a class="white-text" href="#test-swipe-2">2.Info. del Vehículo</a></li>
-						    <li class="tab col s3"><a class="white-text" href="#test-swipe-3">3.Documentos</a></li>
-						    <li class="tab col s3"><a class="white-text" href="#test-swipe-4">4.Titular de Cuenta</a></li>
+						    <li class="tab col s3"><a class="white-text" href="#test-swipe-3">3.Titular de Cuenta</a></li>
 					  	</ul>
 					  	<div class="row">
 					  		<div id="test-swipe-1" class="col s12">
@@ -113,6 +112,50 @@
 					  					<label for="c_dom">Comprobante de Domicilio</label>
 					  				</div>
 					  			</div>
+                                <div class="row">
+                                    <div class="col s4 input-field">
+                                        <div class="btn">
+								        	<span>Antecedentes no Penales</span>
+								        	<input type="file">
+								      	</div>
+								      	<div class="file-path-wrapper">
+        									<input class="file-path validate" type="text">
+     									</div>
+     									<div class="input-field">
+     										<input type="text" class="datepicker" placeholder="Fecha de Emisión">
+     									</div>
+     									<div class="input-field">
+     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
+     									</div>
+                                    </div>
+                                    <div class="col s4 input-field">
+                                        <div class="btn">
+								        	<span>Examen Toxicológico</span>
+								        	<input type="file">
+								      	</div>
+								      	<div class="file-path-wrapper">
+        									<input class="file-path validate" type="text">
+     									</div>
+     									<div class="input-field">
+     										<input type="text" class="datepicker" placeholder="Fecha de Emisión">
+     									</div>
+     									<div class="input-field">
+     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
+     									</div>
+                                    </div>
+                                    <div class="col s4 input-field">
+                                        <div class="btn">
+								        	<span>Licencia de Conducir</span>
+								        	<input type="file">
+								      	</div>
+								      	<div class="file-path-wrapper">
+        									<input class="file-path validate" type="text">
+     									</div>
+     									<div class="input-field">
+     										<input type="text" id="num_licencia" placeholder="Número de Licencia">
+     									</div>
+                                    </div>
+                                </div>
 					  			<div class="row">
 					  				<div class="col s10"></div>
 					  				<div class="col s2">
@@ -164,27 +207,9 @@
 					  				</div>
 					  			</div>
 					  		</div>
-					  		<!--  // /// // -->
-					  		<!-- DOCUMENTOS -->
-					  		<div id="test-swipe-3" class="col s12">
-					  			<div class="row">
-					  				<div class="col s6 file-field input-field center">
-					  					<div class="btn">
-								        	<span>Antecedentes no Penales</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Emisión">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
-     									</div>
-     								</div>
-					  				<div class="col s6 file-field input-field center">
-					  					<div class="btn">
+                            <div class="row">
+                                <div class="col s4 input-field">
+                                    <div class="btn">
 								        	<span>Tarjeta de Circulación</span>
 								        	<input type="file">
 								      	</div>
@@ -197,11 +222,9 @@
      									<div class="input-field">
      										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
      									</div>
-     								</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s6 file-field input-field center">
-					  					<div class="btn">
+                                </div>
+                                <div class="col s4 input-field">
+                                    <div class="btn">
 								        	<span>Seguro del Automóvil</span>
 								        	<input type="file">
 								      	</div>
@@ -214,26 +237,9 @@
      									<div class="input-field">
      										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
      									</div>
-					  				</div>
-					  				<div class="col s6 file-field input-field center">
-					  					<div class="btn">
-								        	<span>Examen Toxicológico</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Emisión">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
-     									</div>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s6 file-field input-field center">
-					  					<div class="btn">
+                                </div>
+                                <div class="col s4 input-field">
+                                    <div class="btn">
 								        	<span>Verificación del Auto</span>
 								        	<input type="file">
 								      	</div>
@@ -243,21 +249,8 @@
      									<div class="input-field">
      										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
      									</div>
-     								</div>
-					  				<div class="col s6 file-field input-field center">
-					  					<div class="btn">
-								        	<span>Licencia de Conducir</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" id="num_licencia" placeholder="Número de Licencia">
-     									</div>
-     								</div>
-					  			</div>
-					  		</div>
+                                </div>
+                            </div>
 					  		<!--  // /// // -->
 					  		<!-- titular de la cuenta -->
 					  		<div id="test-swipe-4" class="col s12">
