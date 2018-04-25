@@ -17,10 +17,13 @@ from django.urls import path, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
+    path('docs/', include_docs_urls(title='Taximovil', public=True)),
     path('admin/', admin.site.urls),
     path('webapp/', include('webapp.urls')),
+    path('ws/', include('webservices.urls')),
 ]
 
 if settings.DEBUG:

@@ -76,22 +76,22 @@ WSGI_APPLICATION = 'taximovil.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.contrib.gis.db.backends.postgis',
-    #     'NAME': 'taximovildb',
-    #     'USER': 'taximovildb',
-    #     'PASSWORD': 'i3N%g6$uE-F8',
-    #     'HOST': 'postgrestaximovil.cl7uq5voofn2.us-west-2.rds.amazonaws.com',
-    #     'PORT': '5432'
-    # },
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'taximovil',
-        'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'NAME': 'taximovildb',
+        'USER': 'taximovildb',
+        'PASSWORD': 'i3N%g6$uE-F8',
+        'HOST': 'postgrestaximovil.cl7uq5voofn2.us-west-2.rds.amazonaws.com',
         'PORT': '5432'
     },
+    # 'default': {
+    #     'ENGINE': 'django.contrib.gis.db.backends.postgis',
+    #     'NAME': 'taximovil',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'n0m3l0s3',
+    #     'HOST': 'localhost',
+    #     'PORT': '5432'
+    # },
 }
 
 # Password validation
@@ -139,3 +139,22 @@ STATIC_ROOT = "/var/django/static/"
 MEDIA_ROOT = "/var/django/media/"
 
 FILE_UPLOAD_PERMISSIONS = 0o644
+
+TWILIO_NUMBER = '+18182755763'
+TWILIO_TOKEN = 'fd5a055b5112f98c287e7905e9458744'
+TWILIO_SID = 'AC6f1b0f55393a44a5049348073a6fc895'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M",
+}
+
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": "AIzaSyBLn2vft9v9HRLtv2qscsp6jQOnA09TyjI",
+    "ONE_DEVICE_PER_USER": True,
+    "DELETE_INACTIVE_DEVICES": True,
+}
+
