@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from twilio.rest import Client
 
-from config.models import Codigo
+from config.models import Codigo, Usuario
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
-from webservices.serializers import TelefonoSerializer
+from webservices.serializers import TelefonoSerializer, CodigoSerializer
 
 
 class EnviarCodigo(APIView):
@@ -36,7 +36,7 @@ class EnviarCodigo(APIView):
             message = client.messages.create(
                 to=telefono,
                 from_=TWILIO_NUMBER,
-                body="Tu número de verificación THT es " + str(codigo))
+                body="Tu número de verificación Taximovil es " + str(codigo))
             response_data['sid'] = message.sid
             response_data['codigo'] = codigo
         except Exception as e:
@@ -46,4 +46,35 @@ class EnviarCodigo(APIView):
 
     def get_serializer(self):
         return TelefonoSerializer()
+
+
+class VerificaCodigo(APIView):
+    """
+        post:
+        Verifica el codigo enviado y regresa el resultado
+        0 el cliente no esta registrado
+        1 el cliente ya esta rgistrado con ese telefono
+        -1 el codigo es inválido
+    """
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        response_data = {}
+        serializer = CodigoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        telefono = serializer.data.get('telefono')
+        codigo = serializer.data.get('codigo')
+        cs = Codigo.objects.filter(telefono=telefono, codigo=codigo)
+        if cs.count() > 0:
+            try:
+                p = Usuario.objects.get(telefono=telefono)
+                response_data['resultado'] = p.pk
+            except Usuario.DoesNotExist:
+                response_data['resultado'] = 0
+        else:
+            response_data['resultado'] = -1
+        return Response(response_data)
+
+    def get_serializer(self):
+        return CodigoSerializer()
 

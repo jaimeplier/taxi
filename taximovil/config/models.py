@@ -25,7 +25,8 @@ class UsuarioManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, rol, nombre, a_paterno, telefono):
-        user = self.create_user(email=email, password=password, rol=Rol(pk=1), nombre=nombre, a_paterno=a_paterno, telefono=telefono)
+        user = self.create_user(email=email, password=password, rol=Rol(pk=1), nombre=nombre, a_paterno=a_paterno,
+                                telefono=telefono)
         user.save(using=self._db)
         return user
 
@@ -123,7 +124,8 @@ class Cliente(Usuario):
     rfc = models.CharField(max_length=45)
     cp = models.IntegerField()
     lada = models.IntegerField()
-    #customer_token = models.CharField(blank=True, null=True, max_length=512)
+
+    # customer_token = models.CharField(blank=True, null=True, max_length=512)
 
     def get_full_name(self):
         return str(self.nombre) + ' ' + str(self.a_paterno) + ' ' + str(self.a_materno)
@@ -139,12 +141,11 @@ class Chofer(Usuario):
     turno = models.CharField(max_length=3)
     saldo = models.FloatField()
     direccion = models.ForeignKey('Direccion', models.DO_NOTHING)
-    #estatusChofer
-    #cuenta (historial)
-    #documentos
-    #taxi = models.ManyToMany('Taxi', models.DO_NOTHING)
 
-
+    # estatusChofer
+    # cuenta (historial)
+    # documentos
+    # taxi = models.ManyToMany('Taxi', models.DO_NOTHING)
 
     def get_full_name(self):
         return str(self.nombre) + ' ' + str(self.a_paterno) + ' ' + str(self.a_materno)
@@ -167,7 +168,6 @@ class Empresa(models.Model):
 
 
 class Personal(Usuario):
-
     class Meta:
         managed = True
         db_table = 'persona'
@@ -177,7 +177,7 @@ class Sitio(models.Model):
     nombre = models.CharField(max_length=50)
     num_espacio = models.IntegerField()
     pv = models.CharField(max_length=45)
-    #estatus_permiso
+    # estatus_permiso
     estatus_sesion = models.BooleanField(default=True)
 
     class Meta:
@@ -190,7 +190,7 @@ class Sitio(models.Model):
 
 class BitacoraEstatusServicio(models.Model):
     estatus = models.ForeignKey('EstatusServicio', on_delete=models.DO_NOTHING)
-    #servicio = models.ForeignKey('Servicio', on_delete=models.DO_NOTHING)
+    # servicio = models.ForeignKey('Servicio', on_delete=models.DO_NOTHING)
     fecha = models.DateField(auto_now_add=True)
 
     class Meta:
@@ -253,6 +253,7 @@ class Horario(models.Model):
         managed = True
         db_table = 'horario'
 
+
 class Comisiones(models.Model):
     nombre = models.CharField(max_length=100)
     tipo = models.IntegerField()
@@ -264,6 +265,7 @@ class Comisiones(models.Model):
     class Meta:
         managed = True
         db_table = 'comisiones'
+
 
 class Pais(models.Model):
     nombre = models.CharField(max_length=45)
@@ -299,7 +301,7 @@ class RolHasPermissions(models.Model):
 
 class ServicioChofer(models.Model):
     chofer = models.ForeignKey(Chofer, models.DO_NOTHING, blank=True, null=True)
-    #servicio = models.ForeignKey(Servicio, models.DO_NOTHING)
+    # servicio = models.ForeignKey(Servicio, models.DO_NOTHING)
     estatus = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -341,6 +343,7 @@ class TipoServicio(models.Model):
         managed = True
         db_table = 'tipo_servicio'
 
+
 class Direccion(models.Model):
     colonia = models.CharField(max_length=100)
     calle = models.CharField(max_length=100)
@@ -349,10 +352,11 @@ class Direccion(models.Model):
     cp = models.CharField(max_length=10)
 
     latlgn = models.PointField()
-    municipio = models.ForeignKey('Municipio',models.DO_NOTHING)
+    municipio = models.ForeignKey('Municipio', models.DO_NOTHING)
 
     def get_address(self):
-        return 'Calle: ' + str(self.calle) + ' Num ext: ' + str(self.numero_exterior) + ' Col: ' + str(self.colonia) + ' Municipio: ' + str(self.municipio)
+        return 'Calle: ' + str(self.calle) + ' Num ext: ' + str(self.numero_exterior) + ' Col: ' + str(
+            self.colonia) + ' Municipio: ' + str(self.municipio)
 
     @property
     def latitud(self):
@@ -368,6 +372,7 @@ class Direccion(models.Model):
         managed = True
         db_table = 'direccion'
 
+
 class Estado(models.Model):
     nombre = models.CharField(max_length=45)
     hora_diferencia = models.IntegerField()
@@ -378,6 +383,7 @@ class Estado(models.Model):
     class Meta:
         managed = True
         db_table = 'estado'
+
 
 class Municipio(models.Model):
     nombre = models.CharField(max_length=45)
@@ -391,24 +397,24 @@ class Municipio(models.Model):
         db_table = 'municipio'
 
 
-
 class Vehiculo(models.Model):
     placa = models.CharField(max_length=45, unique=True)
     anio = models.IntegerField()
     cromatica = models.CharField(max_length=45)
-    #seguro
+    # seguro
 
-    estatus =  models.BooleanField(default=True)
+    estatus = models.BooleanField(default=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
     modelo = models.ForeignKey('Modelo', models.DO_NOTHING)
     propietario = models.ForeignKey('Propietario', models.DO_NOTHING)
-    economico = models.CharField(max_length=15,unique=True)
+    economico = models.CharField(max_length=15, unique=True)
     ciudad = models.ForeignKey('Ciudad', models.DO_NOTHING)
     activo = models.BooleanField(default=True)
 
     class Meta:
         managed = True
         db_table = 'vehiculo'
+
 
 class TipoVehiculo(models.Model):
     nombre = models.CharField(max_length=45, unique=True)
@@ -423,15 +429,17 @@ class TipoVehiculo(models.Model):
         managed = True
         db_table = 'tipo_vehiculo'
 
+
 class Base(models.Model):
     identificador = models.CharField(max_length=15)
     numero_espacio = models.IntegerField()
-    direccion = models.ForeignKey('Direccion',on_delete=models.CASCADE,)
+    direccion = models.ForeignKey('Direccion', on_delete=models.CASCADE, )
     telefono = models.CharField(max_length=25, unique=True)
 
-    #horario = models.ManyToManyField('Horario', models.DO_NOTHING)
+    # horario = models.ManyToManyField('Horario', models.DO_NOTHING)
     sitio = models.ForeignKey('Sitio', models.DO_NOTHING)
-    #puerta = models.ManyToOneRel('Puerta', models.DO_NOTHING)
+
+    # puerta = models.ManyToOneRel('Puerta', models.DO_NOTHING)
 
     class Meta:
         managed = True
@@ -448,6 +456,7 @@ class Puerta(models.Model):
     class Meta:
         managed = True
         db_table = 'puerta'
+
 
 class Sucursal(models.Model):
     clave = models.CharField(max_length=50)
@@ -478,11 +487,11 @@ class Sucursal(models.Model):
         managed = True
         db_table = 'sucursal'
 
+
 class Zona(models.Model):
     nombre = models.CharField(max_length=45)
     centro = models.PointField()
     radio = models.FloatField()
-
 
     def __str__(self):
         return self.nombre
@@ -505,6 +514,7 @@ class Zona(models.Model):
         managed = True
         db_table = 'zona'
 
+
 class Tarifa(models.Model):
     tarifa_base = models.FloatField()
     costo_minimo = models.FloatField()
@@ -519,7 +529,7 @@ class Tarifa(models.Model):
     empresa = models.ForeignKey('Empresa', models.DO_NOTHING)
     sucursal = models.ForeignKey('Sucursal', models.DO_NOTHING)
     zona_origen = models.ForeignKey('Zona', models.DO_NOTHING, related_name='zona_origen')
-    zona_destino =models.ForeignKey('Zona', models.DO_NOTHING, related_name='zona_destino')
+    zona_destino = models.ForeignKey('Zona', models.DO_NOTHING, related_name='zona_destino')
     sitio = models.ForeignKey('Sitio', models.DO_NOTHING)
     base = models.ForeignKey('Base', models.DO_NOTHING)
     pago = models.ManyToManyField('TipoPago')
@@ -530,6 +540,7 @@ class Tarifa(models.Model):
     class Meta:
         managed = True
         db_table = 'tarifa'
+
 
 class Ciudad(models.Model):
     nombre = models.CharField(max_length=45)
@@ -560,14 +571,17 @@ class Ciudad(models.Model):
         managed = True
         db_table = 'ciudad'
 
+
 class Cuentas(models.Model):
     cie = models.CharField(max_length=7)
     clabe = models.CharField(max_length=18)
-    #chofer = models.ManyToOneRel('Cuentas', models.DO_NOTHING)
+
+    # chofer = models.ManyToOneRel('Cuentas', models.DO_NOTHING)
 
     class Meta:
         managed = True
         db_table = 'cuentas'
+
 
 class Documentos(models.Model):
     licencia_condicir = models.CharField(max_length=200)
@@ -638,7 +652,8 @@ class Servicio(models.Model):
         managed = True
         db_table = 'servicio'
 
-class Marca (models.Model):
+
+class Marca(models.Model):
     nombre = models.CharField(max_length=45)
 
     def __str__(self):
@@ -647,6 +662,7 @@ class Marca (models.Model):
     class Meta:
         managed = True
         db_table = 'marca'
+
 
 class Modelo(models.Model):
     nombre = models.CharField(max_length=45)
@@ -658,6 +674,7 @@ class Modelo(models.Model):
     class Meta:
         managed = True
         db_table = 'modelo'
+
 
 class Propietario(Usuario):
     tipo_persona = models.CharField(max_length=45)
