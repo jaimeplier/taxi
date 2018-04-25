@@ -223,3 +223,4 @@ class TarifaForm(ModelForm):
     class Meta:
         model = Tarifa
         fields = '__all__'
+        labels = '__all__'

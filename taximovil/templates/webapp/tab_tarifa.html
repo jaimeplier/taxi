@@ -1,14 +1,15 @@
 <!--   SOFTIC SOLUTIONS   -->
 {% extends "config/tab_base.html" %}
-{% block titulo_tabla %}<h5 class="black-text margin_114">Choferes</h5>{% endblock %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Tarifas</h5>{% endblock %}
 {% load static %}
 {% block campos %}
-    <th>Nombre</th>
-    <th>Correo</th>
-    <th>Telefono</th>
-    <th>Estatus</th>
-    <th>Documentos</th>
-    <th>Vehiculos</th>
+    <th>Tarifa base</th>
+    <th>Ciudad</th>
+    <th>Sitio</th>
+    <th>Empresa</th>
+    <th>Sucursal</th>
+    <th>Pais</th>
+    <th>Horarios</th>
     <th>Editar</th>
     <th>Eliminar</th>
 {% endblock %}
@@ -31,4 +32,5 @@
         }
 {% endblock %}
 
-{% block url_ajax %}{% url 'webapp:tab_list_chofer' %}{% endblock %}
+{% block url_ajax %}{% url 'webapp:tab_list_tarifa' %}{% endblock %}
+

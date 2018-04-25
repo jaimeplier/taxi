@@ -7,7 +7,6 @@ Registro de tarifa
 {% endblock %}
 {% block content %}
 
-{% csrf_token %}
 		<!-- aquí empieza el formulario -->
 		<div class="row">
 			<div class="col s1"></div>
@@ -17,33 +16,20 @@ Registro de tarifa
 			<div class="col s1"></div>
 		</div>
 		<!-- aqui estan todos los select -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 		<div class="row">
 			<div class="col s1"></div>
 			<div class="col s10">
 				<div class="row">
 					<div class="col s4">
-						<select id="pais">
-							<option selected value="">País</option>
-							{% for pais in paises %}
-							    <option value="{{ pais.pk }}">{{ pais.nombre }}</option>
-							{% endfor %}
-						</select>
+                        {{ form.pais }}
 					</div>
 					<div class="col s4">
-						<select id="ciudad">
-							<option selected value="">Ciudad</option>
-							{% for ciudad in ciudades %}
-							    <option value="{{ ciudad.pk }}">{{ ciudad.nombre }}</option>
-							{% endfor %}
-						</select>
+                        {{ form.ciudad }}
 					</div>
 					<div class="col s4">
-						<select id="tipoVehiculo">
-							<option selected value="">Tipo de Vehículo</option>
-							{% for vehiculo in vehiculos %}
-							    <option value="{{ vehiculo.pk }}">{{ vehiculo.nombre }}</option>
-							{% endfor %}
-						</select>
+                        {{ form.tipo_vehiculo }}
 					</div>
 				</div>
 			</div>
@@ -56,28 +42,13 @@ Registro de tarifa
 			<div class="col s10">
 				<div class="row">
 					<div class="col s4">
-					<select id="empresa">
-						<option  selected value="">Empresa</option>
-						{% for empresa in empresas %}
-							    <option value="{{ empresa.pk }}">{{ empresa.nombre }}</option>
-							{% endfor %}n>
-					</select>
+					{{ form.empresa }}
 				</div>
 				<div class="col s4">
-					<select id="sucursal">
-						<option selected value="">Sucursal</option>
-						{% for sucursal in sucursales %}
-							    <option value="{{ sucursal.pk }}">{{ sucursal.nombre }}</option>
-							{% endfor %}
-					</select>
+                    {{ form.sucursal }}
 				</div>
 				<div class="col s4">
-					<select id="tipoServicio">
-						<option selected value="">Tipo de Servicio</option>
-						{% for servicio in servicios %}
-							    <option value="{{ servicio.pk }}">{{ servicio.nombre }}</option>
-							{% endfor %}
-					</select>
+					{{ form.tipo_servicio }}
 				</div>
 				</div>
 			</div>
@@ -90,28 +61,13 @@ Registro de tarifa
 			<div class="col s10">
 				<div class="row">
 					<div class="col s4">
-					<select id="zonaOrigen">
-						<option disabled selected value="">Zona Origen</option>
-						{% for zona in zonas %}
-                            <option value="{{ zona.pk }}">{{ zona.nombre }}</option>
-                        {% endfor %}
-					</select>
+                        {{ form.zona_origen }}
 				</div>
 			<div class="col s4">
-				<select id="zonaDestino">
-					<option disabled selected value="">Zona Destino</option>
-					{% for zona in zonas %}
-                        <option value="{{ zona.pk }}">{{ zona.nombre }}</option>
-                    {% endfor %}
-				</select>
+				{{ form.zona_destino }}
 			</div>
 			<div class="col s4">
-				<select id="base">
-					<option disabled selected value="">Base</option>
-					{% for base in bases %}
-							    <option value="{{ base.pk }}">{{ base.identificador }}</option>
-                        {% endfor %}
-				</select>
+				{{ form.base }}
 			</div>
 				</div>
 			</div>
@@ -124,12 +80,7 @@ Registro de tarifa
 			<div class="col s10">
 				<div class="row">
 					<div class="col s4">
-					<select id="sitio">
-						<option disabled selected value="">Sitio</option>
-						{% for sitio in sitios %}
-                            <option value="{{ sitio.pk }}">{{ sitio.nombre }}</option>
-                        {% endfor %}
-					</select>
+					{{ form.sitio }}
 				</div>
 			<div class="col s4">
 
@@ -203,15 +154,15 @@ Registro de tarifa
 			<div class="col s10">
 				<div class="row">
 					<div class="col s4 input-field">
-						<input type="text" id="tarifaBase">
+						{{ form.tarifa_base }}
 						<label for="t_base">Tarifa Base</label>
 					</div>
 					<div class="col s4 input-field">
-						<input type="text" id="costoMinimo">
+						{{ form.costo_minimo }}
 						<label for="cost_minimo">Costo Mínimo</label>
 					</div>
 					<div class="col s4 input-field">
-						<input type="text" id="costoKm">
+						{{ form.costo_km }}
 						<label for="cost_km">Costo por Kilómetro</label>
 					</div>
 				</div>
@@ -224,15 +175,15 @@ Registro de tarifa
 				<div class="col s10">
 					<div class="row">
 						<div class="col s4 input-field">
-							<input type="text" id="costoMinuto">
+							{{ form.costo_minuto }}
 							<label for="cost_min">Costo por Minuto</label>
 						</div>
 						<div class="col s4 input-field">
-							<input type="text" id="distanciaMaxima">
+							{{ form.distancia_max }}
 							<label for="d_max">Distancia Máxima</label>
 						</div>
 						<div class="col s4 input-field">
-							<input type="text" id="incrementoDistancia">
+							{{ form.incremento_distancia }}
 							<label for="incremento_d">Incremento por Distrancia</label>
 						</div>
 					</div>
@@ -240,8 +191,25 @@ Registro de tarifa
 				<div class="col s1"></div>
 			</div>
 		<!-- end -->
+        			<div class="row">
+				<div class="col s1"></div>
+				<div class="col s10">
+					<div class="row">
+						<div class="col s4 input-field">
 
-		<!-- comisiones
+						</div>
+						<div class="col s4 input-field">
+							{{ form.comision }}
+							<label for="comision">Comisión</label>
+						</div>
+						<div class="col s4 input-field">
+
+						</div>
+					</div>
+				</div>
+				<div class="col s1"></div>
+			</div>
+
 		<div class="row">
 			<div class="col s1"></div>
 			<div class="col s10 left">
@@ -254,6 +222,8 @@ Registro de tarifa
 			<div class="col s10">
 				<div class="row">
 					<div class="col s12">
+		{{ form.comisiones }}
+		<!-- comisiones
 						<table class="bordered highlight centered responsive-table">
 							<thead class="fondo_negro white-text">
 								<tr>
@@ -275,12 +245,12 @@ Registro de tarifa
 								</tr>
 							</tbody>
 						</table>
+		 end -->
 					</div>
 				</div>
 			</div>
 			<div class="col s1"></div>
 		</div>
-		 end -->
 		<!-- formas de pago -->
 		<div class="row">
 			<div class="col s1"></div>
@@ -294,12 +264,7 @@ Registro de tarifa
 			<div class="col s10">
 				<div class="row">
 					<div class="col s6">
-                        {% for pago in pagos %}
-                           <p>
-                            <input value="{{ pago.pk }}" class="filled-in pagos" name="pagos" type="checkbox" id="Pag{{ pago.pk }}"/>
-                            <label for="Pag{{ pago.pk }}">{{ pago.nombre }}</label>
-                           </p>
-                        {% endfor %}
+                        {{ form.pago }}
 					</div>
 					<div class="col s2"></div>
 					<div class="col s3">
@@ -315,11 +280,13 @@ Registro de tarifa
 		<div class="row">
 			<div class="col s4"></div>
 			<div class="col s4 center">
-				<a class="waves-effect waves-light btn" onclick="guardarTarifa()"><i class="material-icons left">playlist_add</i>REGISTRAR TARIFA</a>
+                <button class="btn waves-effect waves-light" type="submit" name="action">Registrar Tarifa</button>
+				<!--<a class="waves-effect waves-light btn" onclick="guardarTarifa()"><i class="material-icons left">playlist_add</i>REGISTRAR TARIFA</a>-->
 			</div>
 			<div class="col s4"></div>
 		</div>
 		<!-- end -->
+    </form>
 		<!-- fin -->
 {% endblock %}
 

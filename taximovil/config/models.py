@@ -396,6 +396,8 @@ class Vehiculo(models.Model):
     placa = models.CharField(max_length=45, unique=True)
     anio = models.IntegerField()
     cromatica = models.CharField(max_length=45)
+    #seguro
+
     estatus =  models.BooleanField(default=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
     modelo = models.ForeignKey('Modelo', models.DO_NOTHING)
@@ -413,6 +415,9 @@ class TipoVehiculo(models.Model):
     caracteristicas = models.CharField(max_length=200)
     num_max_pasajeros = models.IntegerField()
     num_maletas = models.IntegerField()
+
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         managed = True
@@ -507,6 +512,7 @@ class Tarifa(models.Model):
     distancia_max = models.FloatField()
     incremento_distancia = models.FloatField()
     costo_minuto = models.FloatField()
+    comision = models.FloatField()
 
     ciudad = models.ForeignKey('Ciudad', models.DO_NOTHING)
     pais = models.ForeignKey('Pais', models.DO_NOTHING)
@@ -519,6 +525,7 @@ class Tarifa(models.Model):
     pago = models.ManyToManyField('TipoPago')
     tipo_vehiculo = models.ForeignKey('TipoVehiculo', models.DO_NOTHING)
     tipo_servicio = models.ForeignKey('TipoServicio', models.DO_NOTHING)
+    comisiones = models.ManyToManyField('Comisiones')
 
     class Meta:
         managed = True
