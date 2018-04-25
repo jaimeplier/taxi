@@ -10,7 +10,8 @@ from webapp.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     TipoServicioCrear, TipoServicioListarAjaxListView, TipoServicioActualizar, MarcaCrear, MarcaListarAjaxListView, \
     MarcaActualizar, ModeloCrear, ModeloListarAjaxListView, ModeloActualizar, PropietarioCrear, \
     PropietarioListarAjaxListView, PropietarioActualizar, VehiculoCrear, VehiculoListarAjaxListView, VehiculoActualizar, \
-    TarifaListarAjaxListView, TarifaCrear, TarifaActualizar
+    TarifaListarAjaxListView, TarifaCrear, TarifaActualizar, ComisionCrear, ComisionListarAjaxListView, \
+    ComisionActualizar
 from . import views
 
 app_name = 'webapp'
@@ -131,4 +132,10 @@ urlpatterns = [
     path('horario/add/', views.agregar_horario, name='agregar_horario'),
     path('horario/edit/<int:pk>', views.editar_horario, name='edit_horario'),
     path('horario/delete/<int:pk>', views.eliminar_horario, name='delete_horario'),
+
+    path('comision/nuevo/', ComisionCrear.as_view(), name='nuevo_comision'),
+    path('comision/listar/', views.comision_listar, name='list_comision'),
+    path('tabla_comision/', ComisionListarAjaxListView.as_view(), name='tab_list_comision'),
+    path('comision/editar/<int:pk>', ComisionActualizar.as_view(), name='edit_comision'),
+    path('comision/listar/delete/<int:pk>', views.comision_eliminar, name='delete_comision'),
 ]

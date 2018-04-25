@@ -8,14 +8,14 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
-    PropietarioForm, VehiculoForm, TarifaForm
+    PropietarioForm, VehiculoForm, TarifaForm, ComisionForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
     TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Horario
 from django.contrib.gis.geos import Point
 
 
 def index(request):
-    template_name = 'webapp/registro_tarifario.html'
+    template_name = 'webapp/registro.html'
     return render(request, template_name)
 
 
@@ -1357,3 +1357,57 @@ def eliminar_horario(request, pk):
     except Horario.DoesNotExist:
         response_data['error'] = 'error'
     return JsonResponse(response_data)
+
+class ComisionCrear(CreateView):
+    model = Comisiones
+    form_class = ComisionForm
+    template_name = 'config/form_1col.html'
+
+    def get_success_url(self):
+        return reverse('webapp:list_comision')
+
+
+def comision_listar(request):
+    template_name = 'webapp/tab_comision.html'
+    return render(request, template_name)
+
+
+class ComisionListarAjaxListView(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Comisiones
+    columns = ['nombre', 'tipo', 'factor', 'editar', 'eliminar']
+    order_columns = ['nombre', 'tipo', 'factor']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('webapp:edit_comision',
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'tipo':
+            return '%' if row.tipo == 1 else '$'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(ComisionListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Comisiones.objects.all()
+
+
+class ComisionActualizar(UpdateView):
+    redirect_field_name = 'next'
+    model = Comisiones
+    template_name = 'config/form_1col.html'
+    form_class = ComisionForm
+
+    def get_success_url(self):
+        return reverse('webapp:list_comision')
+
+
+def comision_eliminar(request, pk):
+    c = get_object_or_404(Comisiones, pk=pk)
+    c.delete()
+    return JsonResponse({'result': 1})
