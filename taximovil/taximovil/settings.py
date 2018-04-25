@@ -24,7 +24,7 @@ SECRET_KEY = '3gcv0hu#@&41478@pp7+i*ue0z$=q*14)_#h3uvf#ly&^=e5+%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '54.203.125.3']
 
 AUTH_USER_MODEL = 'config.Usuario'
 
@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'fcm_django',
     'config.apps.ConfigConfig',
     'webapp.apps.WebappConfig',
 ]
@@ -144,7 +147,6 @@ TWILIO_NUMBER = '+18182755763'
 TWILIO_TOKEN = 'fd5a055b5112f98c287e7905e9458744'
 TWILIO_SID = 'AC6f1b0f55393a44a5049348073a6fc895'
 
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -157,4 +159,3 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": True,
     "DELETE_INACTIVE_DEVICES": True,
 }
-
