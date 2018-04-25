@@ -41,7 +41,6 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class UsuarioEditSerializer(serializers.ModelSerializer):
-    googleid = serializers.CharField()
 
     class Meta:
         model = Cliente

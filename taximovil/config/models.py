@@ -126,6 +126,7 @@ class Cliente(Usuario):
     lada = models.IntegerField(blank=True, null=True)
     procedencia = models.CharField(max_length=45, blank=True, null=True)
     customer_id = models.CharField(max_length=45, blank=True, null=True)
+    googleid = models.CharField(max_length=128, blank=True, null=True)
 
     # customer_token = models.CharField(blank=True, null=True, max_length=512)
 
