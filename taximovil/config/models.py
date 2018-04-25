@@ -121,9 +121,11 @@ class Usuario(AbstractBaseUser):
 
 
 class Cliente(Usuario):
-    rfc = models.CharField(max_length=45)
-    cp = models.IntegerField()
-    lada = models.IntegerField()
+    rfc = models.CharField(max_length=45, blank=True, null=True)
+    cp = models.IntegerField(blank=True, null=True)
+    lada = models.IntegerField(blank=True, null=True)
+    procedencia = models.CharField(max_length=45, blank=True, null=True)
+    customer_id = models.CharField(max_length=45, blank=True, null=True)
 
     # customer_token = models.CharField(blank=True, null=True, max_length=512)
 

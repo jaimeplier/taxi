@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from config.models import Usuario
+from config.models import Usuario, Cliente
 
 
 class TelefonoSerializer(serializers.Serializer):
@@ -38,4 +38,12 @@ class ChoferEstatusSerializer(serializers.Serializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old = serializers.CharField()
     new = serializers.CharField()
+
+
+class UsuarioEditSerializer(serializers.ModelSerializer):
+    googleid = serializers.CharField()
+
+    class Meta:
+        model = Cliente
+        fields = ('email', 'password', 'nombre', 'a_paterno', 'telefono', 'procedencia','googleid')
 
