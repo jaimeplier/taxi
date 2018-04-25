@@ -691,3 +691,15 @@ class Propietario(Usuario):
     class Meta:
         managed = True
         db_table = 'propietario'
+
+
+class Tarjeta(models.Model):
+    ultiimos_digitos = models.CharField(max_length=5)
+    token = models.CharField(max_length=64)
+    cliente = models.ForeignKey(Cliente, models.DO_NOTHING)
+    nombre = models.CharField(max_length=128)
+    nombre_propietario = models.CharField(max_length=256)
+
+    class Meta:
+        managed = True
+        db_table = 'trajeta'

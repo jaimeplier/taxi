@@ -1,12 +1,14 @@
 from django.urls import path, include
 from rest_framework import routers
 
+from webservices import tarjeta
 from webservices.cliente import RegistrarUsuario
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario
 
 app_name = 'webservices'
 
 router = routers.DefaultRouter()
+router.register(r'tarjeta', tarjeta.TarjetaViewSet)
 
 urlpatterns = [
     # Router urls
