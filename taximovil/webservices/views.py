@@ -1,10 +1,13 @@
 from random import randint
 
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from fcm_django.models import FCMDevice
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from twilio.rest import Client
@@ -12,7 +15,8 @@ from twilio.rest import Client
 from config.models import Codigo, Usuario, Cliente
 from config.serializers import ClienteSerializer
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
-from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer
+from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, ResetSerializer, \
+    ChangePasswordSerializer
 
 
 class EnviarCodigo(APIView):
@@ -130,3 +134,21 @@ class LoginUsuario(APIView):
 
     def get_serializer(self):
         return LoginSerializer()
+
+
+class ChangePassword(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        u = authenticate(email=self.request.user.email, password=serializer.validated_data.get('old'))
+        if u is not None:
+            u.set_password(serializer.validated_data.get('new'))
+            u.save()
+        else:
+            return Response({"error": "La contraseña anterior no coincide"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"result": 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ChangePasswordSerializer()
