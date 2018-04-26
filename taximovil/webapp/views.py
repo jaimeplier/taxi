@@ -10,7 +10,8 @@ from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaFo
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
     PropietarioForm, VehiculoForm, TarifaForm, ComisionForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
-    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Horario
+    TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Horario, \
+    ChoferHasVehiculo
 from django.contrib.gis.geos import Point
 
 
@@ -159,6 +160,7 @@ class ChoferCrear(CreateView):
             form2.instance.latlgn = pnt
 
             # form.instance.set_password(form.cleaned_data['password'])
+            print(form.cleaned_data('taxis'))
             form.instance.rol = Rol(pk=3)
 
             base = form.save(commit=False)
@@ -200,7 +202,7 @@ class ChoferListarAjaxListView(BaseDatatableView):
                                                    kwargs={
                                                        'pk': row.pk}) + '"><i class="material-icons">assignment_ind</i></a>'
         elif column == 'vehiculos':
-            return '<a class="" href ="' + reverse('webapp:edit_chofer',
+            return '<a class="" href ="' + reverse('webapp:vehiculo_chofer',
                                                    kwargs={
                                                        'pk': row.pk}) + '"><i class="material-icons">directions_car</i></a>'
         elif column == 'nombre':
@@ -253,6 +255,13 @@ class ChoferActualizar(UpdateView):
 
             pnt = Point(float(lon), float(lat))
             form2.instance.latlgn = pnt
+
+            taxis = form.cleaned_data.get('taxis')
+            ChoferHasVehiculo.objects.filter(chofer__pk=id_chofer).delete()
+            for taxi in taxis:
+
+                tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
+                tc.save()
 
             chofer = form.save(commit=False)
             chofer.direccion = form2.save()
@@ -1357,6 +1366,15 @@ def eliminar_horario(request, pk):
     except Horario.DoesNotExist:
         response_data['error'] = 'error'
     return JsonResponse(response_data)
+
+def vehiculos_chofer(request, pk):
+    template_name = 'webapp/vehiculo_chofer.html'
+    c = get_object_or_404(Chofer, pk=pk)
+    vehiculos = c.taxis.all()
+    context = {"horarios": vehiculos, "chofer": c}
+    return render(request, template_name, context)
+
+
 
 class ComisionCrear(CreateView):
     model = Comisiones

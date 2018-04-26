@@ -133,6 +133,11 @@ urlpatterns = [
     path('horario/edit/<int:pk>', views.editar_horario, name='edit_horario'),
     path('horario/delete/<int:pk>', views.eliminar_horario, name='delete_horario'),
 
+    path('vehiculo_chofer/<int:pk>/', views.vehiculos_chofer, name='vehiculo_chofer'),
+    #path('vehiculo_chofer/add/', views.agregar_vehiculo_chofer, name='agregar_vehiculo_chofer'),
+    #path('vehiculo_chofer/edit/<int:pk>', views.editar_vehiculo_chofer, name='edit_vehiculo_chofer'),
+    #path('vehiculo_chofer/delete/<int:pk>', views.eliminar_vehiculo_chofer, name='delete_vehiculo_chofer'),
+
     path('comision/nuevo/', ComisionCrear.as_view(), name='nuevo_comision'),
     path('comision/listar/', views.comision_listar, name='list_comision'),
     path('tabla_comision/', ComisionListarAjaxListView.as_view(), name='tab_list_comision'),

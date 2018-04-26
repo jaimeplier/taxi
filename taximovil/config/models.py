@@ -143,6 +143,7 @@ class Chofer(Usuario):
     turno = models.CharField(max_length=3)
     saldo = models.FloatField()
     direccion = models.ForeignKey('Direccion', models.DO_NOTHING)
+    taxis = models.ManyToManyField('Vehiculo', through='ChoferHasVehiculo', related_name='choferes')
 
     # estatusChofer
     # cuenta (historial)
@@ -156,6 +157,13 @@ class Chofer(Usuario):
         managed = True
         db_table = 'chofer'
 
+class ChoferHasVehiculo(models.Model):
+    estatus = models.BooleanField(default=False)
+    chofer = models.ForeignKey('Chofer', models.DO_NOTHING)
+    vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING)
+    class Meta:
+        managed = True
+        db_table = 'chofer_has_vehiculo'
 
 class Empresa(models.Model):
     nombre = models.CharField(max_length=50)
@@ -416,6 +424,9 @@ class Vehiculo(models.Model):
     class Meta:
         managed = True
         db_table = 'vehiculo'
+
+    def __str__(self):
+        return self.placa
 
 
 class TipoVehiculo(models.Model):

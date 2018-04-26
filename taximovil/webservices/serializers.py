@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from config.models import Usuario, Cliente
+from config.models import Usuario, Cliente, Chofer
 
 
 class TelefonoSerializer(serializers.Serializer):
@@ -30,6 +30,18 @@ class LoginSerializer(serializers.Serializer):
     googleid = serializers.CharField()
     dispositivo = serializers.CharField()
 
+class LoginChoferSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+    placas = serializers.CharField()
+    googleid = serializers.CharField()
+    dispositivo = serializers.CharField()
+
+class ChoferSerializer(serializers.Serializer):
+    class Meta:
+        model = Chofer
+        fields = ('nombre', 'a_paterno', 'a_materno', 'telefono', 'email',
+                  'password', 'numero_licencia', 'turno', 'saldo')
 
 class ChoferEstatusSerializer(serializers.Serializer):
     activo = serializers.BooleanField()

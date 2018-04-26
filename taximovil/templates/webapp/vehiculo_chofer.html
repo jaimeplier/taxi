@@ -1,0 +1,140 @@
+{% extends 'config/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="row">
+    <div class="col s1"></div>
+        <div class="col s10">
+            <h5 class="font_menu page-header">Vehiculos asignados</h5>
+        </div>
+    </div>
+    <div class="row">
+    <div class="col s1"></div>
+        <div class="col s10">
+            <div class="panel panel-default">
+                <div class="panel-heading col-lg-12">
+                    vehiculos asignados a  -- {{ chofer.get_full_name }}
+                    <div class="col-lg-offset-11">
+                        <a class="white-text modal-trigger" href="#" onclick="actualiza()">
+                            <button type="button" class="btn btn-primary btn-sm rounded-s" id="btnAgregarHorario"
+                                    data-toggle="modal" data-target="#myModal">Agregar
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <table class="centered bordered table-hover responsive-table" id="horario">
+                            <thead>
+                            <tr class="primera_fila">
+                                <th>Jerarquia</th>
+                                <th>Calificación</th>
+                                <th>Eliminar</th>
+                                <th>Guardar</th>
+                            </tr>
+                            </thead>
+
+
+                            {% for s in servicio %}
+                                <tr id={{ s.pk }}>
+                                    <td>
+                                        <select id="jerarquia{{ s.pk }}" class="ckbDiaSemana form-control">
+                                            <option value="">Jerarquia</option>
+                                            {% for j in jerarquia %}
+                                                <option value="{{ j.pk }}" {% if j.pk == s.jerarquia.pk %}
+                                                        selected {% endif %}>{{ j.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+
+                                    <td><input type="text" placeholder="calificacion"
+                                               id="calificacion{{ s.pk }}"
+                                               value="{{ s.calificacion }}"/></td>
+
+
+                                    <td><a class="text_azul" onclick='quitarJerarquia({{ s.pk }})'><i class="material-icons">delete_forever</i></a></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-sm rounded-s"
+                                                id="btnRegistraAsociado" onclick="guardar({{ s.pk }})">Guardar
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                        </table>
+                    </div>
+                    <!-- /.row (nested) -->
+                </div>
+                {% if init == '1' %}
+                    <div class="col-sm-offset-10">
+                        <a href="#" class="btn btn-primary btn-sm rounded-s">Agregar Zonas</a>
+                    </div>
+                {% endif %}
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h5 class="font_menu">Agregar jerarquia</h5>
+            <form method="post" action="#">
+                {% csrf_token %}
+                 <table class="centered  table-hover responsive-table">
+                    <thead>
+                    <tr>
+                        <th>Jerarquia</th>
+                        <th>Calificación</th>
+                    </tr>
+                    </thead>
+                    <tr>
+
+                        <td>
+                            <select id="jerarquia" class="ckbDiaSemana form-control" name="jerarquia">
+                                <option value="">Jerarquia</option>
+                                {% for j in jerarquia %}
+                                    <option value="{{ j.pk }}" {% if j.pk == s.jerarquia.pk %}
+                                            selected {% endif %}>{{ j.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+
+                        <td><input type="text" placeholder="calificacion" id="calificacion"
+                                   value="{{ s.calificacion }}" name="calificacion"/></td>
+
+                    </tr>
+                </table>
+                <input type="hidden" name="asociado" value="{{ asociado.pk }}">
+
+
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-sm rounded-s" id="agregarHorario">Guardar</button>
+                 <a href="#!" class="modal-action modal-close waves-effect waves-light btn">Cerrar</a>
+            </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    <script src="{% static "vendor/bootstrap-dialog/js/bootstrap-dialog.js" %}" charset="UTF-8"></script>
+    <script src="{% static "js/crsfajax.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').material_select();
+        })
+
+        function actualiza() {
+
+            $('.modal').modal({
+                    dismissible: false
+                }
+            );
+            $('#modal1').modal('open');
+        }
+
+
+    </script>
+{% endblock scripts %}

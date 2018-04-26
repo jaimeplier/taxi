@@ -1,14 +1,18 @@
 from random import randint
-
+import django
+from fcm_django.models import FCMDevice
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.compat import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from twilio.rest import Client
 
-from config.models import Codigo, Usuario
+from config.models import Codigo, Usuario, Chofer, Vehiculo, ChoferHasVehiculo
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
-from webservices.serializers import TelefonoSerializer, CodigoSerializer
+from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
+    ChoferSerializer
 
 
 class EnviarCodigo(APIView):
@@ -78,3 +82,61 @@ class VerificaCodigo(APIView):
     def get_serializer(self):
         return CodigoSerializer()
 
+class LoginChofer(APIView):
+    """
+    post:
+        LoginChofer
+    """
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        response_data = {}
+        serializer = LoginChoferSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.data.get('email')
+        password = serializer.data.get('password')
+        googleid = serializer.data.get('googleid')
+        placas = serializer.data.get('placas')
+        dispositivo = serializer.data.get('dispositivo')
+        cv = None
+        c = None
+        try:
+            c = Chofer.objects.get(email=email)
+            cv = ChoferHasVehiculo.objects.filter(chofer=c,vehiculo__placa=placas,estatus=False)
+            if cv.count() == 0:
+                response_data['resultado'] = 0
+                response_data['error'] = "Este vehiculo ya esta en uso por alguien mas"
+                return Response(response_data)
+            cv = cv.first()
+        except Chofer.DoesNotExist:
+            response_data['resultado'] = 0
+            response_data['error'] = "Usuario y/o contraseña incorrectos"
+            return Response(response_data)
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            token = Token.objects.get_or_create(user=user)
+        else:
+            response_data['resultado'] = 0
+            response_data['error'] = "Usuario y/o contraseña incorrectos"
+            return Response(response_data)
+        user.googleid = googleid
+        user.dispositivo = dispositivo
+        try:
+            device = FCMDevice.objects.get(registration_id=googleid)
+            device.user = user
+            device.name = user.get_full_name()
+        except FCMDevice.DoesNotExist:
+            device = FCMDevice(registration_id=googleid, name=user.get_full_name(), user=user)
+        device.type = dispositivo
+        device.save()
+        user.save()
+        cv.estatus = True
+        cv.save()
+        response_data['resultado'] = 1
+        response_data['token'] = str(token[0])
+        serializer = ChoferSerializer(c, many=False)
+        response_data['usuario'] = serializer.data
+        return Response(response_data)
+
+    def get_serializer(self):
+        return LoginChoferSerializer()
