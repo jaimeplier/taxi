@@ -164,3 +164,12 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": True,
     "DELETE_INACTIVE_DEVICES": True,
 }
+
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
+EMAIL_HOST_USER = 'AKIAIOVOEHAPD7XY6Q5Q'
+EMAIL_HOST_PASSWORD = 'AstnGpe2+cG2R1mAnwlX87I6V2aXCNd/yFPmUfBjvqun'
+
+DEFAULT_FROM_EMAIL = 'contacto@taximovil.com.mx'
+SERVER_EMAIL = 'contacto@taximovil.com.mx'

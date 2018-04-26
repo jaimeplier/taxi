@@ -1,6 +1,8 @@
 from random import randint
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import EmailMessage
+from django.template.loader import get_template
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from fcm_django.models import FCMDevice
@@ -152,3 +154,35 @@ class ChangePassword(APIView):
 
     def get_serializer(self):
         return ChangePasswordSerializer()
+
+
+class ResetPassword(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = ResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        u = Usuario.objects.get(email=serializer.validated_data.get('email'))
+        ptoken = PasswordResetTokenGenerator()
+        token = ptoken.make_token(u)
+        subject = "Recuperar contraseña"
+        to = [u.email]
+
+        ctx = {
+            'token': token,
+            'uid': urlsafe_base64_encode(force_bytes(u.pk)).decode('UTF-8'),
+            'request': request,
+            'email': u.pk,
+            'nombre': u.get_full_name()
+        }
+        try:
+            message = get_template('correos/reset_password.html').render(ctx)
+            msg = EmailMessage(subject, message, to=to)
+            msg.content_subtype = 'html'
+            msg.send()
+        except Exception as e:
+            pass
+        return Response({"result": 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ResetSerializer()
