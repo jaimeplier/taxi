@@ -143,4 +143,6 @@ urlpatterns = [
     path('tabla_comision/', ComisionListarAjaxListView.as_view(), name='tab_list_comision'),
     path('comision/editar/<int:pk>', ComisionActualizar.as_view(), name='edit_comision'),
     path('comision/listar/delete/<int:pk>', views.comision_eliminar, name='delete_comision'),
+
+    path('reset/<uidb64>/<token>/', views.reset_confirm, name='reset_confirm'),
 ]

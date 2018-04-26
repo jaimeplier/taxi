@@ -5,9 +5,10 @@ from enum import Enum
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import Permission
 from django.contrib.gis.db import models
-
-
 # Create your models here.
+from django.contrib.gis.geos import Point
+
+
 class UsuarioManager(BaseUserManager):
     def create_user(self, email, password, rol, nombre, a_paterno, telefono):
         if not email:
@@ -126,6 +127,7 @@ class Cliente(Usuario):
     lada = models.IntegerField(blank=True, null=True)
     procedencia = models.CharField(max_length=45, blank=True, null=True)
     customer_id = models.CharField(max_length=45, blank=True, null=True)
+    googleid = models.CharField(max_length=128, blank=True, null=True)
 
     # customer_token = models.CharField(blank=True, null=True, max_length=512)
 
@@ -381,6 +383,32 @@ class Direccion(models.Model):
     class Meta:
         managed = True
         db_table = 'direccion'
+
+
+class DireccionServicio(models.Model):
+    direccion = models.CharField(max_length=512)
+    nombre = models.CharField(max_length=32)
+    cliente = models.ForeignKey(Cliente,models.DO_NOTHING)
+    latlgn = models.PointField()
+    estatus = models.BooleanField(default=True)
+
+    def set_point(self, lat, lon):
+        pnt = Point(lon, lat)
+        self.latlgn = pnt
+
+    @property
+    def latitud(self):
+        """I'm the 'x' property."""
+        return str(self.latlgn.coords[1])
+
+    @property
+    def longitud(self):
+        """I'm the 'x' property."""
+        return str(self.latlgn.coords[0])
+
+    class Meta:
+        managed = True
+        db_table = 'direccion_servicio'
 
 
 class Estado(models.Model):
@@ -701,3 +729,15 @@ class Propietario(Usuario):
     class Meta:
         managed = True
         db_table = 'propietario'
+
+
+class Tarjeta(models.Model):
+    ultiimos_digitos = models.CharField(max_length=5)
+    token = models.CharField(max_length=64)
+    cliente = models.ForeignKey(Cliente, models.DO_NOTHING)
+    nombre = models.CharField(max_length=128)
+    nombre_propietario = models.CharField(max_length=256)
+
+    class Meta:
+        managed = True
+        db_table = 'trajeta'

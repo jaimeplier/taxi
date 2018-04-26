@@ -1,8 +1,11 @@
+from django.contrib.auth.views import password_reset_confirm
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.urls import reverse
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
@@ -1429,3 +1432,13 @@ def comision_eliminar(request, pk):
     c = get_object_or_404(Comisiones, pk=pk)
     c.delete()
     return JsonResponse({'result': 1})
+
+
+def reset_confirm(request, uidb64=None, token=None):
+    uid = force_text(urlsafe_base64_decode(uidb64))
+    return password_reset_confirm(request, template_name='webapp/reset.html',
+                                  uidb64=uidb64,
+                                  token=token,
+                                  # post_reset_redirect=reverse('webapp:index')
+                                  post_reset_redirect=reverse('webapp:index')
+                                  )
