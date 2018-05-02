@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class ProfesorPermission(permissions.BasePermission):
+class ChoferPermission(permissions.BasePermission):
     """
     Permisos del chofer
     Rol:

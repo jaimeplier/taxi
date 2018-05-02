@@ -441,7 +441,7 @@ class BaseCrear(CreateView):
 
 
 def base_listar(request):
-    template_name = 'webapp/tab_base.html'
+    template_name = 'webapp/tab_bases.html'
     return render(request, template_name)
 
 

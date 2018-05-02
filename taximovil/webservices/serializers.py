@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from config.models import Usuario, Cliente, Chofer
+from config.models import Usuario, Cliente, Chofer, Ciudad, TipoPago
 
 
 class TelefonoSerializer(serializers.Serializer):
@@ -30,6 +30,7 @@ class LoginSerializer(serializers.Serializer):
     googleid = serializers.CharField()
     dispositivo = serializers.CharField()
 
+
 class LoginChoferSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
@@ -37,14 +38,23 @@ class LoginChoferSerializer(serializers.Serializer):
     googleid = serializers.CharField()
     dispositivo = serializers.CharField()
 
+
 class ChoferSerializer(serializers.Serializer):
     class Meta:
         model = Chofer
         fields = ('nombre', 'a_paterno', 'a_materno', 'telefono', 'email',
                   'password', 'numero_licencia', 'turno', 'saldo')
 
+
 class ChoferEstatusSerializer(serializers.Serializer):
     activo = serializers.BooleanField()
+
+
+class TipoPagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoPago
+        fields = ('nombre',)
+    #ciudad = serializers.IntegerField()
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -53,8 +63,6 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class UsuarioEditSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Cliente
-        fields = ('email', 'password', 'nombre', 'a_paterno', 'telefono', 'procedencia','googleid')
-
+        fields = ('email', 'password', 'nombre', 'a_paterno', 'telefono', 'procedencia', 'googleid')
