@@ -19,7 +19,7 @@ from django.contrib.gis.geos import Point
 
 
 def index(request):
-    template_name = 'webapp/registro.html'
+    template_name = 'webapp/login.html'
     return render(request, template_name)
 
 

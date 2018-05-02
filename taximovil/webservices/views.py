@@ -16,13 +16,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from twilio.rest import Client
 
-from config.models import Codigo, Usuario, Chofer, Vehiculo, ChoferHasVehiculo, Tarifa, Ciudad, TipoPago
+from config.models import Codigo, Usuario, Chofer, Vehiculo, ChoferHasVehiculo, Tarifa, Ciudad, TipoPago, TipoVehiculo
 from config.models import Codigo, Usuario, Cliente
 from config.serializers import ClienteSerializer
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
 from webservices.permissions import ChoferPermission
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
-    ChoferSerializer, ResetSerializer, ChangePasswordSerializer, ChoferEstatusSerializer, TipoPagoSerializer
+    ChoferSerializer, ResetSerializer, ChangePasswordSerializer, ChoferEstatusSerializer, TipoPagoSerializer, \
+    TipoVehiculoSerializer
 
 
 class EnviarCodigo(APIView):
@@ -208,6 +209,17 @@ class TipoDePago(ListAPIView):
         #if queryset is not None:
          #   queryset = queryset.filter(tipo_materia=tipo_pago)
         #return queryset
+
+class TipoDeVehiculo(ListAPIView):
+    serializer_class = TipoVehiculoSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = TipoVehiculo.objects.all()
+        return queryset
 
 class LoginUsuario(APIView):
     """
