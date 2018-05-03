@@ -30,12 +30,18 @@
         <div class="nav-wrapper no_bottom">
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down ">
-                <li><img src="{% static 'images/girl.jpg' %}" alt="" class="circular--portrait responsive-img"></li>
-                <!-- hay que eliminar esa imagen y agregar el block donde se muestre la imagen -->
-                <li><label class="nombre">&nbsp; Prueba </label></li>
-                <!-- prueba debe ser eliminado y agregar un block para mostrar el nombre del usuario -->
-                <li><a href="#"><i class="material-icons">notifications</i></a></li> <!-- block para notificaciones -->
-                <li><a href="#"><i class="material-icons">power_settings_new</i></a></li>
+                <!--<li><img src="" alt="" class="circular--portrait responsive-img"></li>
+                 hay que eliminar esa imagen y agregar el block donde se muestre la imagen -->
+                {% if user.is_authenticated %}
+                    <li><label class="nombre">&nbsp; {{ user.get_full_name }} </label></li>
+                    <!-- prueba debe ser eliminado y agregar un block para mostrar el nombre del usuario
+                    <li><a href="#"><i class="material-icons">notifications</i></a></li> block para notificaciones -->
+                    <li><a href="{% url 'webapp:logout' %}"><i class="material-icons">power_settings_new</i></a></li>
+                {% else %}
+                    <li class="botones">
+                        <a class="botones" href="{% url 'webapp:login' %}">Inicia Sesión</a>
+                    </li>
+                {% endif %}
                 <!-- block para cerrar sesion -->
             </ul>
             <ul class="side-nav" id="mobile-demo">

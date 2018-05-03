@@ -1,5 +1,5 @@
 from django.contrib.auth.views import password_reset_confirm
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -47,7 +47,9 @@ def login(request):
 
     # template_name = 'webapp/login.html'
     # return render(request, template_name)
-
+def logout_view(request):
+    logout(request)
+    return redirect(reverse('webapp:login'))
 
 class EmpresaCrear(CreateView):
     model = Empresa

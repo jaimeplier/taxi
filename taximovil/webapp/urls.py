@@ -18,7 +18,7 @@ app_name = 'webapp'
 
 urlpatterns = [
     path('', views.login, name='login'),
-
+    path('logout/', views.logout_view, name='logout'),
     path('empresa/nuevo/', EmpresaCrear.as_view(), name='nuevo_empresa'),
     path('empresa/listar/', views.empresa_listar, name='list_empresa'),
     path('tabla_empresa/', EmpresaListarAjaxListView.as_view(), name='tab_list_empresa'),
