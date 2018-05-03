@@ -1,4 +1,5 @@
 from django.contrib.auth.views import password_reset_confirm
+from django.contrib.auth import authenticate, login as auth_login, logout
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -18,10 +19,37 @@ from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais
 from django.contrib.gis.geos import Point
 
 
-def index(request):
-    template_name = 'webapp/login.html'
-    return render(request, template_name)
 
+def login(request):
+    error_message = ''
+    if request.user.is_authenticated:
+        return redirect(reverse('webapp:list_chofer'))
+    if request.method == 'POST':
+        correo = request.POST['correo']
+        password = request.POST['password']
+        user = authenticate(email=correo, password=password)
+        if user is not None:
+            if user.estatus:
+                auth_login(request, user)
+                if request.POST.get('next') is not None:
+                    return redirect(request.POST.get('next'))
+                return redirect(reverse('webapp:list_chofer'))
+            else:
+                error_message = "Usuario inactivo"
+        else:
+            error_message = "Usuario y/o contraseña incorrectos"
+    context = {
+        'error_message': error_message
+    }
+    if request.GET.get('next') is not None:
+        context['next'] = request.GET.get('next')
+    return render(request, 'webapp/login.html', context)
+
+    # template_name = 'webapp/login.html'
+    # return render(request, template_name)
+def logout_view(request):
+    logout(request)
+    return redirect(reverse('webapp:login'))
 
 class EmpresaCrear(CreateView):
     model = Empresa
