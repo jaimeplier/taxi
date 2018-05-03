@@ -17,7 +17,7 @@ from . import views
 app_name = 'webapp'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.login, name='login'),
 
     path('empresa/nuevo/', EmpresaCrear.as_view(), name='nuevo_empresa'),
     path('empresa/listar/', views.empresa_listar, name='list_empresa'),

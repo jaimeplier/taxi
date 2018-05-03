@@ -1,9 +1,10 @@
 from django.contrib import admin
 from config.models import Chofer, Empresa, Personal, Sitio, Comisiones, Pais, TipoPago, TipoServicio, Estado, Municipio, \
     Vehiculo, TipoVehiculo, Base, Puerta, Sucursal, Zona, Tarifa, Ciudad, Documentos, Marca, Modelo, Propietario, \
-    Tarjeta
+    Tarjeta, Usuario
 
 # Register your models here.
+admin.site.register(Usuario)
 admin.site.register(Chofer)
 admin.site.register(Empresa)
 admin.site.register(Personal)
