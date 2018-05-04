@@ -170,25 +170,6 @@ class ChoferEstatus(APIView):
     def get_serializer(self):
         return ChoferEstatusSerializer()
 
-# class TipoDePago(APIView):
-#     """
-#     post:
-#         Tipos de pago por ciudad
-#     """
-#
-#     def post(self,request):
-#         serializer = TipoPagoSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         t = TipoPago.objects.filter(tarifa__ciudad__pk=request.data['ciudad'])
-#         # c = Ciudad.objects.get(pk=request.data['ciudad'])
-#         # t = Tarifa.objects.filter(ciudad=c).aggregate()
-#         return Response({'resultado': t}, status.HTTP_200_OK)
-#         # c.activo = serializer.validated_data.get('activo')
-#         # c.save()
-#         # return Response({'resultado': 1}, status=status.HTTP_200_OK)
-#
-#     def get_serializer(self):
-#         return TipoPagoSerializer()
 
 class TipoDePago(ListAPIView):
     serializer_class = TipoPagoSerializer
@@ -198,17 +179,10 @@ class TipoDePago(ListAPIView):
         Optionally restricts the returned purchases to a given user,
         by filtering against a `username` query parameter in the URL.
         """
-        #queryset = TipoPago.objects.filter(tarifa__ciudad__pk=self.request.query_params.get['ciudad'], None)
 
         queryset = TipoPago.objects.all()
-        # ciudad = self.request.query_params.get('ciudad', None)
-        # if ciudad is not None:
-        #     queryset = queryset.filter(tarifa__ciudad__pk=self.request.query_params.get['ciudad'])
         return queryset
-        #tipo_pago = self.request.query_params.get('tipo_pago', None)
-        #if queryset is not None:
-         #   queryset = queryset.filter(tipo_materia=tipo_pago)
-        #return queryset
+
 
 class TipoDeVehiculo(ListAPIView):
     serializer_class = TipoVehiculoSerializer
@@ -220,6 +194,7 @@ class TipoDeVehiculo(ListAPIView):
         """
         queryset = TipoVehiculo.objects.all()
         return queryset
+
 
 class LoginUsuario(APIView):
     """
