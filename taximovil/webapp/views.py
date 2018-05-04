@@ -1,4 +1,6 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.views import password_reset_confirm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
@@ -12,13 +14,87 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
-    PropietarioForm, VehiculoForm, TarifaForm, ComisionForm
+    PropietarioForm, VehiculoForm, TarifaForm, ComisionForm, PermisosForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
     TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Horario, \
-    ChoferHasVehiculo
+    ChoferHasVehiculo, RolHasPermissions
 from django.contrib.gis.geos import Point
 
+class RolCrear(CreateView):
+    #redirect_field_name = 'next'
+    #login_url = '/webapp/'
+    #permission_required = 'add_empresa'
+    #raise_exception = True
+    model = Rol
+    form_class = PermisosForm
+    template_name = 'config/form_1col.html'
 
+    def get_success_url(self):
+        return reverse('webapp:list_empresa')
+
+#@login_required(redirect_field_name='next', login_url='/webapp/')
+def rol_listar(request):
+    template_name = 'webapp/tab_rol.html'
+    return render(request, template_name)
+
+
+class RolListarAjaxListView(BaseDatatableView):
+    model = Rol
+    columns = ['nombre', 'editar', 'eliminar']
+    order_columns = ['nombre']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('webapp:edit_rol',
+                                                   kwargs={
+                                                       'pk': row.pk}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(RolListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Rol.objects.all()
+
+
+class RolActualizar(UpdateView):
+    model = Rol
+    template_name = 'config/form_1col.html'
+    form_class = PermisosForm
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_rol = kwargs['pk']
+        rol = self.model.objects.get(id=id_rol)
+        form = self.form_class(request.POST, instance=rol)
+        if form.is_valid():
+
+            permisos = form.cleaned_data.get('permisos')
+            RolHasPermissions.objects.filter(rol__pk=id_rol).delete()
+            for permiso in permisos:
+
+                tc = RolHasPermissions(rol=rol, permission=permiso)
+                tc.save()
+
+            rol = form.save(commit=False)
+            rol.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+    def get_success_url(self):
+        return reverse('webapp:list_rol')
+
+
+def rol_eliminar(request, pk):
+    e = get_object_or_404(Rol, pk=pk)
+    id_rol = e.id
+    RolHasPermissions.objects.filter(rol__pk=id_rol).delete()
+    e.delete()
+    return JsonResponse({'result': 1})
 
 def login(request):
     error_message = ''
@@ -51,7 +127,11 @@ def logout_view(request):
     logout(request)
     return redirect(reverse('webapp:login'))
 
-class EmpresaCrear(CreateView):
+class EmpresaCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_empresa'
+    #raise_exception = True
     model = Empresa
     form_class = EmpresaForm
     template_name = 'config/form_1col.html'
@@ -59,14 +139,15 @@ class EmpresaCrear(CreateView):
     def get_success_url(self):
         return reverse('webapp:list_empresa')
 
-
+@login_required(redirect_field_name='next', login_url='/webapp/')
 def empresa_listar(request):
     template_name = 'webapp/tab_empresa.html'
     return render(request, template_name)
 
 
-class EmpresaListarAjaxListView(BaseDatatableView):
+class EmpresaListarAjaxListView(BaseDatatableView, LoginRequiredMixin):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
     model = Empresa
     columns = ['nombre', 'direccion', 'editar', 'eliminar']
     order_columns = ['nombre']
@@ -88,7 +169,12 @@ class EmpresaListarAjaxListView(BaseDatatableView):
         return Empresa.objects.all()
 
 
-class EmpresaActualizar(UpdateView):
+class EmpresaActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_empresa'
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
     redirect_field_name = 'next'
     model = Empresa
     template_name = 'config/form_1col.html'
@@ -165,7 +251,10 @@ def usuario_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ChoferCrear(CreateView):
+class ChoferCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_chofer'
     model = Chofer
     form_class = ChoferForm
     segundo_form = DireccionForm
@@ -250,7 +339,11 @@ class ChoferListarAjaxListView(BaseDatatableView):
         return Chofer.objects.filter(estatus=True)
 
 
-class ChoferActualizar(UpdateView):
+class ChoferActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_chofer'
+
     model = Chofer
     segundoModelo = Direccion
     template_name = 'config/formBase.html'
@@ -312,7 +405,10 @@ def chofer_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class SitioCrear(CreateView):
+class SitioCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_sitio'
     model = Sitio
     form_class = SitioForm
     template_name = 'config/form_1col.html'
@@ -349,7 +445,10 @@ class SitioListarAjaxListView(BaseDatatableView):
         return Sitio.objects.all()
 
 
-class SitioActualizar(UpdateView):
+class SitioActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_sitio'
     redirect_field_name = 'next'
     model = Sitio
     template_name = 'config/form_1col.html'
@@ -365,7 +464,10 @@ def sitio_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ZonaCrear(CreateView):
+class ZonaCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_zona'
     model = Zona
     form_class = ZonaForm
     template_name = 'config/formMap.html'
@@ -409,7 +511,10 @@ class ZonaListarAjaxListView(BaseDatatableView):
         return Zona.objects.all()
 
 
-class ZonaActualizar(UpdateView):
+class ZonaActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_zona'
     redirect_field_name = 'next'
     model = Zona
     template_name = 'config/formMap.html'
@@ -432,7 +537,10 @@ def zona_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class BaseCrear(CreateView):
+class BaseCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_base'
     model = Base
     form_class = BaseForm
     segundo_form = DireccionForm
@@ -500,7 +608,10 @@ class BaseListarAjaxListView(BaseDatatableView):
         return Base.objects.all()
 
 
-class BaseActualizar(UpdateView):
+class BaseActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_base'
     model = Base
     segundoModelo = Direccion
     template_name = 'config/formBase.html'
@@ -576,7 +687,10 @@ def base_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class PaisCrear(CreateView):
+class PaisCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_pais'
     model = Pais
     form_class = PaisForm
     template_name = 'config/form_1col.html'
@@ -613,7 +727,10 @@ class PaisListarAjaxListView(BaseDatatableView):
         return Pais.objects.all()
 
 
-class PaisActualizar(UpdateView):
+class PaisActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_pais'
     redirect_field_name = 'next'
     model = Pais
     template_name = 'config/form_1col.html'
@@ -629,7 +746,10 @@ def pais_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class CiudadCrear(CreateView):
+class CiudadCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_ciudad'
     model = Ciudad
     form_class = CiudadForm
     template_name = 'config/formMap.html'
@@ -675,8 +795,10 @@ class CiudadListarAjaxListView(BaseDatatableView):
         return Ciudad.objects.all()
 
 
-class CiudadActualizar(UpdateView):
+class CiudadActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_ciudad'
     model = Ciudad
     template_name = 'config/formMap.html'
     form_class = CiudadForm
@@ -698,7 +820,10 @@ def ciudad_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class SucursalCrear(CreateView):
+class SucursalCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_sucursal'
     model = Sucursal
     form_class = SucursalForm
     template_name = 'config/formMap.html'
@@ -746,8 +871,10 @@ class SucursalListarAjaxListView(BaseDatatableView):
         return Sucursal.objects.all()
 
 
-class SucursalActualizar(UpdateView):
+class SucursalActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_sucursal'
     model = Sucursal
     template_name = 'config/formMap.html'
     form_class = SucursalForm
@@ -769,7 +896,10 @@ def sucursal_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class FormaPagoCrear(CreateView):
+class FormaPagoCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_tipopago'
     model = TipoPago
     form_class = TipoPagoForm
     template_name = 'config/form_1col.html'
@@ -806,8 +936,10 @@ class FormaPagoListarAjaxListView(BaseDatatableView):
         return TipoPago.objects.all()
 
 
-class FormaPagoActualizar(UpdateView):
+class FormaPagoActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_tipopago'
     model = TipoPago
     template_name = 'config/form_1col.html'
     form_class = TipoPagoForm
@@ -822,7 +954,10 @@ def forma_pago_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class TipoVehiculoCrear(CreateView):
+class TipoVehiculoCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_tipovehiculo'
     model = TipoVehiculo
     form_class = TipoVehiculoForm
     template_name = 'config/form_1col.html'
@@ -859,8 +994,10 @@ class TipoVehiculoListarAjaxListView(BaseDatatableView):
         return TipoVehiculo.objects.all()
 
 
-class TipoVehiculoActualizar(UpdateView):
+class TipoVehiculoActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_tipovehiculo'
     model = TipoVehiculo
     template_name = 'config/form_1col.html'
     form_class = TipoVehiculoForm
@@ -875,7 +1012,10 @@ def tipoVehiculoEliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ClienteCrear(CreateView):
+class ClienteCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_cliente'
     model = Cliente
     form_class = ClienteForm
     template_name = 'config/form_1col.html'
@@ -919,8 +1059,10 @@ class ClienteListarAjaxListView(BaseDatatableView):
         return Cliente.objects.filter(estatus=True, rol=2)
 
 
-class ClienteActualizar(UpdateView):
+class ClienteActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_cliente'
     model = Cliente
     template_name = 'config/form_1col.html'
     form_class = ClienteForm
@@ -936,7 +1078,10 @@ def cliente_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class TipoServicioCrear(CreateView):
+class TipoServicioCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_tiposervicio'
     model = TipoServicio
     form_class = TipoServicioForm
     template_name = 'config/form_1col.html'
@@ -973,8 +1118,10 @@ class TipoServicioListarAjaxListView(BaseDatatableView):
         return TipoServicio.objects.all()
 
 
-class TipoServicioActualizar(UpdateView):
+class TipoServicioActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_tiposervicio'
     model = TipoServicio
     template_name = 'config/form_1col.html'
     form_class = TipoServicioForm
@@ -989,7 +1136,10 @@ def tipoServicio_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class MarcaCrear(CreateView):
+class MarcaCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_marca'
     model = Marca
     form_class = MarcaForm
     template_name = 'config/form_1col.html'
@@ -1026,8 +1176,10 @@ class MarcaListarAjaxListView(BaseDatatableView):
         return Marca.objects.all()
 
 
-class MarcaActualizar(UpdateView):
+class MarcaActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_marca'
     model = Marca
     template_name = 'config/form_1col.html'
     form_class = MarcaForm
@@ -1042,7 +1194,10 @@ def marca_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ModeloCrear(CreateView):
+class ModeloCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_modelo'
     model = Modelo
     form_class = ModeloForm
     template_name = 'config/form_1col.html'
@@ -1081,8 +1236,10 @@ class ModeloListarAjaxListView(BaseDatatableView):
         return Modelo.objects.all()
 
 
-class ModeloActualizar(UpdateView):
+class ModeloActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_modelo'
     model = Modelo
     template_name = 'config/form_1col.html'
     form_class = ModeloForm
@@ -1097,7 +1254,10 @@ def modelo_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class PropietarioCrear(CreateView):
+class PropietarioCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_propietario'
     model = Propietario
     form_class = PropietarioForm
     template_name = 'config/form_1col.html'
@@ -1141,8 +1301,10 @@ class PropietarioListarAjaxListView(BaseDatatableView):
         return Propietario.objects.filter(estatus=True, rol=4)
 
 
-class PropietarioActualizar(UpdateView):
+class PropietarioActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_propietario'
     model = Propietario
     template_name = 'config/form_1col.html'
     form_class = PropietarioForm
@@ -1158,7 +1320,10 @@ def propietario_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class VehiculoCrear(CreateView):
+class VehiculoCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_vehiculo'
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'config/form_1col.html'
@@ -1201,8 +1366,10 @@ class VehiculoListarAjaxListView(BaseDatatableView):
         return Vehiculo.objects.filter(estatus=True)
 
 
-class VehiculoActualizar(UpdateView):
+class VehiculoActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_vehiculo'
     model = Vehiculo
     template_name = 'config/form_1col.html'
     form_class = VehiculoForm
@@ -1218,7 +1385,10 @@ def vehiculo_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class TarifaCrear(CreateView):
+class TarifaCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_tarifa'
     model = Tarifa
     form_class = TarifaForm
     template_name = 'webapp/registro_tarifario.html'
@@ -1231,8 +1401,10 @@ class TarifaCrear(CreateView):
     def get_success_url(self):
         return reverse('webapp:list_tarifa')
 
-class TarifaActualizar(UpdateView):
-    redirect_field_name = 'webapp:list_tarifa'
+class TarifaActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_tarifa'
     model = Tarifa
     template_name = 'webapp/registro_tarifario.html'
     form_class = TarifaForm
@@ -1407,7 +1579,10 @@ def vehiculos_chofer(request, pk):
 
 
 
-class ComisionCrear(CreateView):
+class ComisionCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'add_comisiones'
     model = Comisiones
     form_class = ComisionForm
     template_name = 'config/form_1col.html'
@@ -1446,8 +1621,10 @@ class ComisionListarAjaxListView(BaseDatatableView):
         return Comisiones.objects.all()
 
 
-class ComisionActualizar(UpdateView):
+class ComisionActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'change_comisiones'
     model = Comisiones
     template_name = 'config/form_1col.html'
     form_class = ComisionForm
