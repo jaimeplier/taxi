@@ -1,0 +1,204 @@
+<!-- SOFTIC SOLUTIONS-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<!--      CSS      -->
+	<link rel="stylesheet" type="text/css" href="css/materialize.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/menu.css">
+	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<!--      JS      -->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js" ></script> <!-- jQuery updated-->
+	<script type="text/javascript" src="js/materialize.js"></script>
+	<title>Llamada</title>
+</head>
+<body>
+	<div class="had-container">
+		<div class="row no_bottom">
+			<div class="col s12 banner_rosa"></div>
+		</div>
+		<nav class="nav-wrapper">
+    		<div class="nav-wrapper no_bottom">
+    			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      			<ul class="right hide-on-med-and-down ">
+      				<li><img src="images/girl.jpg" alt="" class="circular--portrait responsive-img"></li>
+      				<li><label class="nombre">&nbsp; Laura Patricia de la Vega Martínez</label></li>
+			        <li><a href="#"><i class="material-icons">notifications</i></a></li>
+			        <li><a href="#"><i class="material-icons">power_settings_new</i></a></li>
+      			</ul>
+      			<ul class="side-nav" id="mobile-demo">
+	        		<li><a href="#">Laura Patricia de la Vega Martínez</a></li>
+	       			<li><a href="#"><i class="material-icons">notifications</i>Notificaciones</a></li>
+			        <li><a href="#"><i class="material-icons">power_settings_new</i>Cerrar Sesión</a></li>
+     			</ul>
+    		</div>
+  		</nav>
+  		<div class="row"></div> <!-- dead space -->
+  		<div class="row">
+  			<div class="col s2 center">
+  				<img src="images/logo.png" class="responsive-img" id="mini-logo">
+  			</div>
+  			<div class="col s10"></div>
+  		</div>
+  		<!-- menú del lado izquierdo -->
+<div class="row">
+			<div class="col s3" style="padding: 0px;">
+
+				<div id='snav' class='en'>
+					<ul>
+						<li> <a href='#'> <i class="fa fa-flag-checkered"></i> <span>Vehículos Activos</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-taxi"></i> <span>Todos los Vehículos</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-phone"></i> <span>Llamada Telefónica</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-comments"></i> <span>Mensajes</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-edit"></i> <span>Reportes</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-credit-card"></i> <span>Créditos</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-cogs"></i> <span>Configuraciones</span> </a> </li>
+						<li> <a href='#'> <i class="fa fa-times-circle"></i> <span>Cerrar Sesión</span> </a> </li>
+					</ul>
+				</div>
+
+			</div>
+			<div class="col s9"></div>
+		</div>
+	<!-- space -->
+	<!-- mapa y servicios -->
+	<div class="row">
+		<div class="col s12">
+			<div class="row">
+				<div class="col s8">
+					<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d15052.917522571319!2d-99.16222135!3d19.4024927!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2smx!4v1521092466422" width="100%" height="600px" frameborder="0" style="border:0" allowfullscreen></iframe>
+				</div>
+				<div class="col s4">
+					<!--ingresar numero telefonico -->
+					<div class="row">
+						<div class="col s8 input-field">
+							<input type="text" id="numero_telefonico">
+							<label for="numero_telefonico">Número Telefónico</label>
+						</div>
+						<div class="col s4">
+							<a class="waves-effect waves-light btn" style="margin-top: 20%;">Buscar</a>
+						</div>
+					</div>
+					<!-- nombre del cliente -->
+					<div class="row">
+						<div class="col s8">
+							<select>
+								<option value="" disabled selected>Nombre del cliente</option>
+								<option value="1">Juana la cubana</option>
+								<option value="2">Sergio el bailador</option>
+								<option value="3">Laura no está</option>
+							</select>
+						</div>
+						<div class="col s4">
+							<a class="waves-effect waves-light btn">Buscar</a>
+						</div>
+					</div>
+					<!--direccion origen, donde se encuentra el usuario -->
+					<div class="row">
+						<div class="col s12 input-field">
+							<input type="text" id="direccion_origen">
+							<label for="direccion_origen">Ubicación del usuario</label>
+						</div>
+					</div>
+					<!--direccion destino, a donde va el usuario -->
+					<div class="row">
+						<div class="col s12 input-field">
+							<input type="text" id="direccion_destino">
+							<label for="direccion_destino">Dirección destino</label>
+						</div>
+					</div>
+					<!-- referencia del lugar -->
+					<div class="row">
+						<div class="col s12 input-field">
+							<input type="text" id="referencia_lugar">
+							<label for="referencia_lugar">Referencias del lugar</label>
+						</div>
+					</div>
+					<!-- referencias de la persona -->
+					<div class="row">
+						<div class="col s12 input-field">
+							<input type="text" id="referencia_persona">
+							<label for="referencia_persona">Referencias de la persona</label>
+						</div>
+					</div>
+					<!-- número de económico -->
+					<div class="row">
+						<div class="col s12 input-field">
+							<input type="text" id="numero_economico">
+							<label for="numero_economico">Número de económico</label>
+						</div>
+					</div>
+					<!-- costo del viaje -->
+					<div class="row">
+						<div class="col s8 input-field">
+							<input type="text" id="cotizar_viaje">
+							<label for="cotizar_viaje">Cotizar Viaje</label>
+						</div>
+						<div class="col s4">
+							<a class="waves-effect waves-light btn" style="margin-top: 20%;">Cotizar</a>
+						</div>
+					</div>
+					<!-- tipo de pago -->
+					<div class="row">
+						<div class="col s12">
+							<select>
+								<option value="" disabled selected>Seleccione</option>
+								<option value="1">Efectivo</option>
+								<option value="2">Tarjeta</option>
+							</select>
+						</div>
+					</div>
+					<!-- tipo de vehiculo -->
+					<div class="row">
+						<select>
+							<option value="" disabled selected>Seeleccione</option>
+							<option value="1">Sedán</option>
+							<option value="2">SUV</option>
+						</select>
+					</div>
+					<!-- select's -->
+					<div class="row">
+						<div class="col s6">
+							<input type="checkbox" id="reservar"/>
+      						<label for="reservar">Reservar</label>
+						</div>
+						<div class="col s6">
+							<input type="checkbox" id="cliente_preferente">
+							<label for="cliente_preferente">Cliente preferente</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+		<footer class="page-footer">
+			<div class="had-container">
+				<div class="row">
+					<div class="col s1"></div>
+					<div class="col s10 center">
+						<h6 class="black-text"><b>Taximovil</b> 2018</h6>
+						<hr class="linea2" color="#D01E88">
+					</div>
+					<div class="col s1"></div>
+				</div>
+			</div>
+		</footer>
+	</div>
+</body>
+<script type="text/javascript">
+	$("document").ready(function()
+	{
+		$(".dropdown-button").dropdown();
+		$(".button-collapse").sideNav();
+
+		$(document).ready(function() {
+    $('select').material_select();
+  });
+	});
+</script>
+</html>
+<!-- Developed By Softic Web Team -->
