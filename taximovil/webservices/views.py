@@ -1,6 +1,7 @@
 from random import randint
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils.encoding import force_bytes
@@ -152,6 +153,21 @@ class LoginChofer(APIView):
     def get_serializer(self):
         return LoginChoferSerializer()
 
+class LogoutChofer(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            cv = None
+            c = request.user.pk
+            placas = ChoferHasVehiculo.objects.filter(chofer=c, estatus=True)
+            cv = ChoferHasVehiculo.objects.filter(chofer=c, vehiculo__placa=placas, estatus=True)
+            #request.user.auth_token.delete()
+        except (AttributeError, ObjectDoesNotExist):
+            return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"result": 1}, status=status.HTTP_200_OK)
+
+
 class ChoferEstatus(APIView):
     """
     post:
@@ -268,6 +284,16 @@ class LoginUsuario(APIView):
 
     def get_serializer(self):
         return LoginSerializer()
+
+class LogoutCliente(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            request.user.auth_token.delete()
+        except (AttributeError, ObjectDoesNotExist):
+            return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"result": 1}, status=status.HTTP_200_OK)
 
 
 class ChangePassword(APIView):
