@@ -24,7 +24,7 @@ from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
 from webservices.permissions import ChoferPermission
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
     ChoferSerializer, ResetSerializer, ChangePasswordSerializer, ChoferEstatusSerializer, TipoPagoSerializer, \
-    TipoVehiculoSerializer
+    TipoVehiculoSerializer, VerChoferSerializer
 
 
 class EnviarCodigo(APIView):
@@ -160,9 +160,11 @@ class LogoutChofer(APIView):
         try:
             cv = None
             c = request.user.pk
-            placas = ChoferHasVehiculo.objects.filter(chofer=c, estatus=True)
-            cv = ChoferHasVehiculo.objects.filter(chofer=c, vehiculo__placa=placas, estatus=True)
-            #request.user.auth_token.delete()
+            cv = ChoferHasVehiculo.objects.filter(chofer=c, estatus=True)
+            cv = cv.first()
+            cv.estatus = False
+            cv.save()
+            request.user.auth_token.delete()
         except (AttributeError, ObjectDoesNotExist):
             return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"result": 1}, status=status.HTTP_200_OK)
@@ -313,6 +315,22 @@ class ChangePassword(APIView):
     def get_serializer(self):
         return ChangePasswordSerializer()
 
+class VerChofer(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = VerChoferSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        c = Chofer.objects.get(id = serializer.validated_data.get('chofer'))
+        if c is not None:
+            lat = c.latitud
+            lon = c.longitud
+        else:
+            return Response({"error": "La contraseña anterior no coincide"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"latitud": lat, "longitud": lon}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return VerChoferSerializer()
 
 class ResetPassword(APIView):
     permission_classes = (AllowAny,)

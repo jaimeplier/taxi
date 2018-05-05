@@ -11,6 +11,8 @@ class CodigoSerializer(serializers.Serializer):
     codigo = serializers.CharField(help_text="codigo a validar a 5 digitos")
     telefono = serializers.CharField(help_text="telefono a 10 posiciones sin guiones")
 
+class VerChoferSerializer(serializers.Serializer):
+    chofer = serializers.IntegerField()
 
 class ResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
