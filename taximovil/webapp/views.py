@@ -1494,8 +1494,8 @@ def tarifa_listar(request):
 class TarifaListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Tarifa
-    columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'pais', 'horario', 'editar', 'eliminar']
-    order_columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'pais']
+    columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre', 'horario', 'editar', 'eliminar']
+    order_columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre']
     max_display_length = 100
 
     def render_column(self, row, column):
@@ -1512,8 +1512,6 @@ class TarifaListarAjaxListView(BaseDatatableView):
             return row.ciudad.nombre
         elif column == 'sitio':
             return row.sitio.nombre
-        elif column == 'pais':
-            return row.pais.nombre
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
