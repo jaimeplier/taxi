@@ -53,15 +53,17 @@ class ChoferSerializer(serializers.ModelSerializer):
         model = Chofer
         fields = '__all__'
 
+class TipoDePagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoPago
+        fields = '__all__'
 
 class ChoferEstatusSerializer(serializers.Serializer):
     activo = serializers.BooleanField()
 
 
-class TipoPagoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TipoPago
-        fields = ('nombre',)
+class TipoPagoSerializer(serializers.Serializer):
+    ciudad = serializers.IntegerField()
 
 
 class TipoVehiculoSerializer(serializers.ModelSerializer):

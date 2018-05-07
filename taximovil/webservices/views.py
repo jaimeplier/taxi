@@ -24,7 +24,7 @@ from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
 from webservices.permissions import ChoferPermission
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
     ChoferSerializer, ResetSerializer, ChangePasswordSerializer, ChoferEstatusSerializer, TipoPagoSerializer, \
-    TipoVehiculoSerializer, VerChoferSerializer, ActualizarChoferSerializer
+    TipoVehiculoSerializer, VerChoferSerializer, ActualizarChoferSerializer, TipoDePagoSerializer
 from django.contrib.gis.geos import Point
 
 class EnviarCodigo(APIView):
@@ -189,17 +189,27 @@ class ChoferEstatus(APIView):
         return ChoferEstatusSerializer()
 
 
-class TipoDePago(ListAPIView):
+class TipoDePago(APIView):
     serializer_class = TipoPagoSerializer
 
-    def get_queryset(self):
-        """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
-        """
+    def post(self,request):
+        response_data = {}
+        serializer = TipoPagoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        #t = TipoPago.objects.filter(tarifa__ciudad__pk=request.data['ciudad'])
+        c = Ciudad.objects.get(pk=request.data['ciudad'])
+        t = Tarifa.objects.filter(ciudad=c)#.aggregate()
+        t = t.first()
+        #p = TipoPago.objects.filter(pk = t.pago__id)
+        serializer = TipoDePagoSerializer(t.pago, many=True)
+        response_data['pago'] = serializer.data
+        return Response(response_data)#Response({'resultado': p.}, status.HTTP_200_OK)
+        # c.activo = serializer.validated_data.get('activo')
+        # c.save()
+        # return Response({'resultado': 1}, status=status.HTTP_200_OK)
 
-        queryset = TipoPago.objects.all()
-        return queryset
+    def get_serializer(self):
+        return TipoPagoSerializer()
 
 
 class TipoDeVehiculo(ListAPIView):
