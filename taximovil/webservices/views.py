@@ -17,10 +17,10 @@ from twilio.rest import Client
 
 from config.models import Chofer, ChoferHasVehiculo
 from config.models import Codigo, Usuario, Cliente
-from config.serializers import ClienteSerializer
+from config.serializers import ClienteSerializer, ChoferSerializer
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
-    ChoferSerializer, ResetSerializer, ChangePasswordSerializer, VerChoferSerializer
+    ResetSerializer, ChangePasswordSerializer, VerChoferSerializer
 
 
 class EnviarCodigo(APIView):

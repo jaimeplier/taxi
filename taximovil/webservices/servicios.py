@@ -2,14 +2,15 @@ import googlemaps
 from django.contrib.gis.geos import Point
 from django.db.models import F
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Ciudad, Tarifa
-from config.serializers import CiudadSerializer, TarifaSerializer
+from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio
+from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer
 from taximovil import settings
-from webservices.serializers import CoordenadasSerializer, CotizarSerializer
+from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer
 
 
 def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, base=None):
@@ -34,7 +35,7 @@ class BuscarCiudad(APIView):
         1 el cliente ya esta rgistrado con ese telefono
         -1 el codigo es inválido
     """
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         serializer = CoordenadasSerializer(data=request.data)
@@ -92,3 +93,21 @@ class Cotizar(APIView):
 
     def get_serializer(self):
         return CotizarSerializer()
+
+
+class SolicitarServicio(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        c = Cliente.objects.get(pk=request.user.pk)
+        e = EstatusServicio(pk=1)
+        serializer = SolicitarServicioSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(cliente=c, estatus=e)
+        b = BitacoraEstatusServicio(estatus=e, servicio=serializer.instance)
+        b.save()
+        ser = ServicioSerializer(serializer.instance, many=False)
+        return Response(ser.data, status=status.HTTP_201_CREATED)
+
+    def get_serializer(self):
+        return SolicitarServicioSerializer()
