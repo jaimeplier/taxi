@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_gis',
     'fcm_django',
     'config.apps.ConfigConfig',
     'webapp.apps.WebappConfig',

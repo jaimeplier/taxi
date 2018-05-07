@@ -76,6 +76,7 @@ class ZonaForm(ModelForm):
                   'radio',
                   ]
 
+
 class BaseForm(ModelForm):
     class Meta:
         model = Base
@@ -83,7 +84,8 @@ class BaseForm(ModelForm):
                   'numero_espacio',
                   'telefono',
                   'sitio',
-        ]
+                  ]
+
 
 class DireccionForm(ModelForm):
     class Meta:
@@ -96,11 +98,13 @@ class DireccionForm(ModelForm):
                   'municipio',
                   ]
 
+
 class PaisForm(ModelForm):
     class Meta:
         model = Pais
         fields = ['nombre',
                   ]
+
 
 class CiudadForm(ModelForm):
     class Meta:
@@ -110,6 +114,7 @@ class CiudadForm(ModelForm):
                   'radio',
                   'pais',
                   ]
+
 
 class SucursalForm(ModelForm):
     class Meta:
@@ -121,13 +126,14 @@ class SucursalForm(ModelForm):
                   'empresa',
                   ]
 
+
 class TipoPagoForm(ModelForm):
     class Meta:
         model = TipoPago
         fields = ['nombre',
                   'precio',
-                  'plan',
-                  ]
+                  'plan',]
+
 
 class TipoVehiculoForm(ModelForm):
     class Meta:
@@ -137,6 +143,7 @@ class TipoVehiculoForm(ModelForm):
                   'num_max_pasajeros',
                   'num_maletas',
                   ]
+
 
 class ClienteForm(ModelForm):
     class Meta:
@@ -159,6 +166,7 @@ class ClienteForm(ModelForm):
                   'telefono': 'Telefono',
                   }
 
+
 class TipoServicioForm(ModelForm):
     class Meta:
         model = TipoServicio
@@ -167,6 +175,7 @@ class TipoServicioForm(ModelForm):
         labels = {'nombre': 'Nombre',
                   }
 
+
 class MarcaForm(ModelForm):
     class Meta:
         model = Marca
@@ -174,6 +183,7 @@ class MarcaForm(ModelForm):
                   ]
         labels = {'nombre': 'Nombre',
                   }
+
 
 class ModeloForm(ModelForm):
     class Meta:
@@ -184,6 +194,7 @@ class ModeloForm(ModelForm):
         labels = {'nombre': 'Modelo',
                   'marca': 'Marca'
                   }
+
 
 class PropietarioForm(ModelForm):
     class Meta:
@@ -210,6 +221,7 @@ class PropietarioForm(ModelForm):
                   'telefono': 'Telefono',
                   }
 
+
 class VehiculoForm(ModelForm):
     class Meta:
         model = Vehiculo
@@ -221,11 +233,14 @@ class VehiculoForm(ModelForm):
                   'economico',
                   'ciudad',
                   ]
+
+
 class TarifaForm(ModelForm):
     class Meta:
         model = Tarifa
         fields = '__all__'
         labels = '__all__'
+
 
 class ComisionForm(ModelForm):
     class Meta:

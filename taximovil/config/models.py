@@ -169,13 +169,16 @@ class Chofer(Usuario):
         managed = True
         db_table = 'chofer'
 
+
 class ChoferHasVehiculo(models.Model):
     estatus = models.BooleanField(default=False)
     chofer = models.ForeignKey('Chofer', models.DO_NOTHING)
     vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING)
+
     class Meta:
         managed = True
         db_table = 'chofer_has_vehiculo'
+
 
 class Empresa(models.Model):
     nombre = models.CharField(max_length=50)
@@ -212,7 +215,7 @@ class Sitio(models.Model):
 
 class BitacoraEstatusServicio(models.Model):
     estatus = models.ForeignKey('EstatusServicio', on_delete=models.DO_NOTHING)
-    # servicio = models.ForeignKey('Servicio', on_delete=models.DO_NOTHING)
+    servicio = models.ForeignKey('Servicio', on_delete=models.DO_NOTHING)
     fecha = models.DateField(auto_now_add=True)
 
     class Meta:
@@ -323,7 +326,7 @@ class RolHasPermissions(models.Model):
 
 class ServicioChofer(models.Model):
     chofer = models.ForeignKey(Chofer, models.DO_NOTHING, blank=True, null=True)
-    # servicio = models.ForeignKey(Servicio, models.DO_NOTHING)
+    servicio = models.ForeignKey('Servicio', models.DO_NOTHING)
     estatus = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -344,8 +347,6 @@ class TipoMateria(models.Model):
 
 class TipoPago(models.Model):
     nombre = models.CharField(max_length=45)
-    precio = models.FloatField()
-    plan = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -398,7 +399,7 @@ class Direccion(models.Model):
 class DireccionServicio(models.Model):
     direccion = models.CharField(max_length=512)
     nombre = models.CharField(max_length=32)
-    cliente = models.ForeignKey(Cliente,models.DO_NOTHING)
+    cliente = models.ForeignKey(Cliente, models.DO_NOTHING)
     latlgn = models.PointField()
     estatus = models.BooleanField(default=True)
 
@@ -652,23 +653,27 @@ class Documentos(models.Model):
 
 class Servicio(models.Model):
     hora_registro = models.DateTimeField(auto_now_add=True)
+    hora_servicio = models.DateTimeField()
     ubicacion_usuario = models.PointField()
     destino = models.PointField()
-    direccion_servicio = models.CharField(max_length=400)
+    origen = models.PointField()
+    direccion_origen = models.CharField(max_length=400)
     direccion_destino = models.CharField(max_length=400)
     tiempo_aproximado = models.CharField(max_length=20)
     ref_lugar = models.CharField(max_length=200)
     ref_persona = models.CharField(max_length=200)
     distancia = models.CharField(max_length=20)
     costo = models.CharField(max_length=20)
-    estatus = models.IntegerField()
+    estatus = models.ForeignKey('EstatusServicio', on_delete=models.DO_NOTHING)
 
     cliente = models.ForeignKey('Cliente', models.DO_NOTHING)
     tipo_servicio = models.ForeignKey('TipoServicio', models.DO_NOTHING)
     vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING)
     sitio = models.ForeignKey('Sitio', models.DO_NOTHING)
+    chofer = models.ForeignKey('Chofer', models.DO_NOTHING, blank=True, null=True)
+    sucursal = models.ForeignKey('Sucursal', models.DO_NOTHING, blank=True, null=True)
 
-    forma_pago = models.ForeignKey(TipoPago, models.DO_NOTHING)
+    tipo_pago = models.ForeignKey('TipoPago', models.DO_NOTHING)
     tarifa = models.ForeignKey('Tarifa', models.DO_NOTHING)
 
     @property

@@ -20,7 +20,7 @@ class TarjetaViewSet(viewsets.ModelViewSet):
         try:
             cliente = Cliente.objects.get(pk=self.request.user.pk)
         except Cliente.DoesNotExist:
-            Response({"error": "El cliente no existe"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "El cliente no existe"}, status=status.HTTP_400_BAD_REQUEST)
         qs = Tarjeta.objects.filter(cliente=cliente)
         serializer = TarjetaSerializer(qs, many=True)
         return Response(serializer.data)
