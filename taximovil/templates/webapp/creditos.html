@@ -1,71 +1,5 @@
-<!-- SOFTIC SOLUTIONS-->
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<!--      CSS      -->
-	<link rel="stylesheet" type="text/css" href="css/materialize.css">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<link rel="stylesheet" type="text/css" href="css/menu.css">
-	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<!--      JS      -->
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js" ></script> <!-- jQuery updated-->
-	<script type="text/javascript" src="js/materialize.js"></script>
-
-	<title>Créditos</title>
-</head>
-<body>
-	<div class="had-container">
-		<div class="row no_bottom">
-			<div class="col s12 banner_rosa"></div>
-		</div>
-		<nav class="nav-wrapper">
-    		<div class="nav-wrapper no_bottom">
-    			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      			<ul class="right hide-on-med-and-down ">
-      				<li><img src="images/girl.jpg" alt="" class="circular--portrait responsive-img"></li>
-      				<li><label class="nombre">&nbsp; Laura Patricia de la Vega Martínez</label></li>
-			        <li><a href="#"><i class="material-icons">notifications</i></a></li>
-			        <li><a href="#"><i class="material-icons">power_settings_new</i></a></li>
-      			</ul>
-      			<ul class="side-nav" id="mobile-demo">
-	        		<li><a href="#">Laura Patricia de la Vega Martínez</a></li>
-	       			<li><a href="#"><i class="material-icons">notifications</i>Notificaciones</a></li>
-			        <li><a href="#"><i class="material-icons">power_settings_new</i>Cerrar Sesión</a></li>
-     			</ul>
-    		</div>
-  		</nav>
-  		<div class="row"></div> <!-- dead space -->
-  		<div class="row">
-  			<div class="col s2 center">
-  				<img src="images/logo.png" class="responsive-img" id="mini-logo">
-  			</div>
-  			<div class="col s10" id="margin_adjust"><label id="titulo"><i class="material-icons small">event_available</i> Consulta los pagos realizados.</label></div>
-  		</div>
-  		<!-- menú del lado izquierdo -->
-<div class="row">
-			<div class="col s3" style="padding: 0px;">
-
-				<div id='snav' class='en'>
-					<ul>
-						<li> <a href='#'> <i class="fa fa-home"></i> <span>Todos los Vehículos</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-css3"></i> <span>CSS3</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-html5"></i> <span>HTML5</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-git"></i> <span>Git</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-android"></i> <span>Android</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-apple"></i> <span>Apple</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-bitcoin"></i> <span>Bitcoin</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-facebook"></i> <span>Facebook</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-twitter"></i> <span>Twitter</span> </a> </li>
-						<li> <a href='#'> <i class="fa fa-google"></i> <span>Google</span> </a> </li>
-					</ul>
-				</div>
-
-			</div>
-			<div class="col s9"></div>
-		</div>
+{% extends 'config/tab_base.html' %}
+{% block content %}
 		<div class="row">
 			<div class="col s1"></div>
 			<div class="col s7" >
@@ -182,21 +116,9 @@
 		</div>
 
 		<!--  //  //  //  -->
+{% endblock %}
 
-		<footer class="page-footer">
-			<div class="had-container">
-				<div class="row">
-					<div class="col s1"></div>
-					<div class="col s10 center">
-						<h6 class="black-text"><b>Taximovil</b> 2018</h6>
-						<hr class="linea2" color="#D01E88">
-					</div>
-					<div class="col s1"></div>
-				</div>
-			</div>
-		</footer>
-	</div>
-</body>
+{% block scripts %}
 <script type="text/javascript">
 	$("document").ready(function()
 	{
@@ -205,5 +127,5 @@
 		$('select').material_select();
 	});
 </script>
-</html>
+{% endblock %}
 <!-- Developed By Softic Web Team -->
