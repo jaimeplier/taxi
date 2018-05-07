@@ -146,7 +146,17 @@ class Chofer(Usuario):
     saldo = models.FloatField()
     direccion = models.ForeignKey('Direccion', models.DO_NOTHING)
     taxis = models.ManyToManyField('Vehiculo', through='ChoferHasVehiculo', related_name='choferes')
+    latlgn = models.PointField(blank=True, null=True)
 
+    @property
+    def latitud(self):
+        """I'm the 'x' property."""
+        return str(self.latlgn.coords[1])
+
+    @property
+    def longitud(self):
+        """I'm the 'x' property."""
+        return str(self.latlgn.coords[0])
     # estatusChofer
     # cuenta (historial)
     # documentos

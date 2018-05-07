@@ -11,6 +11,12 @@ class CodigoSerializer(serializers.Serializer):
     codigo = serializers.CharField(help_text="codigo a validar a 5 digitos")
     telefono = serializers.CharField(help_text="telefono a 10 posiciones sin guiones")
 
+class VerChoferSerializer(serializers.Serializer):
+    chofer = serializers.IntegerField()
+
+class ActualizarChoferSerializer(serializers.Serializer):
+    lat = serializers.FloatField()
+    lon = serializers.FloatField()
 
 class ResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -39,11 +45,10 @@ class LoginChoferSerializer(serializers.Serializer):
     dispositivo = serializers.CharField()
 
 
-class ChoferSerializer(serializers.Serializer):
+class ChoferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chofer
-        fields = ('nombre', 'a_paterno', 'a_materno', 'telefono', 'email',
-                  'password', 'numero_licencia', 'turno', 'saldo')
+        fields = '__all__'
 
 
 class ChoferEstatusSerializer(serializers.Serializer):

@@ -11,7 +11,7 @@ from webapp.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     MarcaActualizar, ModeloCrear, ModeloListarAjaxListView, ModeloActualizar, PropietarioCrear, \
     PropietarioListarAjaxListView, PropietarioActualizar, VehiculoCrear, VehiculoListarAjaxListView, VehiculoActualizar, \
     TarifaListarAjaxListView, TarifaCrear, TarifaActualizar, ComisionCrear, ComisionListarAjaxListView, \
-    ComisionActualizar
+    ComisionActualizar, RolCrear, RolListarAjaxListView, RolActualizar
 from . import views
 
 app_name = 'webapp'
@@ -19,6 +19,13 @@ app_name = 'webapp'
 urlpatterns = [
     path('', views.login, name='login'),
     path('logout/', views.logout_view, name='logout'),
+
+    path('rol/nuevo/', RolCrear.as_view(), name='nuevo_rol'),
+    path('rol/listar/', views.rol_listar, name='list_rol'),
+    path('tabla_rol/', RolListarAjaxListView.as_view(), name='tab_list_rol'),
+    path('rol/editar/<int:pk>', RolActualizar.as_view(), name='edit_rol'),
+    path('rol/listar/delete/<int:pk>', views.rol_eliminar, name='delete_rol'),
+
     path('empresa/nuevo/', EmpresaCrear.as_view(), name='nuevo_empresa'),
     path('empresa/listar/', views.empresa_listar, name='list_empresa'),
     path('tabla_empresa/', EmpresaListarAjaxListView.as_view(), name='tab_list_empresa'),

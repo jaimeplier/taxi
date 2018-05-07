@@ -1,6 +1,7 @@
 from random import randint
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils.encoding import force_bytes
@@ -23,8 +24,8 @@ from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
 from webservices.permissions import ChoferPermission
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
     ChoferSerializer, ResetSerializer, ChangePasswordSerializer, ChoferEstatusSerializer, TipoPagoSerializer, \
-    TipoVehiculoSerializer
-
+    TipoVehiculoSerializer, VerChoferSerializer, ActualizarChoferSerializer
+from django.contrib.gis.geos import Point
 
 class EnviarCodigo(APIView):
     """
@@ -152,6 +153,23 @@ class LoginChofer(APIView):
     def get_serializer(self):
         return LoginChoferSerializer()
 
+class LogoutChofer(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            cv = None
+            c = request.user.pk
+            cv = ChoferHasVehiculo.objects.filter(chofer=c, estatus=True)
+            cv = cv.first()
+            cv.estatus = False
+            cv.save()
+            request.user.auth_token.delete()
+        except (AttributeError, ObjectDoesNotExist):
+            return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"result": 1}, status=status.HTTP_200_OK)
+
+
 class ChoferEstatus(APIView):
     """
     post:
@@ -244,6 +262,16 @@ class LoginUsuario(APIView):
     def get_serializer(self):
         return LoginSerializer()
 
+class LogoutCliente(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            request.user.auth_token.delete()
+        except (AttributeError, ObjectDoesNotExist):
+            return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"result": 1}, status=status.HTTP_200_OK)
+
 
 class ChangePassword(APIView):
     permission_classes = (IsAuthenticated,)
@@ -262,6 +290,43 @@ class ChangePassword(APIView):
     def get_serializer(self):
         return ChangePasswordSerializer()
 
+class VerChofer(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = VerChoferSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        c = Chofer.objects.get(id = serializer.validated_data.get('chofer'))
+        if c is not None:
+            lat = c.latitud
+            lon = c.longitud
+        else:
+            return Response({"error": "Datos incorrectos"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"latitud": lat, "longitud": lon}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return VerChoferSerializer()
+
+class ActualizarChofer(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = ActualizarChoferSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        c = Chofer.objects.get(id = request.user.pk)
+        print(request.user.pk)
+        if c is not None:
+            lat = serializer.validated_data.get('lat')
+            lon = serializer.validated_data.get('lon')
+            p = Point(float(lon), float(lat))
+            c.latlgn = p
+            c.save()
+        else:
+            return Response({"error": "Datos incorrectos"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"result": 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ActualizarChoferSerializer()
 
 class ResetPassword(APIView):
     permission_classes = (AllowAny,)
