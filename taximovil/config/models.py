@@ -676,20 +676,6 @@ class Servicio(models.Model):
     tarifa = models.ForeignKey('Tarifa', models.DO_NOTHING)
 
     @property
-    def latitudUsuario(self):
-        """I'm the 'x' property."""
-        if self.ubicacion_usuario is None:
-            return None
-        return str(self.ubicacion_usuario.coords[1])
-
-    @property
-    def longitudUsuario(self):
-        """I'm the 'x' property."""
-        if self.ubicacion_usuario is None:
-            return None
-        return str(self.ubicacion_usuario.coords[0])
-
-    @property
     def latitudDestino(self):
         """I'm the 'x' property."""
         if self.destino is None:

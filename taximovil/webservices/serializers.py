@@ -48,12 +48,6 @@ class LoginChoferSerializer(serializers.Serializer):
     dispositivo = serializers.CharField()
 
 
-class ChoferSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Chofer
-        fields = '__all__'
-
-
 class TipoDePagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TipoPago
@@ -145,5 +139,5 @@ class SolicitarServicioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Servicio
         fields = (
-        'hora_servicio', 'origen', 'destino', 'direccion_origen', 'direccion_destino', 'ref_lugar', 'ref_persona',
-        'distancia','costo','tipo_servicio','sitio','tipo_pago')
+            'hora_servicio', 'origen', 'destino', 'direccion_origen', 'direccion_destino', 'ref_lugar', 'ref_persona',
+            'distancia', 'tiempo_aproximado_servicio', 'costo', 'tipo_servicio', 'sitio', 'tipo_pago', 'tarifa')
