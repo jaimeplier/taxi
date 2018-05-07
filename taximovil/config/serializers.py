@@ -39,4 +39,4 @@ class DireccionEditSerializer(serializers.ModelSerializer):
 class CiudadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ciudad
-        fields = '__all__'
+        fields = ('id', 'nombre', 'estatus', 'factor_tiempo', 'radio', 'pais')

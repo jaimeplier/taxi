@@ -93,3 +93,48 @@ class CoordenadasSerializer(serializers.Serializer):
         if value < -180 or value > 180:
             raise serializers.ValidationError("El servicio no existe")
         return value
+
+
+class CotizarSerializer(serializers.Serializer):
+    fecha = serializers.DateTimeField()
+    ciudad = serializers.IntegerField()
+    tipo_vehiculo = serializers.IntegerField()
+    tipo_servicio = serializers.IntegerField()
+    sucursal = serializers.IntegerField(allow_null=True)
+    base = serializers.IntegerField(allow_null=True)
+    lat_origen = serializers.FloatField()
+    lon_origen = serializers.FloatField()
+    lat_destino = serializers.FloatField()
+    lon_destino = serializers.FloatField()
+
+    def validate_lat_origen(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -90 or value > 90:
+            raise serializers.ValidationError("La latitud no es valida")
+        return value
+
+    def validate_lon_origen(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -180 or value > 180:
+            raise serializers.ValidationError("El servicio no existe")
+        return value
+
+    def validate_lat_destino(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -90 or value > 90:
+            raise serializers.ValidationError("La latitud no es valida")
+        return value
+
+    def validate_lon_destino(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -180 or value > 180:
+            raise serializers.ValidationError("El servicio no existe")
+        return value
