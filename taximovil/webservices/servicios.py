@@ -40,8 +40,8 @@ class BuscarCiudad(APIView):
         latitud = serializer.data.get('latitud')
         longitud = serializer.data.get('longitud')
         p = Point(longitud, latitud)
-        cc = Ciudad.objects.filter(centro__distance_lt=(p, F('radio')))
-        serializer = CiudadSerializer(cc, many=True)
+        cc = Ciudad.objects.filter(centro__distance_lt=(p, F('radio'))).first()
+        serializer = CiudadSerializer(cc, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_serializer(self):
