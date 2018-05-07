@@ -61,15 +61,15 @@
 
             <div id='snav' class='en'>
                 <ul>
-                    <li><a href=""> <i class="fa fa-flag-checkered"></i> <span>Vehículos Activos</span>
+                    <li><a href="{% url 'webapp:vehiculos_activos' %}"> <i class="fa fa-flag-checkered"></i> <span>Vehículos Activos</span>
                     </a></li>
-                    <li><a href=""> <i class="fa fa-taxi"></i> <span>Todos los Vehículos</span> </a></li>
-                    <li><a href=""> <i class="fa fa-phone"></i> <span>Llamada Telefónica</span> </a></li>
-                    <li><a href=""> <i class="fa fa-comments"></i> <span>Mensajes</span> </a></li>
-                    <li><a href=""> <i class="fa fa-edit"></i> <span>Reportes</span> </a></li>
-                    <li><a href=""> <i class="fa fa-credit-card"></i> <span>Créditos</span> </a></li>
-                    <li><a href=""> <i class="fa fa-cogs"></i> <span>Configuraciones</span> </a></li>
-                    <li><a href=""> <i class="fa fa-times-circle"></i> <span>Cerrar Sesión</span> </a></li>
+                    <li><a href="{% url 'webapp:todos_vehiculos' %}"> <i class="fa fa-taxi"></i> <span>Todos los Vehículos</span> </a></li>
+                    <li><a href="{% url 'webapp:llamada' %}"> <i class="fa fa-phone"></i> <span>Llamada Telefónica</span> </a></li>
+                    <li><a href="{% url 'webapp:mensajes' %}"> <i class="fa fa-comments"></i> <span>Mensajes</span> </a></li>
+                    <li><a href="{% url 'webapp:reportes' %}"> <i class="fa fa-edit"></i> <span>Reportes</span> </a></li>
+                    <li><a href="{% url 'webapp:creditos' %}"> <i class="fa fa-credit-card"></i> <span>Créditos</span> </a></li>
+                    <li><a href="{% url 'webapp:configuraciones' %}"> <i class="fa fa-cogs"></i> <span>Configuraciones</span> </a></li>
+                    <li><a href="{% url 'webapp:logout' %}"> <i class="fa fa-times-circle"></i> <span>Cerrar Sesión</span> </a></li>
                 </ul>
             </div>
 

@@ -145,4 +145,14 @@ urlpatterns = [
     path('comision/listar/delete/<int:pk>', views.comision_eliminar, name='delete_comision'),
 
     path('reset/<uidb64>/<token>/', views.reset_confirm, name='reset_confirm'),
+
+    path('vehiculos_activos/', views.vehiculos_activos, name='vehiculos_activos'),
+    path('todos_vehiculos/', views.todos_vehiculos, name='todos_vehiculos'),
+    path('llamada/', views.llamada, name='llamada'),
+    path('mensajes/', views.mensajes, name='mensajes'),
+    path('reportes/', views.reportes, name='reportes'),
+    path('creditos/', views.creditos, name='creditos'),
+    path('menu_configuraciones/', views.configuraciones, name='configuraciones'),
+
 ]
+

@@ -1470,3 +1470,32 @@ def reset_confirm(request, uidb64=None, token=None):
                                   # post_reset_redirect=reverse('webapp:index')
                                   post_reset_redirect=reverse('webapp:index')
                                   )
+
+
+def vehiculos_activos(request):
+    template_name = 'webapp/vehiculos_activos.html'
+    return render(request, template_name)
+
+def todos_vehiculos(request):
+    template_name = 'webapp/servicios.html'
+    return render(request, template_name)
+
+def llamada(request):
+    template_name = 'webapp/llamada.html'
+    return render(request, template_name)
+
+def mensajes(request):
+    template_name = 'webapp/mensajes.html'
+    return render(request, template_name)
+
+def reportes(request):
+    template_name = 'webapp/reportes.html'
+    return render(request, template_name)
+
+def creditos(request):
+    template_name = 'webapp/creditos.html'
+    return render(request, template_name)
+
+def configuraciones(request):
+    template_name = 'webapp/configuraciones.html'
+    return render(request, template_name)
