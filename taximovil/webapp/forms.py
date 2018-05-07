@@ -130,9 +130,7 @@ class SucursalForm(ModelForm):
 class TipoPagoForm(ModelForm):
     class Meta:
         model = TipoPago
-        fields = ['nombre',
-                  'precio',
-                  'plan',]
+        fields = ['nombre']
 
 
 class TipoVehiculoForm(ModelForm):
