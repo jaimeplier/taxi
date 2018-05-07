@@ -1,4 +1,5 @@
-from django.forms import ModelForm, CharField, EmailField, NumberInput, PasswordInput, CheckboxSelectMultiple, forms, Select
+from django.forms import ModelForm
+
 from config.models import Empresa, Usuario, Chofer, Sitio, Zona, Base, Direccion, Pais, Ciudad, Sucursal, TipoPago, \
     TipoVehiculo, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Rol
 
@@ -244,6 +245,7 @@ class ComisionForm(ModelForm):
     class Meta:
         model = Comisiones
         fields = '__all__'
+
 
 class PermisosForm(ModelForm):
     class Meta:
