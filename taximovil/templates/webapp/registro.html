@@ -7,348 +7,361 @@
 {% block content %}
 
   		<div class="row">
-  			<div class="col s2">
-  			</div>
-  			<div class="col s8">
-  				<div class="row">
-  					<div class="col s12">
-  						<ul id="tabs-swipe-demo" class="tabs nav_rosa">
-						    <li class="tab col s4"><a class="white-text" href="#test-swipe-1">1.Info. Personal</a></li>
-						    <li class="tab col s4"><a class="white-text" href="#test-swipe-2">2.Info. del Vehículo</a></li>
-						    <li class="tab col s4"><a class="white-text" href="#test-swipe-3">3.Titular de Cuenta</a></li>
-					  	</ul>
-
-					  		<div id="test-swipe-1" class="col s12">
-					  			<!-- INFORMACION PERSONAL -->
-					  			<div class="row">
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="nombre">
-					  					<label for="nombre">Nombre</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="apaterno">
-					  					<label for="apaterno">Apellido Paterno</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="amaterno">
-					  					<label for="amaterno">Apellido Materno</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="rfc">
-					  					<label for="rfc">RFC</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="telefono">
-					  					<label for="telefono">Teléfono</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="email">
-					  					<label for="email">Correo Electrónico</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="password" id="password">
-					  					<label for="password">Contraseña</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="municipio">
-					  					<label for="municipio">Municipio</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s3 input-field">
-					  					<select>
-					  						<option value="" disabled selected>Género</option>
-					  						<option value="1">Hombre</option>
-					  						<option value="2">Mujer</option>
-					  					</select>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<select>
-					  						<option value="" disabled selected>País</option>
-					  						<option value="1">México</option>
-					  						<option value="2">México</option>
-					  					</select>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<select>
-					  						<option value="" disabled selected>Ciudad</option>
-					  						<option value="1">Ciudad de México</option>
-					  						<option value="2">Guadalajara</option>
-					  					</select>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="cp">
-					  					<label for="cp">Código Postal</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="colonia">
-					  					<label for="colonia">Colonia</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="calle">
-					  					<label for="calle">Calle</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="n_ext">
-					  					<label for="n_ext">Número Exterior</label>
-					  				</div>
-					  				<div class="col s3 input-field">
-					  					<input type="text" id="n_int">
-					  					<label for="n_int">Número Interior</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="foto">
-					  					<label for="foto">Selecciona Foto</label>
-					  				</div>
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="c_dom">
-					  					<label for="c_dom">Comprobante de Domicilio</label>
-					  				</div>
-					  			</div>
-                                <div class="row">
-                                    <div class="col s4 file-field input-field">
-                                        <div class="btn">
-								        	<span>Antecedentes no Penales</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Emisión">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
-     									</div>
-                                    </div>
-                                    <div class="col s4 file-field input-field">
-                                        <div class="btn">
-								        	<span>Examen Toxicológico</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Emisión">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
-     									</div>
-                                    </div>
-                                    <div class="col s4 file-field input-field">
-                                        <div class="btn">
-								        	<span>Licencia de Conducir</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" id="num_licencia" placeholder="Número de Licencia">
-     									</div>
-                                    </div>
-                                </div>
-					  		</div>
-					  		<!-- // /// // -->
-					  		<!-- INFORMACION DEL VEHICULO -->
-					  		<div id="test-swipe-2" class="col s12">
-					  			<div class="row">
-					  				<div class="col s4 input-field">
-					  					<select>
-					  						<option value="" disabled selected>Marca</option>
-					  						<option value="1">Chevrolet</option>
-					  						<option value="2">Ford</option>
-					  					</select>
-					  				</div>
-					  				<div class="col s4 input-field">
-					  					<select>
-					  						<option value="" disabled selected>Modelo</option>
-					  						<option value="1">Malibú</option>
-					  						<option value="2">Fusion</option>
-					  					</select>
-					  				</div>
-					  				<div class="col s4 input-field">
-					  					<select>
-					  						<option value="" disabled selected>Año</option>
-					  						<option value="1">2017</option>
-					  						<option value="2">2018</option>
-					  					</select>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s4 input-field">
-					  					<select>
-					  						<option value="" disabled selected>Tipo de Vehículo</option>
-					  						<option value="1">Taxi</option>
-					  						<option value="2">VIP</option>
-					  					</select>
-					  				</div>
-					  				<div class="col s4 input-field">
-					  					<input type="text" id="color">
-					  					<label for="color">Color</label>
-					  				</div>
-					  				<div class="col s4 input-field">
-					  					<input type="text" id="placas">
-					  					<label for="placas">Placas</label>
-					  				</div>
-					  			</div>
-					  		</div>
+   <div class="col s2">
+   </div>
+   <div class="col s8">
+      <div class="row">
+         <div class="col s12">
+            <ul id="tabs-swipe-demo" class="tabs nav_rosa">
+          <li class="tab col s4"><a class="white-text" href="#test-swipe-1">1.Info. Personal</a></li>
+          <li class="tab col s4"><a class="white-text" href="#test-swipe-2">2.Info. del Vehículo</a></li>
+          <li class="tab col s4"><a class="white-text" href="#test-swipe-3">3.Titular de Cuenta</a></li>
+      </ul>
+    </div>
+    <div id="test-swipe-1" class="col s12">
+        <!-- INFORMACION PERSONAL -->
+            <div class="row">
+               <div class="col s3 input-field">
+                  <input type="text" id="nombre">
+                  <label for="nombre">Nombre</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="apaterno">
+                  <label for="apaterno">Apellido Paterno</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="amaterno">
+                  <label for="amaterno">Apellido Materno</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="rfc">
+                  <label for="rfc">RFC</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s3 input-field">
+                  <input type="text" id="telefono">
+                  <label for="telefono">Teléfono</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="email">
+                  <label for="email">Correo Electrónico</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="password" id="password">
+                  <label for="password">Contraseña</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="municipio">
+                  <label for="municipio">Municipio</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s3 input-field">
+                  <select>
+                     <option value="" disabled selected>Género</option>
+                     <option value="1">Hombre</option>
+                     <option value="2">Mujer</option>
+                  </select>
+               </div>
+               <div class="col s3 input-field">
+                  <select>
+                     <option value="" disabled selected>País</option>
+                     <option value="1">México</option>
+                     <option value="2">México</option>
+                  </select>
+               </div>
+               <div class="col s3 input-field">
+                  <select>
+                     <option value="" disabled selected>Ciudad</option>
+                     <option value="1">Ciudad de México</option>
+                     <option value="2">Guadalajara</option>
+                  </select>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="cp">
+                  <label for="cp">Código Postal</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s3 input-field">
+                  <input type="text" id="colonia">
+                  <label for="colonia">Colonia</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="calle">
+                  <label for="calle">Calle</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="n_ext">
+                  <label for="n_ext">Número Exterior</label>
+               </div>
+               <div class="col s3 input-field">
+                  <input type="text" id="n_int">
+                  <label for="n_int">Número Interior</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s6 input-field">
+                  <input type="text" id="foto">
+                  <label for="foto">Selecciona Foto</label>
+               </div>
+               <div class="col s6 input-field">
+                  <input type="text" id="c_dom">
+                  <label for="c_dom">Comprobante de Domicilio</label>
+               </div>
+            </div>
                             <div class="row">
                                 <div class="col s4 file-field input-field">
                                     <div class="btn">
-								        	<span>Tarjeta de Circulación</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" id="num_auto" placeholder="Número de Auto">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
-     									</div>
+                       <span>Antecedentes no Penales</span>
+                       <input type="file">
+                   </div>
+                   <div class="file-path-wrapper">
+                               <input class="file-path validate" type="text">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" class="datepicker" placeholder="Fecha de Emisión">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" class="datepicker" placeholder="Fecha de Expiración">
+                           </div>
                                 </div>
                                 <div class="col s4 file-field input-field">
                                     <div class="btn">
-								        	<span>Seguro del Automóvil</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" id="num_poliza" placeholder="Número de Póliza">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
-     									</div>
+                       <span>Examen Toxicológico</span>
+                       <input type="file">
+                   </div>
+                   <div class="file-path-wrapper">
+                               <input class="file-path validate" type="text">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" class="datepicker" placeholder="Fecha de Emisión">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" class="datepicker" placeholder="Fecha de Expiración">
+                           </div>
                                 </div>
                                 <div class="col s4 file-field input-field">
                                     <div class="btn">
-								        	<span>Verificación del Auto</span>
-								        	<input type="file">
-								      	</div>
-								      	<div class="file-path-wrapper">
-        									<input class="file-path validate" type="text">
-     									</div>
-     									<div class="input-field">
-     										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
-     									</div>
+                       <span>Licencia de Conducir</span>
+                       <input type="file">
+                   </div>
+                   <div class="file-path-wrapper">
+                               <input class="file-path validate" type="text">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" id="num_licencia" placeholder="Número de Licencia">
+                           </div>
                                 </div>
                             </div>
-					  		<!--  // /// // -->
-					  		<!-- titular de la cuenta -->
-					  		<div id="test-swipe-4" class="col s12">
-					  			<div class="row">
-					  				<div class="col s6">
-					  					<div>
-					  						<p>¿Eres el dueño del vehículo?</p>
-					  					</div>
-					  					<div class="switch">
-    										<label>
-    												No									
-      										<input type="checkbox">
-      										<span class="lever"></span>
-      												Si
-    										</label>
-  										</div>
-					  				</div>
-					  				<div class="col s6">
-					  					<div>
-					  						<p>¿Deseas usar los datos del chofer en datos fiscales?</p>
-					  					</div>
-					  					<div class="switch center">
-    										<label>
-    												No									
-      										<input type="checkbox">
-      										<span class="lever"></span>
-      												Si
-    										</label>
-  										</div>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="nombre_prop">
-					  					<label for="nombre_prop">Nombre del Propietario</label>
-					  				</div>
-					  				<div class="col s6 input-field">
-					  					<select>
-					  						<option value="" disabled selected>Tipo de Persona</option>
-					  						<option value="1">Física</option>
-					  						<option value="2">Moral</option>
-					  					</select>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="correo_prop">
-					  					<label for="correo_prop">Correo del Propietario</label>
-					  				</div>
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="r_social">
-					  					<label for="r_social">Razón Social</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="telefono_prop">
-					  					<label for="telefono_prop">Teléfono del Propietario</label>
-					  				</div>
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="dom_fiscal">
-					  					<label for="dom_fiscal">Domicilio Fiscal</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s12 center">
-					  					<h5>Datos Bancarios</h5>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s4 input-field">
-					  					<input type="text" id="nom_banco">
-					  					<label for="nom_banco">Nombre del Banco</label>
-					  				</div>
-					  				<div class="col s4 input-field">
-					  					<input type="text" id="dir_suc">
-					  					<label for="dir_suc">Dirección de la Sucursal</label>
-					  				</div>
-					  				<div class="col s4 input-field">
-					  					<input type="text" id="tit_cuenta">
-					  					<label for="tit_cuenta">Titular de la Cuenta</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="clabe">
-					  					<label for="clabe">CLABE Interbancaria</label>
-					  				</div>
-					  				<div class="col s6 input-field">
-					  					<input type="text" id="num_cuenta">
-					  					<label for="num_cuenta">Número de la Cuenta</label>
-					  				</div>
-					  			</div>
-					  			<div class="row">
-					  				<div class="col s12 center">
-					  					<a class="waves-effect waves-light btn btn-large pulse btn_next"><i class="material-icons left">playlist_add_check</i>Finalizar</a>
-					  				</div>
-					  			</div>
-					  		</div>
-					  	</div>
-  					</div>
-  				</div>
-  			</div>
-  			<div class="col s2"></div>
-  		</div>
+    </div>
+
+
+    <div id="test-swipe-2" class="col s12">
+        <div class="row">
+                            <div class="col s4 file-field input-field">
+                                <div class="btn">
+                       <span>Tarjeta de Circulación</span>
+                       <input type="file">
+                   </div>
+                   <div class="file-path-wrapper">
+                               <input class="file-path validate" type="text">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" id="num_auto" placeholder="Número de Auto">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" class="datepicker" placeholder="Fecha de Expiración">
+                           </div>
+                            </div>
+                            <div class="col s4 file-field input-field">
+                                <div class="btn">
+                       <span>Seguro del Automóvil</span>
+                       <input type="file">
+                   </div>
+                   <div class="file-path-wrapper">
+                               <input class="file-path validate" type="text">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" id="num_poliza" placeholder="Número de Póliza">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" class="datepicker" placeholder="Fecha de Expiración">
+                           </div>
+                            </div>
+                            <div class="col s4 file-field input-field">
+                                <div class="btn">
+                       <span>Verificación del Auto</span>
+                       <input type="file">
+                   </div>
+                   <div class="file-path-wrapper">
+                               <input class="file-path validate" type="text">
+                           </div>
+                           <div class="input-field">
+                              <input type="text" class="datepicker" placeholder="Fecha de Expiración">
+                           </div>
+                            </div>
+                        </div>
+    <div class="row">
+               <div class="col s4 input-field">
+                  <select>
+                     <option value="" disabled selected>Marca</option>
+                     <option value="1">Chevrolet</option>
+                     <option value="2">Ford</option>
+                  </select>
+               </div>
+               <div class="col s4 input-field">
+                  <select>
+                     <option value="" disabled selected>Modelo</option>
+                     <option value="1">Malibú</option>
+                     <option value="2">Fusion</option>
+                  </select>
+               </div>
+               <div class="col s4 input-field">
+                  <select>
+                     <option value="" disabled selected>Año</option>
+                     <option value="1">2017</option>
+                     <option value="2">2018</option>
+                  </select>
+               </div>
+            </div>
+        <div class="row">
+               <div class="col s4 input-field">
+                  <select>
+                     <option value="" disabled selected>Tipo de Vehículo</option>
+                     <option value="1">Taxi</option>
+                     <option value="2">VIP</option>
+                  </select>
+               </div>
+               <div class="col s4 input-field">
+                  <input type="text" id="color">
+                  <label for="color">Color</label>
+               </div>
+               <div class="col s4 input-field">
+                  <input type="text" id="placas">
+                  <label for="placas">Placas</label>
+               </div>
+            </div>
+         </div>
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+    <div id="test-swipe-3" class="col s12">
+        <div class="row">
+               <div class="col s6">
+                  <div>
+                     <p>¿Eres el dueño del vehículo?</p>
+                  </div>
+                  <div class="switch">
+                              <label>
+                                    No
+                              <input type="checkbox">
+                              <span class="lever"></span>
+                                    Si
+                              </label>
+                        </div>
+               </div>
+               <div class="col s6">
+                  <div>
+                     <p>¿Deseas usar los datos del chofer en datos fiscales?</p>
+                  </div>
+                  <div class="switch center">
+                              <label>
+                                    No
+                              <input type="checkbox">
+                              <span class="lever"></span>
+                                    Si
+                              </label>
+                        </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s6 input-field">
+                  <input type="text" id="nombre_prop">
+                  <label for="nombre_prop">Nombre del Propietario</label>
+               </div>
+               <div class="col s6 input-field">
+                  <select>
+                     <option value="" disabled selected>Tipo de Persona</option>
+                     <option value="1">Física</option>
+                     <option value="2">Moral</option>
+                  </select>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s6 input-field">
+                  <input type="text" id="correo_prop">
+                  <label for="correo_prop">Correo del Propietario</label>
+               </div>
+               <div class="col s6 input-field">
+                  <input type="text" id="r_social">
+                  <label for="r_social">Razón Social</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s6 input-field">
+                  <input type="text" id="telefono_prop">
+                  <label for="telefono_prop">Teléfono del Propietario</label>
+               </div>
+               <div class="col s6 input-field">
+                  <input type="text" id="dom_fiscal">
+                  <label for="dom_fiscal">Domicilio Fiscal</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s12 center">
+                  <h5>Datos Bancarios</h5>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s4 input-field">
+                  <input type="text" id="nom_banco">
+                  <label for="nom_banco">Nombre del Banco</label>
+               </div>
+               <div class="col s4 input-field">
+                  <input type="text" id="dir_suc">
+                  <label for="dir_suc">Dirección de la Sucursal</label>
+               </div>
+               <div class="col s4 input-field">
+                  <input type="text" id="tit_cuenta">
+                  <label for="tit_cuenta">Titular de la Cuenta</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s6 input-field">
+                  <input type="text" id="clabe">
+                  <label for="clabe">CLABE Interbancaria</label>
+               </div>
+               <div class="col s6 input-field">
+                  <input type="text" id="num_cuenta">
+                  <label for="num_cuenta">Número de la Cuenta</label>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col s12 center">
+                  <a class="waves-effect waves-light btn btn-large pulse btn_next"><i class="material-icons left">playlist_add_check</i>Finalizar</a>
+               </div>
+            </div>
+         </div>
+      </div>
+         </div>
+      </div>
+   </div>
+   <div class="col s2"></div>
+    </div>
+  </div>
 {% endblock %}
 <!-- aquí finaliza el block content -->
 
