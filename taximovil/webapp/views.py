@@ -1,10 +1,10 @@
+from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.views import password_reset_confirm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.gis.geos import Point
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-
 # Create your views here.
 from django.urls import reverse
 from django.utils.encoding import force_text
@@ -12,19 +12,19 @@ from django.utils.http import urlsafe_base64_decode
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
-    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
-    PropietarioForm, VehiculoForm, TarifaForm, ComisionForm, PermisosForm
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
     TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Horario, \
     ChoferHasVehiculo, RolHasPermissions
-from django.contrib.gis.geos import Point
+from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
+    CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
+    PropietarioForm, VehiculoForm, TarifaForm, ComisionForm, PermisosForm
+
 
 class RolCrear(CreateView):
-    #redirect_field_name = 'next'
-    #login_url = '/webapp/'
-    #permission_required = 'add_empresa'
-    #raise_exception = True
+    # redirect_field_name = 'next'
+    # login_url = '/webapp/'
+    # permission_required = 'add_empresa'
+    # raise_exception = True
     model = Rol
     form_class = PermisosForm
     template_name = 'config/form_1col.html'
@@ -32,7 +32,8 @@ class RolCrear(CreateView):
     def get_success_url(self):
         return reverse('webapp:list_empresa')
 
-#@login_required(redirect_field_name='next', login_url='/webapp/')
+
+# @login_required(redirect_field_name='next', login_url='/webapp/')
 def rol_listar(request):
     template_name = 'webapp/tab_rol.html'
     return render(request, template_name)
@@ -75,7 +76,6 @@ class RolActualizar(UpdateView):
             permisos = form.cleaned_data.get('permisos')
             RolHasPermissions.objects.filter(rol__pk=id_rol).delete()
             for permiso in permisos:
-
                 tc = RolHasPermissions(rol=rol, permission=permiso)
                 tc.save()
 
@@ -95,6 +95,7 @@ def rol_eliminar(request, pk):
     RolHasPermissions.objects.filter(rol__pk=id_rol).delete()
     e.delete()
     return JsonResponse({'result': 1})
+
 
 def login(request):
     error_message = ''
@@ -123,21 +124,25 @@ def login(request):
 
     # template_name = 'webapp/login.html'
     # return render(request, template_name)
+
+
 def logout_view(request):
     logout(request)
     return redirect(reverse('webapp:login'))
+
 
 class EmpresaCrear(PermissionRequiredMixin, CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_empresa'
-    #raise_exception = True
+    # raise_exception = True
     model = Empresa
     form_class = EmpresaForm
     template_name = 'config/form_1col.html'
 
     def get_success_url(self):
         return reverse('webapp:list_empresa')
+
 
 @login_required(redirect_field_name='next', login_url='/webapp/')
 def empresa_listar(request):
@@ -307,7 +312,7 @@ def chofer_listar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'email', 'telefono', 'estatus','documentos', 'vehiculos', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus', 'documentos', 'vehiculos', 'editar', 'eliminar']
     order_columns = ['nombre', 'email', 'telefono', 'estatus']
     max_display_length = 100
 
@@ -383,7 +388,6 @@ class ChoferActualizar(PermissionRequiredMixin, UpdateView):
             taxis = form.cleaned_data.get('taxis')
             ChoferHasVehiculo.objects.filter(chofer__pk=id_chofer).delete()
             for taxi in taxis:
-
                 tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
                 tc.save()
 
@@ -1401,6 +1405,7 @@ class TarifaCrear(PermissionRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('webapp:list_tarifa')
 
+
 class TarifaActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
@@ -1411,6 +1416,7 @@ class TarifaActualizar(PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('webapp:list_tarifa')
+
 
 def tarifa_crear(request):
     template_name = 'webapp/registro_tarifario.html'
@@ -1424,22 +1430,22 @@ def tarifa_crear(request):
     else:
         form = TarifaForm()
         print(form)
-    # elif request.method == 'GET':
-    #     c = Ciudad.objects.all()
-    #     s = Sucursal.objects.all()
-    #     z = Zona.objects.all()
-    #     p = Pais.objects.all()
-    #     tv = TipoVehiculo.objects.all()
-    #     e = Empresa.objects.all()
-    #     ts = TipoServicio.objects.all()
-    #     z = Zona.objects.all()
-    #     b = Base.objects.all()
-    #     si = Sitio.objects.all()
-    #     fp = TipoPago.objects.all()
-    #     context = dict(sucursales=s, ciudades=c, zonas=z, paises=p, vehiculos=tv, empresas=e, servicios=ts, bases=b,
-    #                    sitios=si, pagos=fp)
-    #     return render(request, template_name, context)
-    # form = TarifaForm()
+        # elif request.method == 'GET':
+        #     c = Ciudad.objects.all()
+        #     s = Sucursal.objects.all()
+        #     z = Zona.objects.all()
+        #     p = Pais.objects.all()
+        #     tv = TipoVehiculo.objects.all()
+        #     e = Empresa.objects.all()
+        #     ts = TipoServicio.objects.all()
+        #     z = Zona.objects.all()
+        #     b = Base.objects.all()
+        #     si = Sitio.objects.all()
+        #     fp = TipoPago.objects.all()
+        #     context = dict(sucursales=s, ciudades=c, zonas=z, paises=p, vehiculos=tv, empresas=e, servicios=ts, bases=b,
+        #                    sitios=si, pagos=fp)
+        #     return render(request, template_name, context)
+        # form = TarifaForm()
         return render(request, template_name, {'form': form})
 
 
@@ -1447,14 +1453,11 @@ def tarifa_add(request):
     response_data = {}
     try:
         pago = request.POST.get('pago')
-        print(pago)
         pago = pago.split(",")
         pago.pop(0)
-        print(pago)
         pagoList = []
         for i in pago:
             pagoList.append(int(i))
-        print(pagoList)
         tarifa = Tarifa(tarifa_base=request.POST.get('tarifaBase'), costo_minimo=request.POST.get('costoMinimo'),
                         costo_km=request.POST.get('costoKm'),
                         distancia_max=request.POST.get('distanciaMaxima'),
@@ -1470,9 +1473,7 @@ def tarifa_add(request):
                         base=Base.objects.get(pk=request.POST.get('base')),
                         tipo_vehiculo=TipoVehiculo.objects.get(pk=request.POST.get('tipoVehiculo')),
                         tipo_servicio=TipoServicio.objects.get(pk=request.POST.get('servicio')))
-        print(tarifa)
         tarifa.save()
-        print(pago)
         try:
             for i in range(len(pagoList)):
                 pk_pago = TipoPago.objects.get(pk=pagoList[i])
@@ -1484,6 +1485,7 @@ def tarifa_add(request):
         response_data['error'] = 'error'
     return JsonResponse(response_data)
 
+
 def tarifa_listar(request):
     template_name = 'webapp/tab_tarifa.html'
     return render(request, template_name)
@@ -1492,8 +1494,8 @@ def tarifa_listar(request):
 class TarifaListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Tarifa
-    columns = ['tarifa_base', 'ciudad', 'sitio', 'empresa', 'sucursal', 'pais', 'horario', 'editar', 'eliminar']
-    order_columns = ['tarifa_base', 'ciudad', 'sitio', 'empresa', 'sucursal', 'pais']
+    columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre', 'horario', 'editar', 'eliminar']
+    order_columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre']
     max_display_length = 100
 
     def render_column(self, row, column):
@@ -1510,12 +1512,6 @@ class TarifaListarAjaxListView(BaseDatatableView):
             return row.ciudad.nombre
         elif column == 'sitio':
             return row.sitio.nombre
-        elif column == 'empresa':
-            return row.empresa.nombre
-        elif column == 'sucursal':
-            return row.sucursal.nombre
-        elif column == 'pais':
-            return row.pais.nombre
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
@@ -1525,12 +1521,14 @@ class TarifaListarAjaxListView(BaseDatatableView):
     def get_initial_queryset(self):
         return Tarifa.objects.all()
 
+
 def horarios_tarifa(request, pk):
     template_name = 'webapp/horario_tarifa.html'
     t = get_object_or_404(Tarifa, pk=pk)
     horarios = t.horario_set.all()
     context = {"horarios": horarios, "tarifa": t}
     return render(request, template_name, context)
+
 
 def agregar_horario(request):
     response_data = {}
@@ -1547,6 +1545,7 @@ def agregar_horario(request):
         response_data['error'] = 'error'
     return JsonResponse(response_data)
 
+
 def editar_horario(request, pk):
     response_data = {}
     try:
@@ -1560,6 +1559,7 @@ def editar_horario(request, pk):
         response_data['error'] = 'error'
     return JsonResponse(response_data)
 
+
 def eliminar_horario(request, pk):
     response_data = {}
     try:
@@ -1570,13 +1570,13 @@ def eliminar_horario(request, pk):
         response_data['error'] = 'error'
     return JsonResponse(response_data)
 
+
 def vehiculos_chofer(request, pk):
     template_name = 'webapp/vehiculo_chofer.html'
     c = get_object_or_404(Chofer, pk=pk)
     vehiculos = c.taxis.all()
     context = {"horarios": vehiculos, "chofer": c}
     return render(request, template_name, context)
-
 
 
 class ComisionCrear(PermissionRequiredMixin, CreateView):
@@ -1653,29 +1653,36 @@ def vehiculos_activos(request):
     template_name = 'webapp/vehiculos_activos.html'
     return render(request, template_name)
 
+
 def todos_vehiculos(request):
     template_name = 'webapp/servicios.html'
     return render(request, template_name)
+
 
 def llamada(request):
     template_name = 'webapp/llamada.html'
     return render(request, template_name)
 
+
 def mensajes(request):
     template_name = 'webapp/mensajes.html'
     return render(request, template_name)
+
 
 def reportes(request):
     template_name = 'webapp/reportes.html'
     return render(request, template_name)
 
+
 def creditos(request):
     template_name = 'webapp/creditos.html'
     return render(request, template_name)
 
+
 def configuraciones(request):
     template_name = 'webapp/configuraciones.html'
     return render(request, template_name)
+
 
 def registro_conductor(request):
     template_name = 'webapp/registro.html'
