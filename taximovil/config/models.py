@@ -127,9 +127,9 @@ class Cliente(Usuario):
     lada = models.IntegerField(blank=True, null=True)
     procedencia = models.CharField(max_length=45, blank=True, null=True)
     customer_id = models.CharField(max_length=45, blank=True, null=True)
-    googleid = models.CharField(max_length=128, blank=True, null=True)
+    googleid = models.CharField(max_length=256, blank=True, null=True)
+    calificiacion = models.FloatField(default=5)
 
-    # customer_token = models.CharField(blank=True, null=True, max_length=512)
 
     def get_full_name(self):
         return str(self.nombre) + ' ' + str(self.a_paterno) + ' ' + str(self.a_materno)
@@ -146,7 +146,17 @@ class Chofer(Usuario):
     saldo = models.FloatField()
     direccion = models.ForeignKey('Direccion', models.DO_NOTHING)
     taxis = models.ManyToManyField('Vehiculo', through='ChoferHasVehiculo', related_name='choferes')
+    latlgn = models.PointField(blank=True, null=True)
 
+    @property
+    def latitud(self):
+        """I'm the 'x' property."""
+        return str(self.latlgn.coords[1])
+
+    @property
+    def longitud(self):
+        """I'm the 'x' property."""
+        return str(self.latlgn.coords[0])
     # estatusChofer
     # cuenta (historial)
     # documentos

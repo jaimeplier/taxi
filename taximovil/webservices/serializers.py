@@ -12,6 +12,15 @@ class CodigoSerializer(serializers.Serializer):
     telefono = serializers.CharField(help_text="telefono a 10 posiciones sin guiones")
 
 
+class VerChoferSerializer(serializers.Serializer):
+    chofer = serializers.IntegerField()
+
+
+class ActualizarChoferSerializer(serializers.Serializer):
+    lat = serializers.FloatField()
+    lon = serializers.FloatField()
+
+
 class ResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -39,21 +48,22 @@ class LoginChoferSerializer(serializers.Serializer):
     dispositivo = serializers.CharField()
 
 
-class ChoferSerializer(serializers.Serializer):
+class ChoferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chofer
-        fields = ('nombre', 'a_paterno', 'a_materno', 'telefono', 'email',
-                  'password', 'numero_licencia', 'turno', 'saldo')
+        fields = '__all__'
 
+class TipoDePagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoPago
+        fields = '__all__'
 
 class ChoferEstatusSerializer(serializers.Serializer):
     activo = serializers.BooleanField()
 
 
-class TipoPagoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TipoPago
-        fields = ('nombre',)
+class TipoPagoSerializer(serializers.Serializer):
+    ciudad = serializers.IntegerField()
 
 
 class TipoVehiculoSerializer(serializers.ModelSerializer):
@@ -87,6 +97,51 @@ class CoordenadasSerializer(serializers.Serializer):
         return value
 
     def validate_longitud(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -180 or value > 180:
+            raise serializers.ValidationError("El servicio no existe")
+        return value
+
+
+class CotizarSerializer(serializers.Serializer):
+    fecha = serializers.DateTimeField()
+    ciudad = serializers.IntegerField()
+    tipo_vehiculo = serializers.IntegerField()
+    tipo_servicio = serializers.IntegerField()
+    sucursal = serializers.IntegerField(allow_null=True, required=False)
+    base = serializers.IntegerField(allow_null=True, required=False)
+    lat_origen = serializers.FloatField()
+    lon_origen = serializers.FloatField()
+    lat_destino = serializers.FloatField()
+    lon_destino = serializers.FloatField()
+
+    def validate_lat_origen(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -90 or value > 90:
+            raise serializers.ValidationError("La latitud no es valida")
+        return value
+
+    def validate_lon_origen(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -180 or value > 180:
+            raise serializers.ValidationError("El servicio no existe")
+        return value
+
+    def validate_lat_destino(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -90 or value > 90:
+            raise serializers.ValidationError("La latitud no es valida")
+        return value
+
+    def validate_lon_destino(self, value):
         """
         Check that servicio exists
         """
