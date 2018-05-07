@@ -11,12 +11,15 @@ class CodigoSerializer(serializers.Serializer):
     codigo = serializers.CharField(help_text="codigo a validar a 5 digitos")
     telefono = serializers.CharField(help_text="telefono a 10 posiciones sin guiones")
 
+
 class VerChoferSerializer(serializers.Serializer):
     chofer = serializers.IntegerField()
+
 
 class ActualizarChoferSerializer(serializers.Serializer):
     lat = serializers.FloatField()
     lon = serializers.FloatField()
+
 
 class ResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -105,8 +108,8 @@ class CotizarSerializer(serializers.Serializer):
     ciudad = serializers.IntegerField()
     tipo_vehiculo = serializers.IntegerField()
     tipo_servicio = serializers.IntegerField()
-    sucursal = serializers.IntegerField(allow_null=True)
-    base = serializers.IntegerField(allow_null=True)
+    sucursal = serializers.IntegerField(allow_null=True, required=False)
+    base = serializers.IntegerField(allow_null=True, required=False)
     lat_origen = serializers.FloatField()
     lon_origen = serializers.FloatField()
     lat_destino = serializers.FloatField()

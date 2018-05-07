@@ -1,12 +1,14 @@
+import googlemaps
 from django.contrib.gis.geos import Point
 from django.db.models import F
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Ciudad, Tarifa
 from config.serializers import CiudadSerializer
+from taximovil import settings
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer
 
 
@@ -49,7 +51,7 @@ class BuscarCiudad(APIView):
 
 
 class Cotizar(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         serializer = CotizarSerializer(data=request.data)
@@ -60,11 +62,31 @@ class Cotizar(APIView):
         tipo_servicio = serializer.validated_data.get('tipo_servicio')
         sucursal = serializer.validated_data.get('sucursal')
         base = serializer.validated_data.get('base')
-        
-
-        buscar_tarifa()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        lat_origen = serializer.data.get('lat_origen')
+        lon_origen = serializer.data.get('lon_origen')
+        origen = (lat_origen, lon_origen)
+        lat_destino = serializer.data.get('lat_destino')
+        lon_destino = serializer.data.get('lon_destino')
+        destino = (lat_destino, lon_destino)
+        t = buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal, base)
+        if t is None:
+            return Response({"error": "No se encontraron tarifas para la solicitud"}, status=status.HTTP_200_OK)
+        gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+        directions_result = gmaps.distance_matrix(origen, destino, departure_time=fecha, traffic_model='pessimistic')
+        distancia = directions_result['rows'][0]['elements'][0]['distance']['value'] / 1000
+        distancia_text = directions_result['rows'][0]['elements'][0]['distance']['text']
+        duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value'] / 50
+        duracion_text = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['text']
+        precio = t.tarifa_base + t.costo_minuto * duracion
+        if distancia > t.distancia_max:
+            dif_distancia = distancia - t.distancia_max
+            precio = precio + t.distancia_max * t.costo_km + dif_distancia * t.costo_km * t.incremento_distancia
+        else:
+            precio = precio + distancia * t.costo_km
+        if precio < t.costo_minimo:
+            precio = t.costo_minimo
+        return Response({"distance": distancia, "dsitance_text": distancia_text, "duracion": duracion,
+                         "duracion_text": duracion_text, "precio": precio}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
         return CotizarSerializer()
-
