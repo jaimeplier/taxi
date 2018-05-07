@@ -1,3 +1,12 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
 .banner_rosa
 {
 	background-color: #D01E88;
@@ -108,7 +117,7 @@
 .titulo_servicio
 {
   color: #FFFFFF;
-  font-size: 25px;
+  font-size: 1.2rem;
 }
 
 .no_top
@@ -184,5 +193,9 @@
 .margin_114
 {
     margin-top: 7% !important;
+}
+.btn_rosa
+{
+  background-color: #D01E88;
 }
 
