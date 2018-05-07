@@ -4,7 +4,7 @@ from rest_framework import routers
 from webservices import tarjeta, cliente
 from webservices.cliente import RegistrarUsuario
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, ChangePassword, ResetPassword, \
-    ChoferEstatus, LoginChofer, TipoDePago, TipoDeVehiculo, LogoutCliente, LogoutChofer, VerChofer
+    ChoferEstatus, LoginChofer, TipoDePago, TipoDeVehiculo, LogoutCliente, LogoutChofer, VerChofer, ActualizarChofer
 
 app_name = 'webservices'
 
@@ -29,4 +29,5 @@ urlpatterns = [
     path('tipoPago/', TipoDePago.as_view(), name='tipo_pago'),
     path('tipoVehiculo/', TipoDeVehiculo.as_view(), name='tipo_vehiculo'),
     path('verChofer/', VerChofer.as_view(), name='ver_chofer'),
+    path('actualizarChofer/', ActualizarChofer.as_view(), name='actualizar_chofer'),
 ]

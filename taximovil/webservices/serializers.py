@@ -14,6 +14,10 @@ class CodigoSerializer(serializers.Serializer):
 class VerChoferSerializer(serializers.Serializer):
     chofer = serializers.IntegerField()
 
+class ActualizarChoferSerializer(serializers.Serializer):
+    lat = serializers.FloatField()
+    lon = serializers.FloatField()
+
 class ResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
