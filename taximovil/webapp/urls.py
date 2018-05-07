@@ -153,6 +153,7 @@ urlpatterns = [
     path('reportes/', views.reportes, name='reportes'),
     path('creditos/', views.creditos, name='creditos'),
     path('menu_configuraciones/', views.configuraciones, name='configuraciones'),
+    path('registrar_conductor/', views.registro_conductor, name='registro_conductor'),
 
 ]
 

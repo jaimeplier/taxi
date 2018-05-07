@@ -7,18 +7,17 @@
 {% block content %}
 
   		<div class="row">
-  		<!--	<div class="col s2 center">
-  				<img src="images/logo.png" class="responsive-img" id="mini-logo">
-  			</div> -->    <!-- ESTAS LINEAS FUERON COMENTADAS PORQUE NO ME ACUERDO SI BORRANDO ESTO MODIFICO LA POSICION DEL TEMPLATE :P -->
+  			<div class="col s2">
+  			</div>
   			<div class="col s8">
   				<div class="row">
   					<div class="col s12">
   						<ul id="tabs-swipe-demo" class="tabs nav_rosa">
-						    <li class="tab col s3"><a class="white-text" href="#test-swipe-1">1.Info. Personal</a></li>
-						    <li class="tab col s3"><a class="white-text" href="#test-swipe-2">2.Info. del Vehículo</a></li>
-						    <li class="tab col s3"><a class="white-text" href="#test-swipe-3">3.Titular de Cuenta</a></li>
+						    <li class="tab col s4"><a class="white-text" href="#test-swipe-1">1.Info. Personal</a></li>
+						    <li class="tab col s4"><a class="white-text" href="#test-swipe-2">2.Info. del Vehículo</a></li>
+						    <li class="tab col s4"><a class="white-text" href="#test-swipe-3">3.Titular de Cuenta</a></li>
 					  	</ul>
-					  	<div class="row">
+
 					  		<div id="test-swipe-1" class="col s12">
 					  			<!-- INFORMACION PERSONAL -->
 					  			<div class="row">
@@ -113,7 +112,7 @@
 					  				</div>
 					  			</div>
                                 <div class="row">
-                                    <div class="col s4 input-field">
+                                    <div class="col s4 file-field input-field">
                                         <div class="btn">
 								        	<span>Antecedentes no Penales</span>
 								        	<input type="file">
@@ -128,7 +127,7 @@
      										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
      									</div>
                                     </div>
-                                    <div class="col s4 input-field">
+                                    <div class="col s4 file-field input-field">
                                         <div class="btn">
 								        	<span>Examen Toxicológico</span>
 								        	<input type="file">
@@ -143,7 +142,7 @@
      										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
      									</div>
                                     </div>
-                                    <div class="col s4 input-field">
+                                    <div class="col s4 file-field input-field">
                                         <div class="btn">
 								        	<span>Licencia de Conducir</span>
 								        	<input type="file">
@@ -156,12 +155,6 @@
      									</div>
                                     </div>
                                 </div>
-					  			<div class="row">
-					  				<div class="col s10"></div>
-					  				<div class="col s2">
-					  					<a href="#test-swipe-2" class="btn btn-floating btn-large btn_next pulse"><i class="material-icons">arrow_forward</i></a>
-					  				</div>
-					  			</div>
 					  		</div>
 					  		<!-- // /// // -->
 					  		<!-- INFORMACION DEL VEHICULO -->
@@ -208,7 +201,7 @@
 					  			</div>
 					  		</div>
                             <div class="row">
-                                <div class="col s4 input-field">
+                                <div class="col s4 file-field input-field">
                                     <div class="btn">
 								        	<span>Tarjeta de Circulación</span>
 								        	<input type="file">
@@ -223,7 +216,7 @@
      										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
      									</div>
                                 </div>
-                                <div class="col s4 input-field">
+                                <div class="col s4 file-field input-field">
                                     <div class="btn">
 								        	<span>Seguro del Automóvil</span>
 								        	<input type="file">
@@ -238,7 +231,7 @@
      										<input type="text" class="datepicker" placeholder="Fecha de Expiración">
      									</div>
                                 </div>
-                                <div class="col s4 input-field">
+                                <div class="col s4 file-field input-field">
                                     <div class="btn">
 								        	<span>Verificación del Auto</span>
 								        	<input type="file">
@@ -367,6 +360,7 @@
 <script type="text/javascript">
 	$("document").ready(function()
 	{
+	    $('ul.tabs').tabs();
 		$(".dropdown-button").dropdown();
 		$(".button-collapse").sideNav();
 		$('select').material_select();

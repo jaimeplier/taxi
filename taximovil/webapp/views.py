@@ -1499,3 +1499,7 @@ def creditos(request):
 def configuraciones(request):
     template_name = 'webapp/configuraciones.html'
     return render(request, template_name)
+
+def registro_conductor(request):
+    template_name = 'webapp/registro.html'
+    return render(request, template_name)
