@@ -7,25 +7,21 @@ from django.template.loader import get_template
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from fcm_django.models import FCMDevice
-import django
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
-from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from twilio.rest import Client
 
-from config.models import Codigo, Usuario, Chofer, Vehiculo, ChoferHasVehiculo, Tarifa, Ciudad, TipoPago, TipoVehiculo
+from config.models import Chofer, ChoferHasVehiculo
 from config.models import Codigo, Usuario, Cliente
 from config.serializers import ClienteSerializer
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
-from webservices.permissions import ChoferPermission
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
-    ChoferSerializer, ResetSerializer, ChangePasswordSerializer, ChoferEstatusSerializer, TipoPagoSerializer, \
-    TipoVehiculoSerializer, VerChoferSerializer, ActualizarChoferSerializer, TipoDePagoSerializer
-from django.contrib.gis.geos import Point
+    ChoferSerializer, ResetSerializer, ChangePasswordSerializer, VerChoferSerializer
+
 
 class EnviarCodigo(APIView):
     """
@@ -94,6 +90,7 @@ class VerificaCodigo(APIView):
     def get_serializer(self):
         return CodigoSerializer()
 
+
 class LoginChofer(APIView):
     """
     post:
@@ -114,7 +111,7 @@ class LoginChofer(APIView):
         c = None
         try:
             c = Chofer.objects.get(email=email)
-            cv = ChoferHasVehiculo.objects.filter(chofer=c,vehiculo__placa=placas,estatus=False)
+            cv = ChoferHasVehiculo.objects.filter(chofer=c, vehiculo__placa=placas, estatus=False)
             if cv.count() == 0:
                 response_data['resultado'] = 0
                 response_data['error'] = "Este vehiculo ya esta en uso por alguien mas"
@@ -153,6 +150,7 @@ class LoginChofer(APIView):
     def get_serializer(self):
         return LoginChoferSerializer()
 
+
 class LogoutChofer(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -168,60 +166,6 @@ class LogoutChofer(APIView):
         except (AttributeError, ObjectDoesNotExist):
             return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"result": 1}, status=status.HTTP_200_OK)
-
-
-class ChoferEstatus(APIView):
-    """
-    post:
-        Cambiar estatus del chofer
-    """
-    permission_classes = (IsAuthenticated, ChoferPermission)
-
-    def post(self,request):
-        serializer = ChoferEstatusSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        c = Chofer.objects.get(pk=request.user.pk)
-        c.activo = serializer.validated_data.get('activo')
-        c.save()
-        return Response({'resultado': 1}, status=status.HTTP_200_OK)
-
-    def get_serializer(self):
-        return ChoferEstatusSerializer()
-
-
-class TipoDePago(APIView):
-    serializer_class = TipoPagoSerializer
-
-    def post(self,request):
-        response_data = {}
-        serializer = TipoPagoSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        #t = TipoPago.objects.filter(tarifa__ciudad__pk=request.data['ciudad'])
-        c = Ciudad.objects.get(pk=request.data['ciudad'])
-        t = Tarifa.objects.filter(ciudad=c)#.aggregate()
-        t = t.first()
-        #p = TipoPago.objects.filter(pk = t.pago__id)
-        serializer = TipoDePagoSerializer(t.pago, many=True)
-        response_data['pago'] = serializer.data
-        return Response(response_data)#Response({'resultado': p.}, status.HTTP_200_OK)
-        # c.activo = serializer.validated_data.get('activo')
-        # c.save()
-        # return Response({'resultado': 1}, status=status.HTTP_200_OK)
-
-    def get_serializer(self):
-        return TipoPagoSerializer()
-
-
-class TipoDeVehiculo(ListAPIView):
-    serializer_class = TipoVehiculoSerializer
-
-    def get_queryset(self):
-        """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
-        """
-        queryset = TipoVehiculo.objects.all()
-        return queryset
 
 
 class LoginUsuario(APIView):
@@ -272,6 +216,7 @@ class LoginUsuario(APIView):
     def get_serializer(self):
         return LoginSerializer()
 
+
 class LogoutCliente(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -300,13 +245,14 @@ class ChangePassword(APIView):
     def get_serializer(self):
         return ChangePasswordSerializer()
 
+
 class VerChofer(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         serializer = VerChoferSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        c = Chofer.objects.get(id = serializer.validated_data.get('chofer'))
+        c = Chofer.objects.get(id=serializer.validated_data.get('chofer'))
         if c is not None:
             lat = c.latitud
             lon = c.longitud
@@ -317,26 +263,6 @@ class VerChofer(APIView):
     def get_serializer(self):
         return VerChoferSerializer()
 
-class ActualizarChofer(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        serializer = ActualizarChoferSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        c = Chofer.objects.get(id = request.user.pk)
-        print(request.user.pk)
-        if c is not None:
-            lat = serializer.validated_data.get('lat')
-            lon = serializer.validated_data.get('lon')
-            p = Point(float(lon), float(lat))
-            c.latlgn = p
-            c.save()
-        else:
-            return Response({"error": "Datos incorrectos"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"result": 1}, status=status.HTTP_200_OK)
-
-    def get_serializer(self):
-        return ActualizarChoferSerializer()
 
 class ResetPassword(APIView):
     permission_classes = (AllowAny,)

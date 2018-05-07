@@ -2,10 +2,12 @@ from django.urls import path, include
 from rest_framework import routers
 
 from webservices import tarjeta, cliente
+from webservices.catalogos import TipoPagoList, TipoVehiculoList
+from webservices.choferes import ActualizarChofer, ChoferEstatus
 from webservices.cliente import RegistrarUsuario
 from webservices.servicios import BuscarCiudad, Cotizar
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, ChangePassword, ResetPassword, \
-    ChoferEstatus, LoginChofer, TipoDePago, TipoDeVehiculo, LogoutCliente, LogoutChofer, VerChofer, ActualizarChofer
+    LoginChofer, LogoutCliente, LogoutChofer, VerChofer
 
 app_name = 'webservices'
 
@@ -27,11 +29,11 @@ urlpatterns = [
     path('resetPassword/', ResetPassword.as_view(), name='reset_password'),
     path('loginChofer/', LoginChofer.as_view(), name='login_chofer'),
     path('estatusChofer/', ChoferEstatus.as_view(), name='estatus_chofer'),
-    path('tipoPago/', TipoDePago.as_view(), name='tipo_pago'),
-    path('tipoVehiculo/', TipoDeVehiculo.as_view(), name='tipo_vehiculo'),
+    path('tipoPago/', TipoPagoList.as_view(), name='tipo_pago'),
+    path('tipoVehiculo/', TipoVehiculoList.as_view(), name='tipo_vehiculo'),
     path('verChofer/', VerChofer.as_view(), name='ver_chofer'),
     path('actualizarChofer/', ActualizarChofer.as_view(), name='actualizar_chofer'),
-    #Servicios
+    # Servicios
     path('buscarCiudad/', BuscarCiudad.as_view(), name='buscar_ciudad'),
     path('cotizar/', Cotizar.as_view(), name='cotizar'),
 ]

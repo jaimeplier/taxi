@@ -2,7 +2,7 @@ import googlemaps
 from django.contrib.gis.geos import Point
 from django.db.models import F
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -51,7 +51,7 @@ class BuscarCiudad(APIView):
 
 
 class Cotizar(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         serializer = CotizarSerializer(data=request.data)

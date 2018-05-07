@@ -130,7 +130,6 @@ class Cliente(Usuario):
     googleid = models.CharField(max_length=256, blank=True, null=True)
     calificiacion = models.FloatField(default=5)
 
-
     def get_full_name(self):
         return str(self.nombre) + ' ' + str(self.a_paterno) + ' ' + str(self.a_materno)
 
@@ -157,6 +156,7 @@ class Chofer(Usuario):
     def longitud(self):
         """I'm the 'x' property."""
         return str(self.latlgn.coords[0])
+
     # estatusChofer
     # cuenta (historial)
     # documentos
@@ -473,6 +473,7 @@ class TipoVehiculo(models.Model):
     caracteristicas = models.CharField(max_length=200)
     num_max_pasajeros = models.IntegerField()
     num_maletas = models.IntegerField()
+    foto = models.FileField(upload_to='tipo_vehiculo/', blank=True, null=True)
 
     def __str__(self):
         return self.nombre

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from config.models import Usuario, Cliente, Chofer, TipoPago, TipoVehiculo
+from config.models import Usuario, Cliente, Chofer, TipoPago
 
 
 class TelefonoSerializer(serializers.Serializer):
@@ -53,24 +53,15 @@ class ChoferSerializer(serializers.ModelSerializer):
         model = Chofer
         fields = '__all__'
 
+
 class TipoDePagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TipoPago
         fields = '__all__'
 
+
 class ChoferEstatusSerializer(serializers.Serializer):
     activo = serializers.BooleanField()
-
-
-class TipoPagoSerializer(serializers.Serializer):
-    ciudad = serializers.IntegerField()
-
-
-class TipoVehiculoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TipoVehiculo
-        fields = ('nombre',)
-    # ciudad = serializers.IntegerField()
 
 
 class ChangePasswordSerializer(serializers.Serializer):
