@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from config.models import Usuario, Cliente, Chofer, TipoPago
+from config.models import Usuario, Cliente, Chofer, TipoPago, Servicio
 
 
 class TelefonoSerializer(serializers.Serializer):
@@ -139,3 +139,11 @@ class CotizarSerializer(serializers.Serializer):
         if value < -180 or value > 180:
             raise serializers.ValidationError("El servicio no existe")
         return value
+
+
+class SolicitarServicioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servicio
+        fields = (
+        'hora_servicio', 'origen', 'destino', 'direccion_origen', 'direccion_destino', 'ref_lugar', 'ref_persona',
+        'distancia','costo','tipo_servicio','sitio','tipo_pago')

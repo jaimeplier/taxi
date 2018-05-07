@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Ciudad, Tarifa
-from config.serializers import CiudadSerializer
+from config.serializers import CiudadSerializer, TarifaSerializer
 from taximovil import settings
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer
 
@@ -75,9 +75,9 @@ class Cotizar(APIView):
         directions_result = gmaps.distance_matrix(origen, destino, departure_time=fecha, traffic_model='pessimistic')
         distancia = directions_result['rows'][0]['elements'][0]['distance']['value'] / 1000
         distancia_text = directions_result['rows'][0]['elements'][0]['distance']['text']
-        duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value'] / 50
+        duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
         duracion_text = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['text']
-        precio = t.tarifa_base + t.costo_minuto * duracion
+        precio = t.tarifa_base + t.costo_minuto * (duracion / 50)
         if distancia > t.distancia_max:
             dif_distancia = distancia - t.distancia_max
             precio = precio + t.distancia_max * t.costo_km + dif_distancia * t.costo_km * t.incremento_distancia
@@ -85,8 +85,10 @@ class Cotizar(APIView):
             precio = precio + distancia * t.costo_km
         if precio < t.costo_minimo:
             precio = t.costo_minimo
+        tarifa = TarifaSerializer(t)
         return Response({"distance": distancia, "dsitance_text": distancia_text, "duracion": duracion,
-                         "duracion_text": duracion_text, "precio": precio}, status=status.HTTP_200_OK)
+                         "duracion_text": duracion_text, "precio": precio, "tarifa": tarifa.data},
+                        status=status.HTTP_200_OK)
 
     def get_serializer(self):
         return CotizarSerializer()
