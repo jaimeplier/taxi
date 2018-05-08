@@ -57,6 +57,9 @@ class TipoDePagoSerializer(serializers.ModelSerializer):
 class ChoferEstatusSerializer(serializers.Serializer):
     activo = serializers.BooleanField()
 
+class ServicioEstatusSerializer(serializers.Serializer):
+    servicio = serializers.IntegerField()
+    estatus = serializers.IntegerField()
 
 class ChangePasswordSerializer(serializers.Serializer):
     old = serializers.CharField()

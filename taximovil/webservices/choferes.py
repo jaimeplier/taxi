@@ -1,12 +1,13 @@
 from django.contrib.gis.geos import Point
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Chofer
+from config.models import Chofer, EstatusServicio, Servicio
 from webservices.permissions import ChoferPermission
-from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer
+from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer
 
 
 class ChoferEstatus(APIView):
@@ -27,6 +28,27 @@ class ChoferEstatus(APIView):
     def get_serializer(self):
         return ChoferEstatusSerializer()
 
+class CambiarEstatusServicio(APIView):
+    """
+    post:
+        Cambiar estatus del servicio
+    """
+    #permission_classes = (IsAuthenticated)
+
+    def post(self,request):
+        serializer = ServicioEstatusSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            e = EstatusServicio.objects.get(pk = serializer.validated_data.get('estatus'))
+            s = Servicio.objects.get(pk= serializer.validated_data.get('servicio'))
+            Servicio.objects.filter(pk = serializer.validated_data.get('servicio')).update(estatus=e)
+            return Response({'resultado': 1}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'resultado': 0, 'error': 'Estatus o servicio no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+
+    def get_serializer(self):
+        return ServicioEstatusSerializer()
 
 class ActualizarChofer(APIView):
     permission_classes = (IsAuthenticated,ChoferPermission)
