@@ -1,6 +1,6 @@
 <!--   SOFTIC SOLUTIONS   -->
 {% extends "config/tab_base.html" %}
-{% block titulo_tabla %}<h5 class="black-text margin_114">Roles</h5>{% endblock %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Roles</h5><a class="waves-effect waves-light btn" href="{% url 'webapp:nuevo_rol' %}" style="position: absolute; left: 40%;"><i class="material-icons left">add</i>Agregar</a>{% endblock %}
 {% load static %}
 {% block campos %}
     <th>Nombre</th>
