@@ -146,6 +146,7 @@ class Chofer(Usuario):
     direccion = models.ForeignKey('Direccion', models.DO_NOTHING)
     taxis = models.ManyToManyField('Vehiculo', through='ChoferHasVehiculo', related_name='choferes')
     latlgn = models.PointField(blank=True, null=True)
+    activo = models.BooleanField(default=False)
 
     @property
     def latitud(self):
