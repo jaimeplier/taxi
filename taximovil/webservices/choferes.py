@@ -33,7 +33,7 @@ class CambiarEstatusServicio(APIView):
     post:
         Cambiar estatus del servicio
     """
-    #permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated)
 
     def post(self,request):
         serializer = ServicioEstatusSerializer(data=request.data)

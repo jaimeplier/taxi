@@ -742,3 +742,25 @@ class Tarjeta(models.Model):
     class Meta:
         managed = True
         db_table = 'trajeta'
+
+class Rutas(models.Model):
+    punto = models.PointField()
+    servicio = models.ForeignKey(Servicio, models.DO_NOTHING)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    @property
+    def latitudDestino(self):
+        """I'm the 'x' property."""
+        if self.punto is None:
+            return None
+        return str(self.punto.coords[1])
+
+    @property
+    def longitudDestino(self):
+        """I'm the 'x' property."""
+        if self.punto is None:
+            return None
+        return str(self.punto.coords[0])
+
+    class Meta:
+        managed = True
+        db_table = 'rutas'

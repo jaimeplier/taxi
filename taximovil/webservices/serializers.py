@@ -92,6 +92,26 @@ class CoordenadasSerializer(serializers.Serializer):
             raise serializers.ValidationError("El servicio no existe")
         return value
 
+class RutaSerializer(serializers.Serializer):
+    servicio = serializers.IntegerField()
+    latitud = serializers.FloatField()
+    longitud = serializers.FloatField()
+
+    def validate_latitud(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -90 or value > 90:
+            raise serializers.ValidationError("La latitud no es valida")
+        return value
+
+    def validate_longitud(self, value):
+        """
+        Check that servicio exists
+        """
+        if value < -180 or value > 180:
+            raise serializers.ValidationError("El servicio no existe")
+        return value
 
 class CotizarSerializer(serializers.Serializer):
     fecha = serializers.DateTimeField()

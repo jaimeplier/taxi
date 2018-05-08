@@ -4,6 +4,7 @@ import googlemaps
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
@@ -11,12 +12,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer
+from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer, Rutas
 from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer
 from taximovil import settings
 from webservices.permissions import IsOwnerPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
-    ServicioPkSerializer, ChoferCoordenadasSerializer
+    ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer
 
 
 def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, base=None):
@@ -156,3 +157,23 @@ class TaxisCercanos(APIView):
 
     def get_serializer(self):
         return CoordenadasSerializer()
+
+class GuardarRuta(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = RutaSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        latitud = serializer.data.get('latitud')
+        longitud = serializer.data.get('longitud')
+        p = Point(longitud, latitud)
+        try:
+            servicio = Servicio.objects.get(pk = serializer.validated_data.get('servicio'))
+            r = Rutas(servicio=servicio, punto= p)
+            r.save()
+        except ObjectDoesNotExist:
+            Response({'resultado': 0, 'error': 'Servicio no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'resultado': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return RutaSerializer()
