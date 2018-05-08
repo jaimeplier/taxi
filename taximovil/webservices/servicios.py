@@ -1,4 +1,7 @@
+import datetime
+
 import googlemaps
+from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.db.models import F
@@ -9,12 +12,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer
-from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer, ChoferSerializer
+from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer
 from taximovil import settings
 from webservices.permissions import IsOwnerPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
     ServicioPkSerializer, ChoferCoordenadasSerializer
-from django.contrib.gis.db.models.functions import Distance
 
 
 def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, base=None):
@@ -82,9 +84,11 @@ class Cotizar(APIView):
             return Response({"error": "No se encontraron tarifas para la solicitud"}, status=status.HTTP_200_OK)
         gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
         if tipo_servicio == 1:
-            directions_result = gmaps.distance_matrix(origen, destino,traffic_model='pessimistic')
+            directions_result = gmaps.distance_matrix(origen, destino, departure_time=datetime.datetime.now(),
+                                                      traffic_model='pessimistic')
         else:
-            directions_result = gmaps.distance_matrix(origen, destino, departure_time=fecha, traffic_model='pessimistic')
+            directions_result = gmaps.distance_matrix(origen, destino, departure_time=fecha,
+                                                      traffic_model='pessimistic')
         distancia = directions_result['rows'][0]['elements'][0]['distance']['value'] / 1000
         distancia_text = directions_result['rows'][0]['elements'][0]['distance']['text']
         duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
