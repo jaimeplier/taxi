@@ -1,5 +1,6 @@
 import googlemaps
 from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
 from django.db.models import F
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
@@ -7,10 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio
-from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer
+from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer
+from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer, ChoferSerializer
 from taximovil import settings
-from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer
+from webservices.permissions import IsOwnerPermission
+from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
+    ServicioPkSerializer, ChoferCoordenadasSerializer
+from django.contrib.gis.db.models.functions import Distance
 
 
 def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, base=None):
@@ -25,6 +29,10 @@ def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, ba
     if base is not None:
         tars = tars.filter(base__pk=tars)
     return tars.first()
+
+
+def buscar_choferes(servicio):
+    pass
 
 
 class BuscarCiudad(APIView):
@@ -73,7 +81,10 @@ class Cotizar(APIView):
         if t is None:
             return Response({"error": "No se encontraron tarifas para la solicitud"}, status=status.HTTP_200_OK)
         gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-        directions_result = gmaps.distance_matrix(origen, destino, departure_time=fecha, traffic_model='pessimistic')
+        if tipo_servicio == 1:
+            directions_result = gmaps.distance_matrix(origen, destino,traffic_model='pessimistic')
+        else:
+            directions_result = gmaps.distance_matrix(origen, destino, departure_time=fecha, traffic_model='pessimistic')
         distancia = directions_result['rows'][0]['elements'][0]['distance']['value'] / 1000
         distancia_text = directions_result['rows'][0]['elements'][0]['distance']['text']
         duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
@@ -87,7 +98,7 @@ class Cotizar(APIView):
         if precio < t.costo_minimo:
             precio = t.costo_minimo
         tarifa = TarifaSerializer(t)
-        return Response({"distance": distancia, "dsitance_text": distancia_text, "duracion": duracion,
+        return Response({"distance": distancia, "distance_text": distancia_text, "duracion": duracion,
                          "duracion_text": duracion_text, "precio": precio, "tarifa": tarifa.data},
                         status=status.HTTP_200_OK)
 
@@ -111,3 +122,33 @@ class SolicitarServicio(CreateAPIView):
 
     def get_serializer(self):
         return SolicitarServicioSerializer()
+
+
+class BuscarChofer(APIView):
+    permission_classes = (IsAuthenticated, IsOwnerPermission,)
+
+    def post(self, request):
+        serializer = ServicioPkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+
+    def get_serializer(self):
+        return ServicioPkSerializer()
+
+
+class TaxisCercanos(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = CoordenadasSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        latitud = serializer.data.get('latitud')
+        longitud = serializer.data.get('longitud')
+        p = Point(longitud, latitud)
+        cc = Chofer.objects.filter(estatus=True, activo=True, latlgn__distance_lte=(p, D(km=2))).annotate(
+            distance=Distance('latlgn', p))
+        cserializer = ChoferCoordenadasSerializer(cc, many=True)
+        return Response(cserializer.data, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return CoordenadasSerializer()

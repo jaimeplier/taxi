@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from config.models import Usuario, Cliente, Chofer, TipoPago, Servicio
+from config.models import Usuario, Cliente, TipoPago, Servicio, Chofer
 
 
 class TelefonoSerializer(serializers.Serializer):
@@ -141,3 +141,21 @@ class SolicitarServicioSerializer(serializers.ModelSerializer):
         fields = (
             'hora_servicio', 'origen', 'destino', 'direccion_origen', 'direccion_destino', 'ref_lugar', 'ref_persona',
             'distancia', 'tiempo_aproximado_servicio', 'costo', 'tipo_servicio', 'sitio', 'tipo_pago', 'tarifa')
+
+
+class ServicioPkSerializer(serializers.Serializer):
+    servicio = serializers.IntegerField()
+
+    def validate_servicio(self, value):
+        """
+        Check that servicio exists
+        """
+        if Servicio.objects.filter(pk=value).count() == 0:
+            raise serializers.ValidationError("El servicio no existe")
+        return value
+
+
+class ChoferCoordenadasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chofer
+        fields = ('latlgn',)
