@@ -6,16 +6,18 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
+from fcm_django.models import FCMDevice
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer, Rutas
+from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer, Rutas, \
+    Usuario, ChoferHasVehiculo, Vehiculo
 from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer
 from taximovil import settings
-from webservices.permissions import IsOwnerPermission
+from webservices.permissions import IsOwnerPermission, ChoferPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
     ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer
 
@@ -177,3 +179,63 @@ class GuardarRuta(APIView):
 
     def get_serializer(self):
         return RutaSerializer()
+
+class AceptarServicioView(APIView):
+    """
+            post:Aceptar servicio
+    """
+    permission_classes = (IsAuthenticated, ChoferPermission,)
+
+    def post(self, request):
+        response_data = {}
+        serializer = ServicioPkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+        c = Chofer.objects.get(pk=request.user.pk)
+        if s.chofer is None or s.chofer == c:
+            if s.estatus.pk == (1):
+                e = EstatusServicio(pk=2)
+                bs = BitacoraEstatusServicio(servicio=s, estatus=e)
+                bs.save()
+                s.estatus = e
+                s.chofer = c
+                cv = ChoferHasVehiculo.objects.filter(chofer=c, estatus=True)
+                cv = cv.first()
+                s.vehiculo = cv.vehiculo
+                s.save()
+                if s.tipo_servicio.pk == 1:
+                    c.activo = 0
+                    c.save()
+                u = Usuario.objects.get(pk=s.cliente.pk)
+                dispositivos = FCMDevice.objects.filter(user=u)
+                if dispositivos.count() != 0:
+                    data_push = {}
+                    d = dispositivos.first()
+                    serializerServicio = ServicioSerializer(s, many=False)
+                    data_push['servicio'] = serializerServicio.data
+                    try:
+                        d.send_message(title='El conductor acepto tu servicio',
+                                       body='Se acepto el servicio' + str(s.pk), data=data_push)
+                    except Exception as e:
+                        pass
+                # c = s.cliente
+                # subject = "Servicio aceptado"
+                # to = [c.email]
+                # ctx = {
+                #     'request': request,
+                #     'servicio': s
+                # }
+                # message = get_template('correos/mail-confirma-asociado.html').render(ctx)
+                # sendMail.delay(to, subject, message)
+            else:
+                response_data['error'] = 'El Servicio no esta en estatus para ser aceptado'
+                response_data['result'] = 0
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            response_data['error'] = 'Este conductor no puede aceptar el servicio'
+            response_data['result'] = 0
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ServicioPkSerializer()

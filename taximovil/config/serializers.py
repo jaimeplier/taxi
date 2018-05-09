@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from config.models import Cliente, Tarjeta, DireccionServicio, Ciudad, TipoPago, TipoVehiculo, Tarifa, Servicio, Chofer, \
-    EstatusServicio, TipoServicio, Empresa, Sucursal
+    EstatusServicio, TipoServicio, Empresa, Sucursal, Vehiculo
 
 
 class ClienteSerializer(serializers.ModelSerializer):
@@ -57,7 +57,7 @@ class EstatusServicioSerializer(serializers.ModelSerializer):
 
 class VehiculoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Ciudad
+        model = Vehiculo
         fields = '__all__'
 
 
