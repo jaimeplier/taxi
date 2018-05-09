@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer, Rutas, \
-    Usuario, ChoferHasVehiculo, Vehiculo
+    Usuario, ChoferHasVehiculo, Vehiculo, ServicioChofer
 from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer
 from taximovil import settings
 from webservices.permissions import IsOwnerPermission, ChoferPermission
@@ -236,6 +236,35 @@ class AceptarServicioView(APIView):
             response_data['result'] = 0
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
         return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ServicioPkSerializer()
+
+class RechazarServicioView(APIView):
+    """
+        post:Rechazar servicio chofer
+    """
+    permission_classes = (IsAuthenticated, ChoferPermission,)
+
+    def post(self, request):
+        serializer = ServicioPkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+        c = Chofer.objects.get(pk=request.user.pk)
+
+        if s.estatus.pk == 1:
+            s.chofer = None
+            s.vehiculo = None
+            s.save()
+        try:
+            aso = ServicioChofer.objects.get(chofer=c, servicio=s)
+            aso.estatus = 1
+            aso.save()
+        except ServicioChofer.DoesNotExist:
+            aso = ServicioChofer(chofer=c, servicio=s, estatus=2)
+            aso.save()
+        return Response(status=status.HTTP_200_OK)
 
     def get_serializer(self):
         return ServicioPkSerializer()
