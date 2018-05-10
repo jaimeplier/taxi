@@ -268,3 +268,42 @@ class RechazarServicioView(APIView):
 
     def get_serializer(self):
         return ServicioPkSerializer()
+
+class FinalizarServicio(APIView):
+    """
+        post:Finalizar servicio
+    """
+    permission_classes = (IsAuthenticated)
+
+    def post(self, request):
+        response_data = {}
+        serializer = ServicioPkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+        if s.estatus.pk == 5:
+            e = EstatusServicio(pk=6)
+            bs = BitacoraEstatusServicio(servicio=s, estatus=e)
+            bs.save()
+            s.estatus = e
+            s.save()
+            # TODO cobrar
+            u = Usuario.objects.get(pk=s.cliente.pk)
+            dispositivos = FCMDevice.objects.filter(user=u)
+            if dispositivos.count() != 0:
+                data_push = {}
+                d = dispositivos.first()
+                serializerServicio = ServicioSerializer(s, many=False)
+                data_push['servicio'] = serializerServicio.data
+                try:
+                    d.send_message(title='Has finalizado el servicio',
+                                   body='El servicio fue finalizado', data=data_push)
+                except Exception as e:
+                    pass
+        else:
+            response_data['error'] = 'No se puede finalizar el servicio'
+            response_data['result'] = 0
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ServicioPkSerializer()
