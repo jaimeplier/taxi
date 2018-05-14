@@ -47,7 +47,8 @@ def buscar_choferes(servicio):
             if check.estatus == 2:
                 continue
         origen = (c.latitud, c.longitud)
-        directions_result = gmaps.distance_matrix(origen, servicio.origen, departure_time=datetime.datetime.now(),
+        destino = (servicio.origen.coords[1],servicio.origen.coords[0])
+        directions_result = gmaps.distance_matrix(origen, destino, departure_time=datetime.datetime.now(),
                                                   traffic_model='pessimistic')
         duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
         if duracion <= 900:
