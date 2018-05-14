@@ -328,7 +328,7 @@ class RolHasPermissions(models.Model):
 class ServicioChofer(models.Model):
     chofer = models.ForeignKey(Chofer, models.DO_NOTHING, blank=True, null=True)
     servicio = models.ForeignKey('Servicio', models.DO_NOTHING)
-    estatus = models.IntegerField(blank=True, null=True)
+    estatus = models.PositiveIntegerField()
 
     class Meta:
         managed = True
@@ -675,6 +675,7 @@ class Servicio(models.Model):
 
     tipo_pago = models.ForeignKey('TipoPago', models.DO_NOTHING)
     tarifa = models.ForeignKey('Tarifa', models.DO_NOTHING)
+    tarjeta = models.ForeignKey('Tarjeta', models.DO_NOTHING, blank=True, null=True)
 
     @property
     def latitudDestino(self):

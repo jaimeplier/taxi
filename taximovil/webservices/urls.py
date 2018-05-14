@@ -6,7 +6,7 @@ from webservices.catalogos import TipoPagoList, TipoVehiculoList
 from webservices.choferes import ActualizarChofer, ChoferEstatus, CambiarEstatusServicio
 from webservices.cliente import RegistrarUsuario
 from webservices.servicios import BuscarCiudad, Cotizar, SolicitarServicio, TaxisCercanos, GuardarRuta, \
-    AceptarServicioView, RechazarServicioView
+    AceptarServicioView, RechazarServicioView, BuscarChofer
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, ChangePassword, ResetPassword, \
     LoginChofer, LogoutCliente, LogoutChofer, VerChofer
 
@@ -38,6 +38,7 @@ urlpatterns = [
     path('buscarCiudad/', BuscarCiudad.as_view(), name='buscar_ciudad'),
     path('cotizar/', Cotizar.as_view(), name='cotizar'),
     path('solicitar/', SolicitarServicio.as_view(), name='solicitar'),
+    path('buscarChofer/', BuscarChofer.as_view(), name='buscar_chofer'),
     path('taxis_cercanos/', TaxisCercanos.as_view(), name='taxis_cercanos'),
     path('cambiarEstatusServicio/', CambiarEstatusServicio.as_view(), name='cambiar_estatus_servicio'),
     path('guardarRuta/', GuardarRuta.as_view(), name='guardar_ruta'),
