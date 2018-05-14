@@ -40,7 +40,6 @@ def buscar_choferes(servicio):
     cc = Chofer.objects.filter(estatus=True, activo=True, latlgn__distance_lte=(servicio.origen, D(km=5)))
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
     for c in cc:
-        print(c)
         check = ServicioChofer.objects.filter(servicio=servicio, chofer=c).first()
         if check is not None:
             if check.estatus == 1:
@@ -52,7 +51,6 @@ def buscar_choferes(servicio):
         directions_result = gmaps.distance_matrix(origen, destino, departure_time=datetime.datetime.now(),
                                                   traffic_model='best_guess')
         duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
-        print(duracion)
         if duracion <= 900:
             return c
     return None
@@ -168,9 +166,11 @@ class BuscarChofer(APIView):
         else:
             cserializer = ChoferSerializer(c, many=False)
             if ServicioChofer.objects.filter(servicio=s, chofer=c).count() > 0:
+                print('ño')
                 sc = ServicioChofer.objects.filter(servicio=s, chofer=c)
                 sc.update(estatus=1)
             else:
+                print('hola')
                 sc = ServicioChofer(servicio=s, chofer=c, estatus=1)
                 sc.save()
                 u = Usuario.objects.get(pk=c.pk)
