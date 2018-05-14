@@ -50,8 +50,9 @@ def buscar_choferes(servicio):
         origen = (c.latitud, c.longitud)
         destino = (servicio.origen.coords[1], servicio.origen.coords[0])
         directions_result = gmaps.distance_matrix(origen, destino, departure_time=datetime.datetime.now(),
-                                                  traffic_model='pessimistic')
+                                                  traffic_model='best_guess')
         duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
+        print(duracion)
         if duracion <= 900:
             return c
     return None
@@ -105,10 +106,10 @@ class Cotizar(APIView):
         gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
         if tipo_servicio == 1:
             directions_result = gmaps.distance_matrix(origen, destino, departure_time=datetime.datetime.now(),
-                                                      traffic_model='pessimistic')
+                                                      traffic_model='best_guess')
         else:
             directions_result = gmaps.distance_matrix(origen, destino, departure_time=fecha,
-                                                      traffic_model='pessimistic')
+                                                      traffic_model='best_guess')
         distancia = directions_result['rows'][0]['elements'][0]['distance']['value'] / 1000
         distancia_text = directions_result['rows'][0]['elements'][0]['distance']['text']
         duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
