@@ -263,7 +263,7 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
     model = Chofer
     form_class = ChoferForm
     segundo_form = DireccionForm
-    template_name = 'config/formMap.html'
+    template_name = 'config/formBase.html'
 
     def get_context_data(self, **kwargs):
         context = super(ChoferCrear, self).get_context_data(**kwargs)
@@ -284,13 +284,20 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
             pnt = Point(float(lon), float(lat))
             form2.instance.latlgn = pnt
 
-            # form.instance.set_password(form.cleaned_data['password'])
-            print(form.cleaned_data('taxis'))
+            form.instance.set_password(form.cleaned_data['password'])
+            taxis = form.cleaned_data.get('taxis')
+            #print(form.cleaned_data('taxis'))
             form.instance.rol = Rol(pk=3)
+            
 
-            base = form.save(commit=False)
-            base.direccion = form2.save()
-            base.save()
+                
+            chofer = form.save(commit=False)
+            chofer.direccion = form2.save()
+            chofer.save()
+
+            for taxi in taxis:
+                tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
+                tc.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form, form2=form2))
@@ -312,7 +319,7 @@ def chofer_listar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'email', 'telefono', 'estatus', 'documentos', 'vehiculos', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus', 'editar', 'eliminar']
     order_columns = ['nombre', 'email', 'telefono', 'estatus']
     max_display_length = 100
 
@@ -330,6 +337,11 @@ class ChoferListarAjaxListView(BaseDatatableView):
             return '<a class="" href ="' + reverse('webapp:vehiculo_chofer',
                                                    kwargs={
                                                        'pk': row.pk}) + '"><i class="material-icons">directions_car</i></a>'
+        elif column == 'estatus':
+            if row.estatus:
+                return 'Activo'
+            else:
+                return 'Inactivo'
         elif column == 'nombre':
             return row.get_full_name()
         elif column == 'foto':
@@ -386,6 +398,7 @@ class ChoferActualizar(PermissionRequiredMixin, UpdateView):
             form2.instance.latlgn = pnt
 
             taxis = form.cleaned_data.get('taxis')
+            form.instance.set_password(form.cleaned_data['password'])
             ChoferHasVehiculo.objects.filter(chofer__pk=id_chofer).delete()
             for taxi in taxis:
                 tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
