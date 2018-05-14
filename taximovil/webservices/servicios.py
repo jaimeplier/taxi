@@ -134,10 +134,10 @@ class SolicitarServicio(CreateAPIView):
         c = Cliente.objects.get(pk=request.user.pk)
         e = EstatusServicio(pk=1)
         serializer = SolicitarServicioSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         if serializer.validated_data.get('tipo_pago').pk == 1:
             if serializer.validated_data.get('tarjeta') is None:
                 return Response({"error": "La forma de pago necesito una tarjeta"}, status=status.HTTP_201_CREATED)
-        serializer.is_valid(raise_exception=True)
         serializer.save(cliente=c, estatus=e)
         b = BitacoraEstatusServicio(estatus=e, servicio=serializer.instance)
         b.save()
