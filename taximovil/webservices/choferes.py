@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Chofer, EstatusServicio, Servicio
+from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServicio
 from webservices.permissions import ChoferPermission
 from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer
 
@@ -33,7 +33,7 @@ class CambiarEstatusServicio(APIView):
     post:
         Cambiar estatus del servicio
     """
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
 
     def post(self,request):
         serializer = ServicioEstatusSerializer(data=request.data)
@@ -41,6 +41,8 @@ class CambiarEstatusServicio(APIView):
         try:
             e = EstatusServicio.objects.get(pk = serializer.validated_data.get('estatus'))
             s = Servicio.objects.get(pk= serializer.validated_data.get('servicio'))
+            bs = BitacoraEstatusServicio(servicio=s, estatus=e)
+            bs.save()
             Servicio.objects.filter(pk = serializer.validated_data.get('servicio')).update(estatus=e)
             return Response({'resultado': 1}, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
