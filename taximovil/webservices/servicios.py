@@ -41,10 +41,11 @@ def buscar_choferes(servicio):
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
     for c in cc:
         check = ServicioChofer.objects.filter(servicio=servicio, chofer=c).first()
-        if check.estatus == 1:
-            return c
-        if check.estatus == 2:
-            continue
+        if check is not None:
+            if check.estatus == 1:
+                return c
+            if check.estatus == 2:
+                continue
         origen = (c.latitud, c.longitud)
         directions_result = gmaps.distance_matrix(origen, servicio.origen, departure_time=datetime.datetime.now(),
                                                   traffic_model='pessimistic')
