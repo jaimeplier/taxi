@@ -14,8 +14,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer, Rutas, \
-    Usuario, ChoferHasVehiculo, Vehiculo, ServicioChofer
-from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer
+    Usuario, ChoferHasVehiculo, ServicioChofer
+from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer, ChoferSerializer
 from taximovil import settings
 from webservices.permissions import IsOwnerPermission, ChoferPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
@@ -37,7 +37,21 @@ def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, ba
 
 
 def buscar_choferes(servicio):
-    pass
+    cc = Chofer.objects.filter(estatus=True, activo=True, latlgn__distance_lte=(servicio.origen, D(km=5)))
+    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+    for c in cc:
+        check = ServicioChofer.objects.filter(servicio=servicio, chofer=c).first()
+        if check.estatus == 1:
+            return c
+        if check.estatus == 2:
+            continue
+        origen = (c.latitud, c.longitud)
+        directions_result = gmaps.distance_matrix(origen, servicio.origen, departure_time=datetime.datetime.now(),
+                                                  traffic_model='pessimistic')
+        duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
+        if duracion <= 900:
+            return c
+    return None
 
 
 class BuscarCiudad(APIView):
@@ -120,6 +134,9 @@ class SolicitarServicio(CreateAPIView):
         c = Cliente.objects.get(pk=request.user.pk)
         e = EstatusServicio(pk=1)
         serializer = SolicitarServicioSerializer(data=request.data)
+        if serializer.validated_data.get('tipo_pago').pk == 1:
+            if serializer.validated_data.get('tarjeta') is None:
+                return Response({"error": "La forma de pago necesito una tarjeta"}, status=status.HTTP_201_CREATED)
         serializer.is_valid(raise_exception=True)
         serializer.save(cliente=c, estatus=e)
         b = BitacoraEstatusServicio(estatus=e, servicio=serializer.instance)
@@ -138,6 +155,33 @@ class BuscarChofer(APIView):
         serializer = ServicioPkSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+        if s.estatus.pk == 2:
+            cserializer = ChoferSerializer(s.chofer, many=False)
+            return Response({"chofer": cserializer.data, "estatus": 1}, status=status.HTTP_200_OK)
+        c = buscar_choferes(s)
+        if c is None:
+            return Response({"error", "No se encontro ningun chofer"}, status=status.HTTP_200_OK)
+        else:
+            cserializer = ChoferSerializer(c, many=False)
+            if ServicioChofer.objects.filter(servicio=s, chofer=c).count() > 0:
+                sc = ServicioChofer.objects.filter(servicio=s, chofer=c)
+                sc.update(estatus=1)
+            else:
+                sc = ServicioChofer(servicio=s, chofer=c, estatus=1)
+                sc.save()
+                u = Usuario.objects.get(pk=c.pk)
+                dispositivos = FCMDevice.objects.filter(user=u)
+                if dispositivos.count() != 0:
+                    data_push = {}
+                    d = dispositivos.first()
+                    sserializer = ServicioSerializer(s, many=False)
+                    data_push['servicio'] = sserializer.data
+                    try:
+                        d.send_message(title='Se te agendo un viaje', body='Tienes un nuevo viaje' + str(s.pk),
+                                       data=data_push)
+                    except Exception as e:
+                        pass
+            return Response({"chofer": cserializer.data, "estatus": 0}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
         return ServicioPkSerializer()
@@ -160,6 +204,7 @@ class TaxisCercanos(APIView):
     def get_serializer(self):
         return CoordenadasSerializer()
 
+
 class GuardarRuta(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -170,8 +215,8 @@ class GuardarRuta(APIView):
         longitud = serializer.data.get('longitud')
         p = Point(longitud, latitud)
         try:
-            servicio = Servicio.objects.get(pk = serializer.validated_data.get('servicio'))
-            r = Rutas(servicio=servicio, punto= p)
+            servicio = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+            r = Rutas(servicio=servicio, punto=p)
             r.save()
         except ObjectDoesNotExist:
             Response({'resultado': 0, 'error': 'Servicio no encontrado'}, status=status.HTTP_404_NOT_FOUND)
@@ -179,6 +224,7 @@ class GuardarRuta(APIView):
 
     def get_serializer(self):
         return RutaSerializer()
+
 
 class AceptarServicioView(APIView):
     """
@@ -240,6 +286,7 @@ class AceptarServicioView(APIView):
     def get_serializer(self):
         return ServicioPkSerializer()
 
+
 class RechazarServicioView(APIView):
     """
         post:Rechazar servicio chofer
@@ -255,7 +302,7 @@ class RechazarServicioView(APIView):
 
         try:
             aso = ServicioChofer.objects.get(chofer=c, servicio=s)
-            aso.estatus = 1
+            aso.estatus = 2
             aso.save()
         except ServicioChofer.DoesNotExist:
             aso = ServicioChofer(chofer=c, servicio=s, estatus=2)
@@ -264,6 +311,7 @@ class RechazarServicioView(APIView):
 
     def get_serializer(self):
         return ServicioPkSerializer()
+
 
 class FinalizarServicio(APIView):
     """

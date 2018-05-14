@@ -57,9 +57,11 @@ class TipoDePagoSerializer(serializers.ModelSerializer):
 class ChoferEstatusSerializer(serializers.Serializer):
     activo = serializers.BooleanField()
 
+
 class ServicioEstatusSerializer(serializers.Serializer):
     servicio = serializers.IntegerField()
     estatus = serializers.IntegerField()
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old = serializers.CharField()
@@ -92,6 +94,7 @@ class CoordenadasSerializer(serializers.Serializer):
             raise serializers.ValidationError("El servicio no existe")
         return value
 
+
 class RutaSerializer(serializers.Serializer):
     servicio = serializers.IntegerField()
     latitud = serializers.FloatField()
@@ -112,6 +115,7 @@ class RutaSerializer(serializers.Serializer):
         if value < -180 or value > 180:
             raise serializers.ValidationError("El servicio no existe")
         return value
+
 
 class CotizarSerializer(serializers.Serializer):
     fecha = serializers.DateTimeField()
@@ -163,7 +167,8 @@ class SolicitarServicioSerializer(serializers.ModelSerializer):
         model = Servicio
         fields = (
             'hora_servicio', 'origen', 'destino', 'direccion_origen', 'direccion_destino', 'ref_lugar', 'ref_persona',
-            'distancia', 'tiempo_aproximado_servicio', 'costo', 'tipo_servicio', 'sitio', 'tipo_pago', 'tarifa')
+            'distancia', 'tiempo_aproximado_servicio', 'costo', 'tipo_servicio', 'sitio', 'tipo_pago', 'tarifa',
+            'tarjeta')
 
 
 class ServicioPkSerializer(serializers.Serializer):
