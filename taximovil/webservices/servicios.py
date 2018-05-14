@@ -300,10 +300,6 @@ class RechazarServicioView(APIView):
         s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
         c = Chofer.objects.get(pk=request.user.pk)
 
-        if s.estatus.pk == 1:
-            s.chofer = None
-            s.vehiculo = None
-            s.save()
         try:
             aso = ServicioChofer.objects.get(chofer=c, servicio=s)
             aso.estatus = 2
