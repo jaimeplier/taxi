@@ -171,9 +171,10 @@ class BuscarChofer(APIView):
             else:
                 sc = ServicioChofer(servicio=s, chofer=c, estatus=1)
                 sc.save()
+                print(c.pk)
                 u = Usuario.objects.get(pk=c.pk)
                 dispositivos = FCMDevice.objects.filter(user=u)
-                print(dispositivos)
+                print(u.pk)
                 if dispositivos.count() != 0:
                     data_push = {}
                     d = dispositivos.first()
