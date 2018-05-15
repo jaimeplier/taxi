@@ -166,11 +166,9 @@ class BuscarChofer(APIView):
         else:
             cserializer = ChoferSerializer(c, many=False)
             if ServicioChofer.objects.filter(servicio=s, chofer=c).count() > 0:
-                print('ño')
                 sc = ServicioChofer.objects.filter(servicio=s, chofer=c)
                 sc.update(estatus=1)
             else:
-                print('hola')
                 sc = ServicioChofer(servicio=s, chofer=c, estatus=1)
                 sc.save()
                 u = Usuario.objects.get(pk=c.pk)
@@ -183,7 +181,7 @@ class BuscarChofer(APIView):
                     try:
                         print(d.send_message(data=data_push))
                     except Exception as e:
-                        pass
+                        print(e)
             return Response({"chofer": cserializer.data, "estatus": 0}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
