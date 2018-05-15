@@ -173,6 +173,7 @@ class BuscarChofer(APIView):
                 sc.save()
                 u = Usuario.objects.get(pk=c.pk)
                 dispositivos = FCMDevice.objects.filter(user=u)
+                print(dispositivos)
                 if dispositivos.count() != 0:
                     data_push = {}
                     d = dispositivos.first()
