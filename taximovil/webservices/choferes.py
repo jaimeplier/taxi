@@ -17,8 +17,9 @@ class ChoferEstatus(APIView):
     """
     permission_classes = (IsAuthenticated, ChoferPermission)
 
-    def post(self,request):
+    def post(self, request):
         serializer = ChoferEstatusSerializer(data=request.data)
+        print(request.user)
         serializer.is_valid(raise_exception=True)
         c = Chofer.objects.get(pk=request.user.pk)
         c.activo = serializer.validated_data.get('activo')
@@ -28,6 +29,7 @@ class ChoferEstatus(APIView):
     def get_serializer(self):
         return ChoferEstatusSerializer()
 
+
 class CambiarEstatusServicio(APIView):
     """
     post:
@@ -35,25 +37,26 @@ class CambiarEstatusServicio(APIView):
     """
     permission_classes = (IsAuthenticated,)
 
-    def post(self,request):
+    def post(self, request):
         serializer = ServicioEstatusSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            e = EstatusServicio.objects.get(pk = serializer.validated_data.get('estatus'))
-            s = Servicio.objects.get(pk= serializer.validated_data.get('servicio'))
+            e = EstatusServicio.objects.get(pk=serializer.validated_data.get('estatus'))
+            s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
             bs = BitacoraEstatusServicio(servicio=s, estatus=e)
             bs.save()
-            Servicio.objects.filter(pk = serializer.validated_data.get('servicio')).update(estatus=e)
+            Servicio.objects.filter(pk=serializer.validated_data.get('servicio')).update(estatus=e)
             return Response({'resultado': 1}, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            return Response({'resultado': 0, 'error': 'Estatus o servicio no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response({'resultado': 0, 'error': 'Estatus o servicio no encontrado'},
+                            status=status.HTTP_404_NOT_FOUND)
 
     def get_serializer(self):
         return ServicioEstatusSerializer()
 
+
 class ActualizarChofer(APIView):
-    permission_classes = (IsAuthenticated,ChoferPermission)
+    permission_classes = (IsAuthenticated, ChoferPermission)
 
     def post(self, request):
         serializer = ActualizarChoferSerializer(data=request.data)
