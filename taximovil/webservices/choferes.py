@@ -19,10 +19,8 @@ class ChoferEstatus(APIView):
 
     def post(self, request):
         serializer = ChoferEstatusSerializer(data=request.data)
-        print(request.user)
         serializer.is_valid(raise_exception=True)
         c = Chofer.objects.get(pk=request.user.pk)
-        print(serializer.validated_data.get('activo'))
         c.activo = serializer.validated_data.get('activo')
         c.save()
         return Response({'resultado': 1}, status=status.HTTP_200_OK)
