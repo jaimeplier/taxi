@@ -177,7 +177,7 @@ class BuscarChofer(APIView):
                     data_push = {}
                     d = dispositivos.first()
                     sserializer = ServicioSerializer(s, many=False)
-                    data_push['servicio'] = sserializer.data
+                    data_push = {'servicio': sserializer.data}
                     try:
                         d.send_message(data=data_push)
                     except Exception as e:
