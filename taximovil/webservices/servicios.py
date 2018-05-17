@@ -174,12 +174,10 @@ class BuscarChofer(APIView):
                 u = Usuario.objects.get(pk=c.pk)
                 dispositivos = FCMDevice.objects.filter(user=u)
                 if dispositivos.count() != 0:
-                    data_push = {}
                     d = dispositivos.first()
                     sserializer = ServicioSerializer(s, many=False)
-                    data_push = {sserializer.data}
                     try:
-                        d.send_message(data=data_push)
+                        d.send_message(data=serializer.data)
                     except Exception as e:
                         pass
             return Response({"chofer": cserializer.data, "estatus": 0}, status=status.HTTP_200_OK)
