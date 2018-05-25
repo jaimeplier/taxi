@@ -183,7 +183,7 @@ class BuscarChofer(APIView):
                     try:
                         print(d.send_message(data=h))
                     except Exception as e:
-                        pass
+                        print(e)
             return Response({"chofer": cserializer.data, "estatus": 0}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
