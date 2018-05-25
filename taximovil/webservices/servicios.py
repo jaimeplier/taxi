@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import googlemaps
 from django.contrib.gis.db.models.functions import Distance
@@ -17,7 +18,7 @@ from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEsta
     Usuario, ChoferHasVehiculo, ServicioChofer
 from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer, ChoferSerializer
 from taximovil import settings
-from webservices.permissions import ChoferPermission
+from webservices.permissions import ChoferPermission, IsOwnerPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
     ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer
 
@@ -151,7 +152,7 @@ class SolicitarServicio(CreateAPIView):
 
 
 class BuscarChofer(APIView):
-    # permission_classes = (IsAuthenticated, IsOwnerPermission,)
+    permission_classes = (IsAuthenticated, IsOwnerPermission,)
 
     def post(self, request):
         serializer = ServicioPkSerializer(data=request.data)
@@ -177,9 +178,10 @@ class BuscarChofer(APIView):
                     d = dispositivos.first()
                     sserializer = ServicioSerializer(s, many=False)
                     data_push = {'servicio': sserializer.data, 'result': '1'}
-                    print(data_push)
+                    h = json.dumps(data_push)
+                    print(h)
                     try:
-                        print(d.send_message(data=data_push))
+                        print(d.send_message(data=h))
                     except Exception as e:
                         pass
             return Response({"chofer": cserializer.data, "estatus": 0}, status=status.HTTP_200_OK)
