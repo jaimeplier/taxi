@@ -177,11 +177,10 @@ class BuscarChofer(APIView):
                 if dispositivos.count() != 0:
                     d = dispositivos.first()
                     sserializer = ServicioSerializer(s, many=False)
-                    data_push = {'servicio': sserializer.data, 'result': '1'}
-                    h = json.dumps(data_push)
-                    print(h)
+                    data_push = sserializer.data
+                    print(data_push)
                     try:
-                        print(d.send_message(data=h))
+                        print(d.send_message(data=data_push))
                     except Exception as e:
                         print(e)
             return Response({"chofer": cserializer.data, "estatus": 0}, status=status.HTTP_200_OK)
