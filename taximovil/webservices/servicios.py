@@ -179,9 +179,9 @@ class BuscarChofer(APIView):
                     sserializer = ServicioSerializer(s, many=False)
                     data_push = {'servicio': sserializer.data, 'result': '1'}
                     try:
-                        print(d.send_message(data=data_push))
+                        d.send_message(data=data_push)
                     except Exception as e:
-                        print(e)
+                        pass
             return Response({"chofer": cserializer.data, "estatus": 0}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
