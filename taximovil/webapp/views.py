@@ -11,10 +11,12 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
+from pytz import timezone
 
 from config.models import Empresa, Usuario, Rol, Chofer, Sitio, Zona, Base, Pais, Ciudad, Sucursal, TipoPago, \
     TipoVehiculo, Direccion, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Horario, \
-    ChoferHasVehiculo, RolHasPermissions
+    ChoferHasVehiculo, RolHasPermissions, Servicio
+from taximovil import settings
 from webapp.forms import EmpresaForm, UsuarioForm, ChoferForm, SitioForm, ZonaForm, BaseForm, DireccionForm, PaisForm, \
     CiudadForm, SucursalForm, TipoPagoForm, TipoVehiculoForm, ClienteForm, TipoServicioForm, MarcaForm, ModeloForm, \
     PropietarioForm, VehiculoForm, TarifaForm, ComisionForm, PermisosForm
@@ -1700,3 +1702,151 @@ def configuraciones(request):
 def registro_conductor(request):
     template_name = 'webapp/registro.html'
     return render(request, template_name)
+
+@login_required(redirect_field_name='next', login_url='/webapp/login/')
+def list_servicios_activos(request):
+    template_name = 'webapp/tab_servicios_activos.html'
+    return render(request, template_name)
+
+
+class ServiciosActivosAjaxList(LoginRequiredMixin, BaseDatatableView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/login/'
+
+    model = Servicio
+    columns = ['id_servicio', 'hora_servicio', 'direccion_origen', 'direccion_destino', 'tiempo_aproximado_servicio',
+               'costo', 'cliente', 'tipo_servicio', 'vehiculo', 'chofer', 'sucursal',
+               'tipo_pago', 'estatus', 'accion']
+    order_columns = ['id', 'hora_servicio', 'direccion_origen', 'direccion_destino', 'tiempo_aproximado_servicio',
+                     'costo', 'cliente__a_paterno', 'tipo_servicio__nombre', 'vehiculo__placa', 'chofer__a_paterno',
+                     'sucursal__nombre', 'tipo_pago__nombre', 'estatus__nombre']
+    max_display_length = 100
+    settingstime_zone = timezone(settings.TIME_ZONE)
+
+    def render_column(self, row, column):
+
+        if column == 'estatus':
+            return row.estatus.nombre
+        elif column == 'tipo_servicio':
+            return row.tipo_servicio.nombre
+        elif column == 'accion':
+            if row.estatus.pk == 1:
+                return '<a class="waves-effect waves-light btn" onclick="aceptar(' + str(
+                    row.pk) + ')"> Aceptar</a><br><a class="waves-effect waves-light btn" onclick="rechazar(' + str(
+                    row.pk) + ')"> Rechazar</a>'
+            elif row.estatus.pk == 2 or 3 or 4 or 5:
+                return '<a class="waves-effect waves-light btn" onclick="finalizar(' + str(
+                    row.pk) + ')"> Finalizar</a><br><a class="waves-effect waves-light btn" onclick="cancelar(' + str(
+                    row.pk) + ')"> Cancelar</a>'
+            else:
+                return row.estatus.nombre
+        elif column == 'hora_servicio':
+            return row.hora_servicio.astimezone(self.settingstime_zone).strftime("%d-%m-%Y %H:%M")
+        elif column == 'id_servicio':
+            return row.pk
+        elif column == 'tipo_pago':
+            return row.tipo_pago.nombre
+        elif column == 'vehiculo':
+            if row.vehiculo == None:
+                return 'Sin asginar'
+            else:
+                return row.vehiculo.placa
+        elif column == 'sucursal':
+            if row.sucursal == None:
+                return 'Sin asginar'
+            else:
+                return row.sucursal.nombre
+        elif column == 'cliente':
+            return row.cliente.get_full_name()
+        elif column == 'chofer':
+            if row.chofer == None:
+                return 'Sin asignar'
+            else:
+                return row.chofer.get_full_name()
+
+        return super(ServiciosActivosAjaxList, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Servicio.objects.filter(estatus__pk__in=[1, 2, 3, 4, 5])
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get(u'search[value]', None)
+        if search:
+            qs = qs.filter(pk__icontains=search) | qs.filter(hora_servicio__icontains=search) | qs.filter(
+                direccion_origen__icontains=search) | qs.filter(direccion_destino__icontains=search) | qs.filter(
+                tiempo_aproximado_servicio__icontains=search) | qs.filter(costo__icontains=search) | qs.filter(
+                cliente__nombre__icontains=search) | qs.filter(tipo_servicio__nombre__icontains=search) | qs.filter(
+                vehiculo__placa__icontains=search) | qs.filter(chofer__nombre__icontains=search) | qs.filter(
+                sucursal__nombre__icontains=search) | qs.filter(
+                tipo_pago__nombre__icontains=search) | qs.filter(
+                estatus__nombre__icontains=search)
+        return qs
+
+
+@login_required(redirect_field_name='next', login_url='/webapp/login/')
+def list_servicios_finalizados(request):
+    template_name = 'webapp/tab_servicios_finalizados.html'
+    return render(request, template_name)
+
+
+class ServiciosFinalizadosAjaxList(BaseDatatableView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/login/'
+
+    model = Servicio
+    columns = ['id_servicio', 'hora_servicio', 'direccion_origen', 'direccion_destino', 'tiempo_aproximado_servicio',
+               'costo', 'cliente', 'tipo_servicio', 'vehiculo', 'chofer', 'sucursal',
+               'tipo_pago', 'estatus']
+    order_columns = ['id', 'hora_servicio', 'direccion_origen', 'direccion_destino', 'tiempo_aproximado_servicio',
+                     'costo', 'cliente__a_paterno', 'tipo_servicio__nombre', 'vehiculo__placa', 'chofer__a_paterno',
+                     'sucursal__nombre', 'tipo_pago__nombre', 'estatus__nombre']
+    max_display_length = 100
+    settingstime_zone = timezone(settings.TIME_ZONE)
+
+    def render_column(self, row, column):
+
+        if column == 'estatus':
+            return row.estatus.nombre
+        elif column == 'tipo_servicio':
+            return row.tipo_servicio.nombre
+        elif column == 'hora_servicio':
+            return row.hora_servicio.astimezone(self.settingstime_zone).strftime("%d-%m-%Y %H:%M")
+        elif column == 'id_servicio':
+            return row.pk
+        elif column == 'tipo_pago':
+            return row.tipo_pago.nombre
+        elif column == 'vehiculo':
+            if row.vehiculo == None:
+                return 'Sin asginar'
+            else:
+                return row.vehiculo.placa
+        elif column == 'sucursal':
+            if row.sucursal == None:
+                return 'Sin asginar'
+            else:
+                return row.sucursal.nombre
+        elif column == 'cliente':
+            return row.cliente.get_full_name()
+        elif column == 'chofer':
+            if row.chofer == None:
+                return 'Sin asignar'
+            else:
+                return row.chofer.get_full_name()
+
+        return super(ServiciosFinalizadosAjaxList, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Servicio.objects.filter(estatus__pk__in=[6,7])
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get(u'search[value]', None)
+        if search:
+            qs = qs.filter(pk__icontains=search) | qs.filter(hora_servicio__icontains=search) | qs.filter(
+                direccion_origen__icontains=search) | qs.filter(direccion_destino__icontains=search) | qs.filter(
+                tiempo_aproximado_servicio__icontains=search) | qs.filter(costo__icontains=search) | qs.filter(
+                cliente__nombre__icontains=search) | qs.filter(tipo_servicio__nombre__icontains=search) | qs.filter(
+                vehiculo__placa__icontains=search) | qs.filter(chofer__nombre__icontains=search) | qs.filter(
+                sucursal__nombre__icontains=search) | qs.filter(
+                tipo_pago__nombre__icontains=search) | qs.filter(
+                estatus__nombre__icontains=search)
+        return qs

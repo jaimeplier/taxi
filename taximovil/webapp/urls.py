@@ -11,7 +11,8 @@ from webapp.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     MarcaActualizar, ModeloCrear, ModeloListarAjaxListView, ModeloActualizar, PropietarioCrear, \
     PropietarioListarAjaxListView, PropietarioActualizar, VehiculoCrear, VehiculoListarAjaxListView, VehiculoActualizar, \
     TarifaListarAjaxListView, TarifaCrear, TarifaActualizar, ComisionCrear, ComisionListarAjaxListView, \
-    ComisionActualizar, RolCrear, RolListarAjaxListView, RolActualizar
+    ComisionActualizar, RolCrear, RolListarAjaxListView, RolActualizar, ServiciosActivosAjaxList, \
+    ServiciosFinalizadosAjaxList
 from . import views
 
 app_name = 'webapp'
@@ -161,6 +162,11 @@ urlpatterns = [
     path('creditos/', views.creditos, name='creditos'),
     path('menu_configuraciones/', views.configuraciones, name='configuraciones'),
     path('registrar_conductor/', views.registro_conductor, name='registro_conductor'),
+
+    path('servicios_activos/list/', views.list_servicios_activos, name='list_servicios_activos'),
+    path('servicios_activos/ajax/list/', ServiciosActivosAjaxList.as_view(), name='list_ajax_servicios_activos'),
+    path('servicios_finalizados/list/', views.list_servicios_finalizados, name='list_servicios_finalizados'),
+    path('servicios_finalizados/ajax/list/', ServiciosFinalizadosAjaxList.as_view(), name='list_ajax_servicios_finalizados'),
 
 ]
 

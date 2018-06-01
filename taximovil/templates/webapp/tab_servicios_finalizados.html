@@ -1,0 +1,51 @@
+<!--   SOFTIC SOLUTIONS   -->
+{% extends "config/tab_base.html" %}
+{% block titulo_tabla %}
+    <div class="row">
+    <div class="col s1 m1 l1"></div>
+    <div class="col s5 m5 l5 left">
+        <br/>
+        <h5 class="black-text margin_114">Servicios en finalizados</h5>
+        <br/>
+    </div>
+    <div class="col s6 m6 l6"></div>
+    </div>
+{% endblock %}
+{% load static %}
+{% block campos %}
+    <th>ID Servicio</th>
+    <th>Hora de servicio</th>
+    <th>Origen</th>
+    <th>Destino</th>
+    <th>tiempo aproximado servicio</th>
+    <th>Costo</th>
+    <th>Cliente</th>
+    <th>Tipo de servicio</th>
+    <th>Vehiculo</th>
+    <th>Chofer</th>
+    <th>Sucursal</th>
+    <th>Tipo de pago</th>
+    <th>Estatus</th>
+
+{% endblock %}
+
+{% block scripts_tabla %}
+        function eliminar() {
+            $.ajax({
+                url: "delete/" + id,
+                type: "POST", // http method
+                // handle a successful response
+                success: function (aData) {
+                    $('#tabla').dataTable()._fnAjaxUpdate();
+                },
+
+                // handle a non-successful response
+                error: function (xhr, errmsg, err) {
+                    alert("Ocurrio un error");
+                }
+            });
+        }
+{% endblock %}
+
+{% block url_ajax %}{% url 'webapp:list_ajax_servicios_finalizados' %}{% endblock %}
+
