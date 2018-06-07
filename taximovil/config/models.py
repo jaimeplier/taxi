@@ -217,7 +217,7 @@ class Sitio(models.Model):
 class BitacoraEstatusServicio(models.Model):
     estatus = models.ForeignKey('EstatusServicio', on_delete=models.DO_NOTHING)
     servicio = models.ForeignKey('Servicio', on_delete=models.DO_NOTHING)
-    fecha = models.DateField(auto_now_add=True)
+    fecha = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = True
@@ -744,10 +744,12 @@ class Tarjeta(models.Model):
         managed = True
         db_table = 'trajeta'
 
+
 class Rutas(models.Model):
     punto = models.PointField()
     servicio = models.ForeignKey(Servicio, models.DO_NOTHING)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+
     @property
     def latitudDestino(self):
         """I'm the 'x' property."""
