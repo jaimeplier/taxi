@@ -1,0 +1,148 @@
+<!--   SOFTIC SOLUTIONS   -->
+{% extends "config/tab_base.html" %}
+{% block titulo_tabla %}
+    <div class="row">
+    <div class="col s1 m1 l1"></div>
+    <div class="col s5 m5 l5 left">
+        <br/>
+        <h5 class="black-text margin_114">Servicios en curso</h5>
+        <br/>
+    </div>
+    <div class="col s6 m6 l6"></div>
+    </div>
+
+{% endblock %}
+{% load static %}
+{% block campos %}
+    <th>ID Servicio</th>
+    <th>Hora de servicio</th>
+    <th>Origen</th>
+    <th>Destino</th>
+    <th>tiempo aproximado servicio</th>
+    <th>Costo</th>
+    <th>Cliente</th>
+    <th>Tipo de servicio</th>
+    <th>Vehiculo</th>
+    <th>Chofer</th>
+    <th>Sucursal</th>
+    <th>Tipo de pago</th>
+    <th>Estatus</th>
+    <th>Acción</th>
+{% endblock %}
+{% block modal %}
+    <div id="modalF" class="modal">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col s12 center">
+                    <p>Listado de servicios</p>
+                </div>
+            </div>
+            <!-- contenido -->
+            <div class="row">
+                <div class="col s12">
+                    <label class="servicioID">ID servicio: </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <a  id="cambiar"
+               class="modal-action modal-close waves-effect btn-flat">Aceptar</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts_tabla %}
+       function eliminar() {
+    $.ajax({
+    url: "delete/" + id,
+    type: "POST", // http method
+    // handle a successful response
+    success: function (aData) {
+    $('#tabla').dataTable()._fnAjaxUpdate();
+    },
+
+    // handle a non-successful response
+    error: function (xhr, errmsg, err) {
+    alert("Ocurrio un error");
+    }
+    });
+    }
+
+    //función para aceptar
+    function aceptar(idA) {
+    $.ajax({
+    url: "/ws/aceptar/",
+    data: {servicio: idA},
+    type: "POST", // http method
+    // handle a successful response
+    success: function (aData) {
+    $('#tabla').dataTable()._fnAjaxUpdate();
+    },
+
+    // handle a non-successful response
+    error: function (xhr, errmsg, err) {
+    alert("Ocurrio un error");
+    }
+    });
+    }
+
+    //función para cancelar
+    function cancelar(idA) {
+    $.ajax({
+    url: "/ws/cancelar/",
+    data: {servicio: idA},
+    type: "POST", // http method
+    // handle a successful response
+    success: function (aData) {
+    $('#tabla').dataTable()._fnAjaxUpdate();
+    },
+
+    // handle a non-successful response
+    error: function (xhr, errmsg, err) {
+    alert("Ocurrio un error");
+    }
+    });
+    }
+
+    //función para finalizar
+    function finalizar(idA) {
+    $.ajax({
+    url: "/ws/finalizar/",
+    data: {servicio: idA},
+    type: "POST", // http method
+    // handle a successful response
+    success: function (aData) {
+    $('#tabla').dataTable()._fnAjaxUpdate();
+    },
+
+    // handle a non-successful response
+    error: function (xhr, errmsg, err) {
+    alert("Ocurrio un error");
+    }
+    });
+    }
+
+    //función para rechazar
+    function rechazar(idA) {
+    $.ajax({
+    url: "/ws/rechazar/",
+    data: {servicio: idA},
+    type: "POST", // http method
+    // handle a successful response
+    success: function (aData) {
+    $('#tabla').dataTable()._fnAjaxUpdate();
+    },
+
+    // handle a non-successful response
+    error: function (xhr, errmsg, err) {
+    alert("Ocurrio un error");
+    }
+    });
+    }
+{% endblock %}
+
+{% block url_ajax %}{% url 'webapp:list_ajax_servicios_activos' %}{% endblock %}
+
