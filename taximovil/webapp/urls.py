@@ -12,7 +12,7 @@ from webapp.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     PropietarioListarAjaxListView, PropietarioActualizar, VehiculoCrear, VehiculoListarAjaxListView, VehiculoActualizar, \
     TarifaListarAjaxListView, TarifaCrear, TarifaActualizar, ComisionCrear, ComisionListarAjaxListView, \
     ComisionActualizar, RolCrear, RolListarAjaxListView, RolActualizar, ServiciosActivosAjaxList, \
-    ServiciosFinalizadosAjaxList
+    ServiciosFinalizadosAjaxList, ChoferUbicacion
 from . import views
 
 app_name = 'webapp'
@@ -44,6 +44,7 @@ urlpatterns = [
     path('tabla_chofer/', ChoferListarAjaxListView.as_view(), name='tab_list_chofer'),
     path('chofer/editar/<int:pk>', ChoferActualizar.as_view(), name='edit_chofer'),
     path('chofer/listar/delete/<int:pk>', views.chofer_eliminar, name='delete_chofer'),
+    path('chofer/ubicacion/<int:pk>', ChoferUbicacion.as_view(), name='ubicacion_chofer'),
 
     path('sitio/nuevo/', SitioCrear.as_view(), name='nuevo_sitio'),
     path('sitio/listar/', views.sitio_listar, name='list_sitio'),

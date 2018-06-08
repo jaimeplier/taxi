@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from pytz import timezone
 
@@ -321,7 +321,7 @@ def chofer_listar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'email', 'telefono', 'estatus', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus', 'ubicacion', 'editar', 'eliminar']
     order_columns = ['nombre', 'email', 'telefono', 'estatus']
     max_display_length = 100
 
@@ -351,6 +351,9 @@ class ChoferListarAjaxListView(BaseDatatableView):
         elif column == 'eliminar':
             return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
                 row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+        elif column == 'ubicacion':
+            return '<a href ="' + reverse('webapp:ubicacion_chofer', kwargs={
+                'pk': row.pk}) + '" target="_blank"><i class="material-icons">location_on</i></a>'
 
         return super(ChoferListarAjaxListView, self).render_column(row, column)
 
@@ -422,6 +425,14 @@ def chofer_eliminar(request, pk):
     u.estatus = False
     u.save()
     return JsonResponse({'result': 1})
+
+class ChoferUbicacion(ListView):
+
+    model = Chofer
+    template_name = 'webapp/ubicacionChofer.html'
+
+    def get_queryset(self):
+        return Chofer.objects.filter(pk=self.kwargs['pk'])
 
 
 class SitioCrear(PermissionRequiredMixin, CreateView):
