@@ -5,9 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServicio
-from webservices.permissions import ChoferPermission
-from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer
+from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServicio, BitacoraCredito
+from webservices.permissions import ChoferPermission, AdministradorPermission
+from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer, \
+    ChoferCreditoSerializer
 
 
 class ChoferEstatus(APIView):
@@ -73,3 +74,24 @@ class ActualizarChofer(APIView):
 
     def get_serializer(self):
         return ActualizarChoferSerializer()
+
+
+class CreditoChofer(APIView):
+    permission_classes = (IsAuthenticated, AdministradorPermission)
+
+    def post(self, request):
+        serializer = ChoferCreditoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        c = Chofer.objects.get(id=serializer.validated_data.get('chofer'))
+        monto = serializer.validated_data.get('monto')
+        if monto <= 0:
+            return Response({"error": "El monto debe ser mayor a 0"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            c.saldo = c.saldo + monto
+            c.save()
+            bc = BitacoraCredito(chofer = c, usuario = request.user, monto=monto)
+            bc.save()
+        return Response({"result": 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ChoferCreditoSerializer()

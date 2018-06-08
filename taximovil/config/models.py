@@ -765,3 +765,13 @@ class Rutas(models.Model):
     class Meta:
         managed = True
         db_table = 'rutas'
+
+class BitacoraCredito(models.Model):
+    usuario = models.ForeignKey('Usuario', on_delete=models.DO_NOTHING, related_name='administradores')
+    chofer = models.ForeignKey('Chofer', on_delete=models.DO_NOTHING)
+    monto = models.FloatField()
+    fecha = models.DateField(auto_now_add=True)
+
+    class Meta:
+        managed = True
+        db_table = 'bitacora_credito'
