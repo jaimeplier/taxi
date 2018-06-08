@@ -1,5 +1,4 @@
 import datetime
-import json
 
 import googlemaps
 from django.contrib.gis.db.models.functions import Distance
@@ -55,6 +54,32 @@ def buscar_choferes(servicio):
         if duracion <= 900:
             return c
     return None
+
+
+def distancia_ruta(servicio):
+    r = Rutas.objects.filter(servicio__pk=servicio).order_by('fecha_registro')
+    aux = None
+    distancia = D(km=0)
+    for rr in r:
+        if aux is not None:
+            d = Rutas.objects.filter(pk=rr.pk).annotate(distancia=Distance('punto', aux.punto)).first().distancia
+            if (d.m / (rr.fecha_registro - aux.fecha_registro).seconds) > 38.88:
+                continue
+            distancia = distancia + d
+        aux = rr
+    return distancia.m
+
+
+def precio_tarifa(t, distancia, duracion):
+    precio = t.tarifa_base + t.costo_minuto * (duracion / 50)
+    if distancia > t.distancia_max:
+        dif_distancia = distancia - t.distancia_max
+        precio = precio + t.distancia_max * t.costo_km + dif_distancia * t.costo_km * t.incremento_distancia
+    else:
+        precio = precio + distancia * t.costo_km
+    if precio < t.costo_minimo:
+        precio = t.costo_minimo
+    return precio
 
 
 class BuscarCiudad(APIView):
@@ -113,14 +138,7 @@ class Cotizar(APIView):
         distancia_text = directions_result['rows'][0]['elements'][0]['distance']['text']
         duracion = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['value']
         duracion_text = directions_result['rows'][0]['elements'][0]['duration_in_traffic']['text']
-        precio = t.tarifa_base + t.costo_minuto * (duracion / 50)
-        if distancia > t.distancia_max:
-            dif_distancia = distancia - t.distancia_max
-            precio = precio + t.distancia_max * t.costo_km + dif_distancia * t.costo_km * t.incremento_distancia
-        else:
-            precio = precio + distancia * t.costo_km
-        if precio < t.costo_minimo:
-            precio = t.costo_minimo
+        precio = precio_tarifa(t, distancia, duracion)
         tarifa = TarifaSerializer(t)
         return Response({"distance": distancia, "distance_text": distancia_text, "duracion": duracion,
                          "duracion_text": duracion_text, "precio": precio, "tarifa": tarifa.data},
@@ -330,6 +348,8 @@ class FinalizarServicio(APIView):
             bs = BitacoraEstatusServicio(servicio=s, estatus=e)
             bs.save()
             s.estatus = e
+            bi = BitacoraEstatusServicio.objects.filter(servicio=s, estatus__pk=5).first()
+            s.costo = precio_tarifa(s.tarifa, distancia_ruta(s.pk), (bs.fecha - bi.fecha).seconds)
             s.save()
             # TODO cobrar
             u = Usuario.objects.get(pk=s.cliente.pk)
