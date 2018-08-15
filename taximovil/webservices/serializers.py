@@ -187,3 +187,17 @@ class ChoferCoordenadasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chofer
         fields = ('latlgn',)
+
+class ChoferCreditoSerializer(serializers.Serializer):
+    chofer = serializers.IntegerField()
+    monto = serializers.FloatField()
+
+    def validate_chofer(self, value):
+        """
+        Check that chofer exists
+        """
+        try:
+            Chofer.objects.get(pk=value)
+            return value
+        except:
+            raise serializers.ValidationError("El chofer no existe")
