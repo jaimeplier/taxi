@@ -336,7 +336,7 @@ class FinalizarServicio(APIView):
     """
         post:Finalizar servicio
     """
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         response_data = {}
@@ -368,7 +368,7 @@ class FinalizarServicio(APIView):
             response_data['error'] = 'No se puede finalizar el servicio'
             response_data['result'] = 0
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'result': 1}, status=status.HTTP_200_OK)
+        return Response({'result': 1, 'servicio': serializerServicio.data}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
         return ServicioPkSerializer()
