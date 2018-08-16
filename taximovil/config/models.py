@@ -666,8 +666,8 @@ class Servicio(models.Model):
     distancia = models.FloatField()
     costo = models.FloatField()
     estatus = models.ForeignKey('EstatusServicio', on_delete=models.DO_NOTHING)
-    calificacion_cliente = models.IntegerField()
-    calificacion_chofer = models.IntegerField()
+    calificacion_cliente = models.IntegerField(blank=True, null=True)
+    calificacion_chofer = models.IntegerField(blank=True, null=True)
 
     cliente = models.ForeignKey('Cliente', models.DO_NOTHING)
     tipo_servicio = models.ForeignKey('TipoServicio', models.DO_NOTHING)

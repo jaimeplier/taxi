@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, Avg
 from fcm_django.models import FCMDevice
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -380,7 +380,7 @@ class CalificarServicio(APIView):
     def post(self, request):
         serializer = CalificacionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if request.user.rol.pk == 2:  # cliente
+        if self.request.user.rol.pk == 2:  # cliente
             s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
             s.calificacion_cliente = serializer.validated_data.get('calificacion')
             s.save()
@@ -392,7 +392,7 @@ class CalificarServicio(APIView):
             c.calificacion = calif['calificacion']
             c.save()
             return Response({'result': 1}, status=status.HTTP_200_OK)
-        elif request.user.rol.pk == 3:  # chofer
+        elif self.request.user.rol.pk == 3:  # chofer
             s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
             s.calificacion_chofer = serializer.validated_data.get('calificacion')
             s.save()
@@ -409,3 +409,17 @@ class CalificarServicio(APIView):
 
     def get_serializer(self):
         return CalificacionSerializer()
+
+
+class HistorialServicios(ListAPIView):
+    serializer_class = ServicioSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        if self.request.user.rol.pk == 2:  # cliente
+            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(6, 7))
+        elif self.request.user.rol.pk == 3:  # chofer
+            s = Servicio.objects.filter(chofer__pk=self.request.user.pk, estatus__pk__in=(6, 7))
+        else:
+            s = Servicio.objects.none()
+        return s
