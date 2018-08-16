@@ -147,6 +147,7 @@ class Chofer(Usuario):
     taxis = models.ManyToManyField('Vehiculo', through='ChoferHasVehiculo', related_name='choferes')
     latlgn = models.PointField(blank=True, null=True)
     activo = models.BooleanField(default=False)
+    calificiacion = models.FloatField(default=5)
 
     @property
     def latitud(self):
@@ -665,6 +666,8 @@ class Servicio(models.Model):
     distancia = models.FloatField()
     costo = models.FloatField()
     estatus = models.ForeignKey('EstatusServicio', on_delete=models.DO_NOTHING)
+    calificacion_cliente = models.IntegerField()
+    calificacion_chofer = models.IntegerField()
 
     cliente = models.ForeignKey('Cliente', models.DO_NOTHING)
     tipo_servicio = models.ForeignKey('TipoServicio', models.DO_NOTHING)
@@ -767,6 +770,7 @@ class Rutas(models.Model):
     class Meta:
         managed = True
         db_table = 'rutas'
+
 
 class BitacoraCredito(models.Model):
     usuario = models.ForeignKey('Usuario', on_delete=models.DO_NOTHING, related_name='administradores')

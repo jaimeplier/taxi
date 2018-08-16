@@ -5,7 +5,7 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F
+from django.db.models import F, Avg
 from fcm_django.models import FCMDevice
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
@@ -19,7 +19,7 @@ from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSeria
 from taximovil import settings
 from webservices.permissions import ChoferPermission, IsOwnerPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
-    ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer
+    ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer, CalificacionSerializer
 
 
 def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, base=None):
@@ -372,3 +372,40 @@ class FinalizarServicio(APIView):
 
     def get_serializer(self):
         return ServicioPkSerializer()
+
+
+class CalificarServicio(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = CalificacionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if request.user.rol.pk == 2:  # cliente
+            s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+            s.calificacion_cliente = serializer.validated_data.get('calificacion')
+            s.save()
+            c = s.chofer
+            calif = Servicio.objects.filter(
+                estatus__pk=6,
+                chofer=c,
+                calificacion_cliente__isnull=False).aggregate(calificacion=Avg('calificacion_cliente'))
+            c.calificacion = calif['calificacion']
+            c.save()
+            return Response({'result': 1}, status=status.HTTP_200_OK)
+        elif request.user.rol.pk == 3:  # chofer
+            s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
+            s.calificacion_chofer = serializer.validated_data.get('calificacion')
+            s.save()
+            c = s.cliente
+            calif = Servicio.objects.filter(
+                estatus__pk=6,
+                cliente=c,
+                calificacion_chofer__isnull=False).aggregate(calificacion=Avg('calificacion_chofer'))
+            c.calificacion = calif['calificacion']
+            c.save()
+            return Response({'result': 1}, status=status.HTTP_200_OK)
+        else:
+            return Response({'result': 0}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_serializer(self):
+        return CalificacionSerializer()

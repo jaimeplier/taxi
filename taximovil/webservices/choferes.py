@@ -89,7 +89,7 @@ class CreditoChofer(APIView):
         else:
             c.saldo = c.saldo + monto
             c.save()
-            bc = BitacoraCredito(chofer = c, usuario = request.user, monto=monto)
+            bc = BitacoraCredito(chofer=c, usuario=request.user, monto=monto)
             bc.save()
         return Response({"result": 1}, status=status.HTTP_200_OK)
 

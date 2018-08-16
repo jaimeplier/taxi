@@ -188,6 +188,7 @@ class ChoferCoordenadasSerializer(serializers.ModelSerializer):
         model = Chofer
         fields = ('latlgn',)
 
+
 class ChoferCreditoSerializer(serializers.Serializer):
     chofer = serializers.IntegerField()
     monto = serializers.FloatField()
@@ -201,3 +202,16 @@ class ChoferCreditoSerializer(serializers.Serializer):
             return value
         except:
             raise serializers.ValidationError("El chofer no existe")
+
+
+class CalificacionSerializer(serializers.Serializer):
+    calificacion = serializers.IntegerField()
+    servicio = serializers.IntegerField()
+
+    def validate_servicio(self, value):
+        """
+        Check that servicio exists
+        """
+        if Servicio.objects.filter(pk=value).count() == 0:
+            raise serializers.ValidationError("El servicio no existe")
+        return value
