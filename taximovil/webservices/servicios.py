@@ -318,7 +318,6 @@ class RechazarServicioView(APIView):
 
         s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
         c = Chofer.objects.get(pk=request.user.pk)
-
         try:
             aso = ServicioChofer.objects.get(chofer=c, servicio=s)
             aso.estatus = 2
@@ -326,7 +325,9 @@ class RechazarServicioView(APIView):
         except ServicioChofer.DoesNotExist:
             aso = ServicioChofer(chofer=c, servicio=s, estatus=2)
             aso.save()
-        return Response(status=status.HTTP_200_OK)
+        c.activo = True
+        s.save()
+        return Response({'result': 1}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
         return ServicioPkSerializer()
@@ -351,6 +352,9 @@ class FinalizarServicio(APIView):
             bi = BitacoraEstatusServicio.objects.filter(servicio=s, estatus__pk=5).first()
             s.costo = precio_tarifa(s.tarifa, distancia_ruta(s.pk), (bs.fecha - bi.fecha).seconds)
             s.save()
+            c = s.chofer
+            c.activo = True
+            c.save()
             # TODO cobrar
             u = Usuario.objects.get(pk=s.cliente.pk)
             dispositivos = FCMDevice.objects.filter(user=u)
