@@ -4,10 +4,12 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
+from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from fcm_django.models import FCMDevice
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -15,9 +17,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from twilio.rest import Client
 
-from config.models import Chofer, ChoferHasVehiculo
+from config.models import Chofer, ChoferHasVehiculo, Servicio
 from config.models import Codigo, Usuario, Cliente
-from config.serializers import ClienteSerializer, ChoferSerializer
+from config.serializers import ClienteSerializer, ChoferSerializer, ServicioSerializer
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
     ResetSerializer, ChangePasswordSerializer, VerChoferSerializer
@@ -294,3 +296,23 @@ class ResetPassword(APIView):
 
     def get_serializer(self):
         return ResetSerializer()
+
+
+class InicioApp(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        if self.request.user.rol.pk == 2:  # cliente
+            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5),
+                                        hora_servicio=timezone.now()).order_by('-id')
+        elif self.request.user.rol.pk == 3:  # chofer
+            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5),
+                                        hora_servicio=timezone.now()).order_by('-id')
+        else:
+            s = None
+        response_data = {'result': 1}
+        if s:
+            serializer = ServicioSerializer(s, many=False)
+            response_data['servicio'] = serializer.data
+        return Response(response_data, status=status.HTTP_200_OK)
