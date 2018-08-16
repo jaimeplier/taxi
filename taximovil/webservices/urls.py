@@ -4,7 +4,7 @@ from rest_framework import routers
 from webservices import tarjeta, cliente
 from webservices.catalogos import TipoPagoList, TipoVehiculoList
 from webservices.choferes import ActualizarChofer, ChoferEstatus, CambiarEstatusServicio, CreditoChofer
-from webservices.cliente import RegistrarUsuario
+from webservices.cliente import RegistrarUsuario, DireccionesPasadas
 from webservices.servicios import BuscarCiudad, Cotizar, SolicitarServicio, TaxisCercanos, GuardarRuta, \
     AceptarServicioView, RechazarServicioView, BuscarChofer, FinalizarServicio, CalificarServicio, HistorialServicios
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, ChangePassword, ResetPassword, \
@@ -35,6 +35,8 @@ urlpatterns = [
     path('verChofer/', VerChofer.as_view(), name='ver_chofer'),
     path('actualizarChofer/', ActualizarChofer.as_view(), name='actualizar_chofer'),
     path('creditoChofer/', CreditoChofer.as_view(), name='credito_chofer'),
+    # Cliente
+    path('direccionesPasadas/', DireccionesPasadas.as_view(), name='direcciones_pasadas'),
     # Servicios
     path('buscarCiudad/', BuscarCiudad.as_view(), name='buscar_ciudad'),
     path('cotizar/', Cotizar.as_view(), name='cotizar'),

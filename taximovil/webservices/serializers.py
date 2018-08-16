@@ -215,3 +215,9 @@ class CalificacionSerializer(serializers.Serializer):
         if Servicio.objects.filter(pk=value).count() == 0:
             raise serializers.ValidationError("El servicio no existe")
         return value
+
+
+class UltimasDireccionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servicio
+        fields = ('latitudDestino', 'longitudDestino', 'direccion_destino')

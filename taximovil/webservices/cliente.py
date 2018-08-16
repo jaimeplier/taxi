@@ -2,13 +2,14 @@ from fcm_django.models import FCMDevice
 from rest_framework import status, viewsets
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Rol, DireccionServicio, Cliente
+from config.models import Rol, DireccionServicio, Cliente, Servicio
 from config.serializers import DireccionSerializer, DireccionEditSerializer
-from webservices.serializers import UsuarioEditSerializer
+from webservices.serializers import UsuarioEditSerializer, UltimasDireccionSerializer
 
 
 class RegistrarUsuario(APIView):
@@ -50,7 +51,7 @@ class DireccionViewSet(viewsets.ModelViewSet):
             cliente = Cliente.objects.get(pk=self.request.user.pk)
         except Cliente.DoesNotExist:
             Response({"error": "El cliente no existe"}, status=status.HTTP_400_BAD_REQUEST)
-        qs = DireccionServicio.objects.filter(cliente=cliente,estatus=True)
+        qs = DireccionServicio.objects.filter(cliente=cliente, estatus=True)
         serializer = DireccionSerializer(qs, many=True)
         return Response(serializer.data)
 
@@ -72,3 +73,13 @@ class DireccionViewSet(viewsets.ModelViewSet):
             return DireccionEditSerializer
         else:
             return DireccionSerializer
+
+
+class DireccionesPasadas(ListAPIView):
+    serializer_class = UltimasDireccionSerializer
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        s = Servicio.objects.filter(cliente__pk=self.request.user.pk).order_by('-id')[:5]
+        return s
