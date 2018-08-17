@@ -661,6 +661,7 @@ class Servicio(models.Model):
     direccion_destino = models.CharField(max_length=400)
     tiempo_aproximado_servicio = models.IntegerField()
     tiempo_aproximado_taxi = models.IntegerField(blank=True, null=True)
+    duracion = models.IntegerField(blank=True, null=True)
     ref_lugar = models.CharField(max_length=200, blank=True, null=True)
     ref_persona = models.CharField(max_length=200, blank=True, null=True)
     distancia = models.FloatField()

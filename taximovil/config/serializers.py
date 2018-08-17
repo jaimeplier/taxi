@@ -115,5 +115,6 @@ class ServicioSerializer(serializers.ModelSerializer):
         model = Servicio
         fields = (
             'pk', 'hora_registro', 'hora_servicio', 'origen', 'destino', 'direccion_origen', 'direccion_destino',
-            'ref_lugar', 'ref_persona', 'distancia', 'tiempo_aproximado_servicio', 'tiempo_aproximado_taxi', 'costo',
-            'estatus', 'cliente', 'chofer', 'tipo_servicio', 'vehiculo', 'sitio', 'sucursal', 'tipo_pago', 'tarifa')
+            'ref_lugar', 'ref_persona', 'distancia', 'tiempo_aproximado_servicio', 'tiempo_aproximado_taxi', 'duracion',
+            'costo', 'estatus', 'cliente', 'chofer', 'tipo_servicio', 'vehiculo', 'sitio', 'sucursal', 'tipo_pago',
+            'tarifa')

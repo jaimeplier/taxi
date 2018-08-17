@@ -350,6 +350,7 @@ class FinalizarServicio(APIView):
             bs.save()
             s.estatus = e
             bi = BitacoraEstatusServicio.objects.filter(servicio=s, estatus__pk=5).first()
+            s.duracion = (bs.fecha - bi.fecha).seconds
             s.costo = precio_tarifa(s.tarifa, distancia_ruta(s.pk), (bs.fecha - bi.fecha).seconds)
             s.save()
             c = s.chofer
