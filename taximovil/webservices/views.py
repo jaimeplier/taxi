@@ -241,7 +241,7 @@ class ChangePassword(APIView):
             u.set_password(serializer.validated_data.get('new'))
             u.save()
         else:
-            return Response({"error": "La contraseña anterior no coincide"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"result": 0, "error": "La contraseña anterior no coincide"}, status=status.HTTP_200_OK)
         return Response({"result": 1}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
