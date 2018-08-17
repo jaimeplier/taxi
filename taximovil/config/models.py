@@ -782,3 +782,14 @@ class BitacoraCredito(models.Model):
     class Meta:
         managed = True
         db_table = 'bitacora_credito'
+
+
+class MonederoChofer(models.Model):
+    servicio = models.ForeignKey(Servicio, models.DO_NOTHING)
+    chofer = models.ForeignKey(Chofer, models.DO_NOTHING)
+    ganancia = models.FloatField()
+    retencion = models.FloatField()
+
+    class Meta:
+        managed = True
+        db_table = 'monedero_chofer'
