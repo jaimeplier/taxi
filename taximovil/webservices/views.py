@@ -305,19 +305,19 @@ class InicioApp(APIView):
     def get(self, request):
         response_data = {'result': 1}
         if self.request.user.rol.pk == 2:  # cliente
-            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5),
-                                        hora_servicio=timezone.now()).order_by('-id')
+            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5)).order_by('-id')
         elif self.request.user.rol.pk == 3:  # chofer
-            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5),
-                                        hora_servicio=timezone.now()).order_by('-id')
+            s = Servicio.objects.filter(chofer__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5)).order_by('-id')
             c = Chofer.objects.get(pk=request.user.pk)
             response_data['saldo'] = c.saldo
         else:
             s = None
         if s:
             s = s.first()
-        serializer = ServicioSerializer(s, many=False)
-        response_data['servicio'] = serializer.data
+            serializer = ServicioSerializer(s, many=False)
+            response_data['servicio'] = serializer.data
+        else:
+            response_data['servicio'] = None
         return Response(response_data, status=status.HTTP_200_OK)
 
 
