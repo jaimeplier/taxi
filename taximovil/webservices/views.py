@@ -316,8 +316,10 @@ class InicioApp(APIView):
             s = None
         if s:
             s = s.first()
-        serializer = ServicioSerializer(s, many=False)
-        response_data['servicio'] = serializer.data
+            serializer = ServicioSerializer(s, many=False)
+            response_data['servicio'] = serializer.data
+        else:
+            response_data['servicio'] = None
         return Response(response_data, status=status.HTTP_200_OK)
 
 
