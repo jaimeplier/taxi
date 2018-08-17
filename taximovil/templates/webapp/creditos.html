@@ -1,131 +1,132 @@
 {% extends 'config/tab_base.html' %}
 {% block content %}
-		<div class="row">
-			<div class="col s1"></div>
-			<div class="col s7" >
-				<label id="file_up"><i class="material-icons">attach_file</i>Puede adjuntar una tabla excel de las trasacciones</label>
-			</div>
-			<div class="col s3 center">
-				<form action="#">
-				    <div class="file-field input-field">
-				      <div class="btn" id="btn_subir">
-				        <span>Subir Archivo</span>
-				        <input type="file" multiple>
-				      </div>
-				      <a class="waves-effect waves-light btn" style="margin-top: 5%;" id="save_btn">Guardar</a>
-				      <div class="file-path-wrapper" style="width: 1px;">
-				        <input class="file-path validate" type="text">
-				      </div>
-				    </div>
-  				</form>
-			</div>
-			<div class="col s1"></div>
-		</div>
-		<div class="row">
-			<div class="col s1"></div>
-			<div class="col s10">
-				<label id="label_cantidad"><i class="material-icons">monetization_on</i>Ingrese el número del económico y la cantidad que desea agregar.</label>
-			</div>
-			<div class="col s1"></div>
-		</div>
-		<div class="row">
-			<div class="col s1"></div>
-			<div class="col s10">
-				<div class="row">
-					<div class="input-field col s2">
-						<select>
-      						<option value="" disabled selected>Seleccione</option>
-      						<option value="1">Agregar</option>
-     						<option value="2">Eliminar</option>
-    					</select>
-    					<label>Operacion a Realizar</label>
-					</div>
-					<div class="input-field col s3">
-						<input type="text" id="economico">
-						<label for="economico">Número de Económico</label>
-					</div>
-					<div class="input-field col s3">
-						<input type="text" id="cantidad">
-						<label for="cantidad">$ Monto</label>
-					</div>
-					<div class="col s4">
-						<a class="waves-effect waves-light btn" id="btn_creditos"><i class="material-icons">check</i>Agregrar</a>
-					</div>
-				</div>
-			</div>
-			<div class="col s1"></div>
-		</div>
-		<!-- tabla ejemplo -->
-		<div class="row"></div>		<!-- dead space -->
-		<div class="row">
-			<div class="col s1"></div>
-			<div class="col s10">
-				<table class="bordered highlight centered responsive-table">
-					<thead class="fondo_negro white-text">
-						<tr>
-							<th># ECONÓMICO</th>
-							<th>NOMBRE</th>
-							<th>A. PATERNO</th>
-							<th>A. MATERNO</th>
-							<th>CORREO</th>
-							<th>CELULAR</th>
-							<th>CRÉDITO</th>
-						</tr>
-					</thead>
+    <div class="row">
+        <div class="col s1"></div>
+        <div class="col s5">
+            <label id="file_up" class="black-text" style="font-size: 1.3rem;"><i class="material-icons">attach_file</i>Puede adjuntar una tabla excel de las
+                trasacciones</label>
+        </div>
+        <div class="col s5 center">
+            <form action="#">
+                <div class="file-field input-field">
+                    <div class="btn" id="btn_subir">
+                        <span>Subir Archivo</span>
+                        <input type="file" multiple>
+                    </div>
+                    <a class="waves-effect waves-light btn" id="save_btn" style="margin-left: 5%;">Guardar</a>
+                    <div class="file-path-wrapper" style="width: 1px;">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col s1"></div>
+    </div>
+    <div class="row">
+        <div class="col s1"></div>
+        <div class="col s10">
+            <label id="label_cantidad" class="black-text" style="font-size: 1.3rem;"><i class="material-icons">monetization_on</i>Ingrese el número del económico y la
+                cantidad que desea agregar.</label>
+        </div>
+        <div class="col s1"></div>
+    </div>
+    <div class="row">
+        <div class="col m1 l1"></div>
+        <div class="col s12 m10 l10">
+            <div class="row">
+                <div class="input-field col s2">
+                    <select>
+                        <option value="" disabled selected>Seleccione</option>
+                        <option value="1">Agregar</option>
+                        <option value="2">Eliminar</option>
+                    </select>
+                    <label>Operacion a Realizar</label>
+                </div>
+                <div class="input-field col s3">
+                    <input type="text" id="economico">
+                    <label for="economico">Número de Económico</label>
+                </div>
+                <div class="input-field col s3">
+                    <input type="text" id="cantidad">
+                    <label for="cantidad">$ Monto</label>
+                </div>
+                <div class="col s4 input-field">
+                    <a class="waves-effect waves-light btn" id="btn_creditos"><i class="material-icons">check</i>Agregar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col m1 l1"></div>
+    </div>
+    <!-- tabla ejemplo -->
+    <div class="row"></div>        <!-- dead space -->
+    <div class="row">
+        <div class="col s1"></div>
+        <div class="col s10">
+            <table class="bordered highlight centered responsive-table">
+                <thead class="fondo_negro white-text">
+                <tr>
+                    <th># ECONÓMICO</th>
+                    <th>NOMBRE</th>
+                    <th>A. PATERNO</th>
+                    <th>A. MATERNO</th>
+                    <th>CORREO</th>
+                    <th>CELULAR</th>
+                    <th>CRÉDITO</th>
+                </tr>
+                </thead>
 
-					<tbody>
-						<tr>
-							<td>Juan Perez Martinez</td>
-							<td>Lorem ipsum</td>
-							<td>3</td>
-							<td>2</td>
-							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
-							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
-						</tr>
-						<tr>
-							<td>Juan Perez Martinez</td>
-							<td>Lorem ipsum</td>
-							<td>3</td>
-							<td>2</td>
-							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
-							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
-						</tr>
-						<tr>
-							<td>Juan Perez Martinez</td>
-							<td>Lorem ipsum</td>
-							<td>3</td>
-							<td>2</td>
-							<td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
-							<td><a href="#!"><i class="material-icons morado">delete</i></a></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="col s1"></div>
-		</div>
-		<div class="row">
-			<div class="col s12 center">
-				<ul class="pagination">
-				    <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_left</i></a></li>
-				    <li class="active"><a href="#!">1</a></li>
-				    <li class="waves-effect"><a href="#!">2</a></li>
-				    <li class="waves-effect"><a href="#!">3</a></li>
-				    <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_right</i></a></li>
-  				</ul>
-			</div>
-		</div>
+                <tbody>
+                <tr>
+                    <td>Juan Perez Martinez</td>
+                    <td>Lorem ipsum</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
+                    <td><a href="#!"><i class="material-icons morado">delete</i></a></td>
+                </tr>
+                <tr>
+                    <td>Juan Perez Martinez</td>
+                    <td>Lorem ipsum</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
+                    <td><a href="#!"><i class="material-icons morado">delete</i></a></td>
+                </tr>
+                <tr>
+                    <td>Juan Perez Martinez</td>
+                    <td>Lorem ipsum</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td><a href="#!"><i class="material-icons naranja">edit</i></a></td>
+                    <td><a href="#!"><i class="material-icons morado">delete</i></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col s1"></div>
+    </div>
+    <div class="row">
+        <div class="col s12 center">
+            <ul class="pagination">
+                <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_left</i></a></li>
+                <li class="active"><a href="#!">1</a></li>
+                <li class="waves-effect"><a href="#!">2</a></li>
+                <li class="waves-effect"><a href="#!">3</a></li>
+                <li class="waves-effect"><a href="#!"><i class="material-icons rosa">chevron_right</i></a></li>
+            </ul>
+        </div>
+    </div>
 
-		<!--  //  //  //  -->
+    <!--  //  //  //  -->
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-	$("document").ready(function()
-	{
-		$(".dropdown-button").dropdown();
-		$(".button-collapse").sideNav();
-		$('select').material_select();
-	});
-</script>
+    <script type="text/javascript">
+        $("document").ready(function () {
+            $(".dropdown-button").dropdown();
+            $(".button-collapse").sideNav();
+            $('select').material_select();
+        });
+    </script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->
