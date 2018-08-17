@@ -8,7 +8,7 @@ from webservices.cliente import RegistrarUsuario, DireccionesPasadas
 from webservices.servicios import BuscarCiudad, Cotizar, SolicitarServicio, TaxisCercanos, GuardarRuta, \
     AceptarServicioView, RechazarServicioView, BuscarChofer, FinalizarServicio, CalificarServicio, HistorialServicios
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, ChangePassword, ResetPassword, \
-    LoginChofer, LogoutCliente, LogoutChofer, VerChofer, InicioApp
+    LoginChofer, LogoutCliente, LogoutChofer, VerChofer, InicioApp, CambiarNombre
 
 app_name = 'webservices'
 
@@ -38,6 +38,7 @@ urlpatterns = [
     path('inicioApp/', InicioApp.as_view(), name='inicio_app'),
     # Cliente
     path('direccionesPasadas/', DireccionesPasadas.as_view(), name='direcciones_pasadas'),
+    path('cambiaNombre/', CambiarNombre.as_view(), name='cambiar_nombre'),
     # Servicios
     path('buscarCiudad/', BuscarCiudad.as_view(), name='buscar_ciudad'),
     path('cotizar/', Cotizar.as_view(), name='cotizar'),

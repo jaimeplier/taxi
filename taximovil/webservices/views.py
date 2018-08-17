@@ -22,7 +22,7 @@ from config.models import Codigo, Usuario, Cliente
 from config.serializers import ClienteSerializer, ChoferSerializer, ServicioSerializer
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
-    ResetSerializer, ChangePasswordSerializer, VerChoferSerializer
+    ResetSerializer, ChangePasswordSerializer, VerChoferSerializer, EditNombreSerializer
 
 
 class EnviarCodigo(APIView):
@@ -313,6 +313,25 @@ class InicioApp(APIView):
             s = None
         response_data = {'result': 1}
         if s:
-            serializer = ServicioSerializer(s, many=False)
-            response_data['servicio'] = serializer.data
+            s = s.first()
+        serializer = ServicioSerializer(s, many=False)
+        response_data['servicio'] = serializer.data
         return Response(response_data, status=status.HTTP_200_OK)
+
+
+class CambiarNombre(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        u = self.request.user
+        serializer = EditNombreSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        u.nombre = serializer.validated_data.get('nombre')
+        u.a_paterno = serializer.validated_data.get('a_paterno')
+        u.a_materno = serializer.validated_data.get('a_materno')
+        u.save
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return EditNombreSerializer()

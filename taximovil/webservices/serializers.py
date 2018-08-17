@@ -221,3 +221,9 @@ class UltimasDireccionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Servicio
         fields = ('latitudDestino', 'longitudDestino', 'direccion_destino')
+
+
+class EditNombreSerializer(serializers.Serializer):
+    nombre = serializers.CharField(max_length=64)
+    a_paterno = serializers.CharField(max_length=64)
+    a_materno = serializers.CharField(max_length=64)
