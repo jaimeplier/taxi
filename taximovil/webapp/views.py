@@ -290,9 +290,7 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
             taxis = form.cleaned_data.get('taxis')
             #print(form.cleaned_data('taxis'))
             form.instance.rol = Rol(pk=3)
-            
 
-                
             chofer = form.save(commit=False)
             chofer.direccion = form2.save()
             chofer.save()
@@ -321,7 +319,7 @@ def chofer_listar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'email', 'telefono', 'estatus', 'ubicacion', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus', 'ubicacion', 'vehiculos', 'editar', 'eliminar']
     order_columns = ['nombre', 'email', 'telefono', 'estatus']
     max_display_length = 100
 
@@ -334,7 +332,7 @@ class ChoferListarAjaxListView(BaseDatatableView):
         elif column == 'documentos':
             return '<a class="" href ="' + reverse('webapp:edit_chofer',
                                                    kwargs={
-                                                       'pk': row.pk}) + '"><i class="material-icons">assignment_ind</i></a>'
+                                                       'pk': row.pk}) + '"><i class="material-icons">directions_car</i></a>'
         elif column == 'vehiculos':
             return '<a class="" href ="' + reverse('webapp:vehiculo_chofer',
                                                    kwargs={
@@ -1603,6 +1601,38 @@ def vehiculos_chofer(request, pk):
     vehiculos = c.taxis.all()
     context = {"horarios": vehiculos, "chofer": c}
     return render(request, template_name, context)
+
+class VehiculosChoferAjaxList(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Vehiculo
+    columns = ['placa', 'anio', 'modelo', 'cromatica', 'propietario', 'economico', 'ciudad', 'asignado']
+    order_columns = ['placa', 'anio', 'modelo', 'cromatica', 'propietario', 'economico', 'ciudad']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+        chofer = Chofer.objects.get(pk = self.kwargs['pk'])
+        if column == 'asignado':
+            vehiculos = chofer.taxis.all().values_list('id', flat=True)
+            if row.pk in vehiculos:
+                return '<div class="switch"><label>Off<input type="checkbox" checked onchange=cambiar_estatus(' + str(
+                    row.pk) + ',' + str(chofer.pk) + ')><span class="lever"></span>On</label></div>'
+            else:
+                return '<div class="switch"><label>Off<input type="checkbox" onchange=cambiar_estatus(' + str(
+                    row.pk) + ',' + str(chofer.pk) + ')><span class="lever"></span>On</label></div>'
+        elif column == 'propietario':
+            return row.propietario.get_full_name()
+        elif column == 'modelo':
+            return row.modelo.nombre
+        elif column == 'ciudad':
+            return row.ciudad.nombre
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(VehiculosChoferAjaxList, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Vehiculo.objects.filter(estatus=True)
 
 
 class ComisionCrear(PermissionRequiredMixin, CreateView):
