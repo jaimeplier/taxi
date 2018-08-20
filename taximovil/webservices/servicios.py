@@ -177,8 +177,8 @@ class BuscarChofer(APIView):
         serializer.is_valid(raise_exception=True)
         s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
         if s.estatus.pk == 2:
-            cserializer = ChoferSerializer(s.chofer, many=False)
-            return Response({"chofer": cserializer.data, "estatus": 1}, status=status.HTTP_200_OK)
+            cserializer = ServicioSerializer(s, many=False)
+            return Response({"servicio": cserializer.data, "estatus": 1}, status=status.HTTP_200_OK)
         c = buscar_choferes(s)
         if c is None:
             return Response({"error", "No se encontro ningun chofer"}, status=status.HTTP_200_OK)

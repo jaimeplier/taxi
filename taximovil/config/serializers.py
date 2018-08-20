@@ -118,3 +118,8 @@ class ServicioSerializer(serializers.ModelSerializer):
             'ref_lugar', 'ref_persona', 'distancia', 'tiempo_aproximado_servicio', 'tiempo_aproximado_taxi', 'duracion',
             'costo', 'estatus', 'cliente', 'chofer', 'tipo_servicio', 'vehiculo', 'sitio', 'sucursal', 'tipo_pago',
             'tarifa')
+
+
+class AsignarVehiculoSerializer(serializers.Serializer):
+    vehiculo = serializers.IntegerField()
+    chofer = serializers.IntegerField()

@@ -46,7 +46,6 @@ class ChoferForm(ModelForm):
                   'numero_licencia',
                   'turno',
                   'saldo',
-                  'taxis',
                   ]
         labels = {'nombre': 'Nombre',
                   'a_paterno': 'Apellido paterno',
@@ -54,7 +53,6 @@ class ChoferForm(ModelForm):
                   'email': 'Correo electronico',
                   'password': 'Contraseña',
                   'telefono': 'Telefono',
-                  'taxis': 'Vehiculos asignados',
                   }
 
 

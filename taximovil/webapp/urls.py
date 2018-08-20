@@ -12,7 +12,7 @@ from webapp.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActuali
     PropietarioListarAjaxListView, PropietarioActualizar, VehiculoCrear, VehiculoListarAjaxListView, VehiculoActualizar, \
     TarifaListarAjaxListView, TarifaCrear, TarifaActualizar, ComisionCrear, ComisionListarAjaxListView, \
     ComisionActualizar, RolCrear, RolListarAjaxListView, RolActualizar, ServiciosActivosAjaxList, \
-    ServiciosFinalizadosAjaxList, ChoferUbicacion
+    ServiciosFinalizadosAjaxList, ChoferUbicacion, VehiculosChoferAjaxList
 from . import views
 
 app_name = 'webapp'
@@ -142,7 +142,8 @@ urlpatterns = [
     path('horario/edit/<int:pk>', views.editar_horario, name='edit_horario'),
     path('horario/delete/<int:pk>', views.eliminar_horario, name='delete_horario'),
 
-    path('vehiculo_chofer/<int:pk>/', views.vehiculos_chofer, name='vehiculo_chofer'),
+    path('vehiculo_chofer/list/<int:pk>', views.vehiculos_chofer, name='vehiculo_chofer'),
+    path('vehiculo_chofer/ajax/list/<int:pk>', VehiculosChoferAjaxList.as_view(), name='list_ajax_vehiculos_chofer'),
     #path('vehiculo_chofer/add/', views.agregar_vehiculo_chofer, name='agregar_vehiculo_chofer'),
     #path('vehiculo_chofer/edit/<int:pk>', views.editar_vehiculo_chofer, name='edit_vehiculo_chofer'),
     #path('vehiculo_chofer/delete/<int:pk>', views.eliminar_vehiculo_chofer, name='delete_vehiculo_chofer'),
