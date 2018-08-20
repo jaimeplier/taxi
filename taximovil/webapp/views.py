@@ -577,6 +577,23 @@ class ZonaCrear(PermissionRequiredMixin, CreateView):
             context['instrucciones'] = 'Completa todos los campos para registrar una zona'
         return context
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        form = self.form_class(request.POST)
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        if form.is_valid():
+            try:
+                pnt = Point(float(lon), float(lat))
+                form.instance.centro = pnt
+                zona = form.save()
+                return HttpResponseRedirect(self.get_success_url())
+            except:
+                return render(request, template_name=self.template_name,
+                              context={'form': form, 'error': 'Escribe la ubicación'})
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
     def get_success_url(self):
         return reverse('webapp:list_zona')
 

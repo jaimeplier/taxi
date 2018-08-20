@@ -14,22 +14,7 @@
     <div class="row">
     {{ instrucciones }}
     <div id="test-swipe-1" class="col s12">
-    {% if form.errors %}
-        <div class="row">
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <div class="alert alert-danger">
-                        <strong>{{ error|escape }}</strong>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ error|escape }}</strong>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+
     </div>
     <form action="" method="post" id="persona">
         <div class="row col s7">
@@ -59,6 +44,24 @@
                     {% endfor %}
 
                 {% endif %}
+
+            {% if form.errors %}
+                    <div class="row">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {{ error }}
                 <input type="hidden" name="lat" id="lat"
                        value="{% if form.instance != None %}{{ form.instance.latitud }}{% endif %}" required>
                 <input type="hidden" name="lgn" id="lgn"
@@ -78,7 +81,7 @@
     </form>
     <div class="col s3">
         <div class="row">
-            <div class="col s2">Ubicacion:</div>
+            <div class="col s2">Ubicación:</div>
             <div class="col s8">
                 <input type="text" id="searchTextField"/>
             </div>
