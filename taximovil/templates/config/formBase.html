@@ -7,11 +7,12 @@
     <div class="row">
         <div class=" col s2"></div>
         <div class="col s8 center">
-            <h4>FORMULARIO DE ZONA</h4>
+            <h4>{{ titulo }}</h4>
         </div>
         <div class="col s2"></div>
     </div>
     <div class="row">
+    {{ instrucciones }}
     <div id="test-swipe-1" class="col s12">
     {% if form.errors %}
         <div class="row">
@@ -77,7 +78,7 @@
     </form>
     <div class="col s3">
         <div class="row">
-            <div class="col s2">Ubicacion:</div>
+            <div class="col s2">Ubicación:</div>
             <div class="col s8">
                 <input type="text" id="searchTextField"/>
             </div>

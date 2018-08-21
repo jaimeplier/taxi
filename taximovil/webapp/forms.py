@@ -11,7 +11,7 @@ class EmpresaForm(ModelForm):
                   'direccion',
                   ]
         labels = {'nombre': 'Nombre',
-                  'direccion': 'Direccion',
+                  'direccion': 'Dirección',
                   }
 
 
