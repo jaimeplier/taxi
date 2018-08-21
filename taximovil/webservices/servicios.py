@@ -95,7 +95,7 @@ def cobrar(servicio):
     elif servicio.tipo_pago.pk == 2:
         servicio.estatus_pago = EstatusPago(pk=1)
         c = servicio.chofer
-        c.saldo = c.saldo - servicio.costo*servicio.tarifa
+        c.saldo = c.saldo - servicio.costo*servicio.tarifa.comision
         c.save()
         servicio.save()
 

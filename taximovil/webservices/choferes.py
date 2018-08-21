@@ -13,7 +13,7 @@ from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServ
 from config.serializers import AsignarVehiculoSerializer
 from webservices.permissions import ChoferPermission, AdministradorPermission
 from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer, \
-    ChoferCreditoSerializer
+    ChoferCreditoSerializer, AgregarSaldoSerializer
 
 
 class ChoferEstatus(APIView):
@@ -145,3 +145,16 @@ class DesAsignarVehiculo(APIView):
 
     def get_serializer(self):
         return AsignarVehiculoSerializer()
+
+
+class AgregarSaldo(APIView):
+    permission_classes = (IsAuthenticated, ChoferPermission)
+
+    def post(self, request):
+        serializer = AgregarSaldoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        monto = serializer.validated_data.get('monto')
+
+    def get_serializer(self):
+        return AgregarSaldoSerializer()

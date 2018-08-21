@@ -778,6 +778,7 @@ class BitacoraCredito(models.Model):
     usuario = models.ForeignKey('Usuario', on_delete=models.DO_NOTHING, related_name='administradores')
     chofer = models.ForeignKey('Chofer', on_delete=models.DO_NOTHING)
     monto = models.FloatField()
+    order_id = models.CharField(max_length=512, blank=True, null=True)
     fecha = models.DateField(auto_now_add=True)
 
     class Meta:

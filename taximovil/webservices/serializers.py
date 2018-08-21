@@ -227,3 +227,8 @@ class EditNombreSerializer(serializers.Serializer):
     nombre = serializers.CharField(max_length=64)
     a_paterno = serializers.CharField(max_length=64)
     a_materno = serializers.CharField(max_length=64)
+
+
+class AgregarSaldoSerializer(serializers.Serializer):
+    monto = serializers.FloatField()
+    tipo_pago = serializers.IntegerField()
