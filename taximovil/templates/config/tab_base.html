@@ -8,6 +8,9 @@
             background-color: #FFFFFF;
             background-image: none !important;
         }
+        th{
+            color: #FFFFFF !important;
+        }
 
         #tabla_length {
             width: 41% !important;
@@ -24,8 +27,9 @@
         }
 
         .dt-button {
-            width: 7%;
-            height: 4rem;
+            width: 10%;
+            height: 3rem;
+            line-height: 1.6rem;
         }
 
         .btncopy:hover {
@@ -74,7 +78,7 @@
                 <div class="row">
                     <div class="col s12">
                         <table class="bordered highlight centered responsive-table stripe" id="tabla">
-                            <thead class="fondo_negro white-text">
+                            <thead class="fondo_negro">
                             <tr>
                                 {% block campos %}{% endblock %}
                             </tr>
@@ -152,7 +156,7 @@
 
                         {
                             extend: 'copyHtml5',
-                            text: '<i class="far fa-copy fa-2x"></i></i><br/>Copy',
+                            text: '<i class="material-icons">file_copy</i><br/>Copy',
                             title: '{{ titulo_tabla }}',
                             titleAttr: 'Copiar',
                             className: 'btn btn-app export barras btncopy',
@@ -163,7 +167,7 @@
 
                         {
                             extend: 'pdfHtml5',
-                            text: '<i class="far fa-file-pdf fa-2x"></i><br/>PDF',
+                            text: '<i class="material-icons">picture_as_pdf</i><br/>PDF',
                             title: 'Titulo de tabla en pdf',
                             titleAttr: 'PDF',
                             className: 'btn btn-app export pdf btnpdf',
@@ -194,7 +198,7 @@
 
                         {
                             extend: 'excelHtml5',
-                            text: '<i class="far fa-file-excel fa-2x"></i></i><br/>Excel',
+                            text: '<i class="material-icons">explicit</i><br/>Excel',
                             title: '{{ titulo_tabla }}',
                             titleAttr: 'Excel',
                             className: 'btn btn-app export excel btnexcel',
@@ -204,7 +208,7 @@
                         },
                         {
                             extend: 'print',
-                            text: '<i class="far fa-file-alt fa-2x"></i><br/>Print',
+                            text: '<i class="material-icons">print</i><br/>Print',
                             title: '{{ titulo_tabla }}',
                             titleAttr: 'Imprimir',
                             className: 'btn btn-app export imprimir btnprint',

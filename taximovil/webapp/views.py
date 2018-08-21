@@ -142,6 +142,16 @@ class EmpresaCrear(PermissionRequiredMixin, CreateView):
     form_class = EmpresaForm
     template_name = 'config/form_1col.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(EmpresaCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de Empresa'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Llena todos los campos para registrar una nueva empresa'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_empresa')
 
@@ -187,6 +197,16 @@ class EmpresaActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = EmpresaForm
 
+    def get_context_data(self, **kwargs):
+        context = super(EmpresaActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Editar empresa'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras de la empresa'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_empresa')
 
@@ -201,6 +221,16 @@ class UsuarioCrear(CreateView):
     model = Usuario
     form_class = UsuarioForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(UsuarioCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de usuarios'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Llena todos los campos para registrar un usuario'
+        return context
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -247,6 +277,16 @@ class UsuarioActualizar(UpdateView):
     template_name = 'config/form_1col.html'
     form_class = UsuarioForm
 
+    def get_context_data(self, **kwargs):
+        context = super(UsuarioActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de usuario'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_usuario')
 
@@ -273,6 +313,10 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
             context['form'] = self.form_class(self.request.GET)
         if 'formDireccion' not in context:
             context['form2'] = self.segundo_form(self.request.GET)
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de chofer'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un chofer'
         return context
 
     def post(self, request, *args, **kwargs):
@@ -288,11 +332,8 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
 
             form.instance.set_password(form.cleaned_data['password'])
             taxis = form.cleaned_data.get('taxis')
-            #print(form.cleaned_data('taxis'))
             form.instance.rol = Rol(pk=3)
-            
 
-                
             chofer = form.save(commit=False)
             chofer.direccion = form2.save()
             chofer.save()
@@ -321,7 +362,7 @@ def chofer_listar(request):
 class ChoferListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Chofer
-    columns = ['nombre', 'email', 'telefono', 'estatus', 'ubicacion', 'editar', 'eliminar']
+    columns = ['nombre', 'email', 'telefono', 'estatus', 'ubicacion', 'vehiculos', 'editar', 'eliminar']
     order_columns = ['nombre', 'email', 'telefono', 'estatus']
     max_display_length = 100
 
@@ -334,7 +375,7 @@ class ChoferListarAjaxListView(BaseDatatableView):
         elif column == 'documentos':
             return '<a class="" href ="' + reverse('webapp:edit_chofer',
                                                    kwargs={
-                                                       'pk': row.pk}) + '"><i class="material-icons">assignment_ind</i></a>'
+                                                       'pk': row.pk}) + '"><i class="material-icons">directions_car</i></a>'
         elif column == 'vehiculos':
             return '<a class="" href ="' + reverse('webapp:vehiculo_chofer',
                                                    kwargs={
@@ -380,12 +421,16 @@ class ChoferActualizar(PermissionRequiredMixin, UpdateView):
 
         if 'form' not in context:
             context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de chofer'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
         if 'form2' not in context:
             self.segundo_form
             context['form2'] = self.segundo_form(instance=direccion)
             context['latitud'] = direccion.latitud
             context['longitud'] = direccion.longitud
-        context['id'] = pk
+            context['id'] = pk
         return context
 
     def post(self, request, *args, **kwargs):
@@ -443,6 +488,16 @@ class SitioCrear(PermissionRequiredMixin, CreateView):
     form_class = SitioForm
     template_name = 'config/form_1col.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(SitioCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de sitios'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un sitio'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_sitio')
 
@@ -484,6 +539,16 @@ class SitioActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = SitioForm
 
+    def get_context_data(self, **kwargs):
+        context = super(SitioActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de sitios'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_sitio')
 
@@ -501,6 +566,33 @@ class ZonaCrear(PermissionRequiredMixin, CreateView):
     model = Zona
     form_class = ZonaForm
     template_name = 'config/formMap.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ZonaCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de zona'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar una zona'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        form = self.form_class(request.POST)
+        lon = self.request.POST.get('lgn')
+        lat = self.request.POST.get('lat')
+        if form.is_valid():
+            try:
+                pnt = Point(float(lon), float(lat))
+                form.instance.centro = pnt
+                zona = form.save()
+                return HttpResponseRedirect(self.get_success_url())
+            except:
+                return render(request, template_name=self.template_name,
+                              context={'form': form, 'error': 'Escribe la ubicación'})
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
         return reverse('webapp:list_zona')
@@ -550,6 +642,16 @@ class ZonaActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/formMap.html'
     form_class = ZonaForm
 
+    def get_context_data(self, **kwargs):
+        context = super(ZonaActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de zona'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def form_valid(self, form):
         lon = self.request.POST.get('lgn')
         lat = self.request.POST.get('lat')
@@ -582,6 +684,10 @@ class BaseCrear(PermissionRequiredMixin, CreateView):
             context['form'] = self.form_class(self.request.GET)
         if 'formDireccion' not in context:
             context['form2'] = self.segundo_form(self.request.GET)
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de base'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar una base'
         return context
 
     def post(self, request, *args, **kwargs):
@@ -654,8 +760,6 @@ class BaseActualizar(PermissionRequiredMixin, UpdateView):
         pk = self.kwargs.get('pk', 0)
         base = self.model.objects.get(id=pk)
         direccion = self.segundoModelo.objects.get(id=base.direccion_id)
-        print(direccion.latitud)
-        print(direccion.longitud)
         if 'form' not in context:
             context['form'] = self.form_class()
         if 'form2' not in context:
@@ -664,11 +768,15 @@ class BaseActualizar(PermissionRequiredMixin, UpdateView):
 
             context['latitud'] = direccion.latitud
             context['longitud'] = direccion.longitud
-            print(context)
+
             # lon= self.request.POST.get('lgn')
             # lat = self.request.POST.get('lat')
             # pnt = Point(float(lon), float(lat))
             # self.segundo_form.instance.latlgn = pnt
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de base'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
 
         context['id'] = pk
         return context
@@ -725,6 +833,16 @@ class PaisCrear(PermissionRequiredMixin, CreateView):
     form_class = PaisForm
     template_name = 'config/form_1col.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(PaisCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de país'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un país'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_pais')
 
@@ -766,6 +884,16 @@ class PaisActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = PaisForm
 
+    def get_context_data(self, **kwargs):
+        context = super(PaisActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de país'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_pais')
 
@@ -783,6 +911,16 @@ class CiudadCrear(PermissionRequiredMixin, CreateView):
     model = Ciudad
     form_class = CiudadForm
     template_name = 'config/formMap.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CiudadCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de ciudad'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar una ciudad'
+        return context
 
     def form_valid(self, form):
         lon = self.request.POST.get('lgn')
@@ -833,6 +971,16 @@ class CiudadActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/formMap.html'
     form_class = CiudadForm
 
+    def get_context_data(self, **kwargs):
+        context = super(CiudadActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de ciudad'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los cambios que requieras'
+        return context
+
     def form_valid(self, form):
         lon = self.request.POST.get('lgn')
         lat = self.request.POST.get('lat')
@@ -857,6 +1005,16 @@ class SucursalCrear(PermissionRequiredMixin, CreateView):
     model = Sucursal
     form_class = SucursalForm
     template_name = 'config/formMap.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SucursalCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de sucursal'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
 
     def form_valid(self, form):
         lon = self.request.POST.get('lgn')
@@ -909,6 +1067,16 @@ class SucursalActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/formMap.html'
     form_class = SucursalForm
 
+    def get_context_data(self, **kwargs):
+        context = super(SucursalActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de sucursal'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def form_valid(self, form):
         lon = self.request.POST.get('lgn')
         lat = self.request.POST.get('lat')
@@ -933,6 +1101,16 @@ class FormaPagoCrear(PermissionRequiredMixin, CreateView):
     model = TipoPago
     form_class = TipoPagoForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(FormaPagoCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de formas de pago'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos, para registrar una forma de pago'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_forma_pago')
@@ -974,6 +1152,16 @@ class FormaPagoActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = TipoPagoForm
 
+    def get_context_data(self, **kwargs):
+        context = super(FormaPagoActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de formas de pago'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_forma_pago')
 
@@ -991,6 +1179,16 @@ class TipoVehiculoCrear(PermissionRequiredMixin, CreateView):
     model = TipoVehiculo
     form_class = TipoVehiculoForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TipoVehiculoCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de tipo de vehículos'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un tipo de vehículo'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_tipo_vehiculo')
@@ -1032,6 +1230,16 @@ class TipoVehiculoActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = TipoVehiculoForm
 
+    def get_context_data(self, **kwargs):
+        context = super(TipoVehiculoActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Edición de tipo de vehículo'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras del tipo de vehículo'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_tipo_vehiculo')
 
@@ -1049,6 +1257,16 @@ class ClienteCrear(PermissionRequiredMixin, CreateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ClienteCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de cliente'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un cliente'
+        return context
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -1097,6 +1315,16 @@ class ClienteActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = ClienteForm
 
+    def get_context_data(self, **kwargs):
+        context = super(ClienteActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de cliente'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_cliente')
 
@@ -1115,6 +1343,16 @@ class TipoServicioCrear(PermissionRequiredMixin, CreateView):
     model = TipoServicio
     form_class = TipoServicioForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TipoServicioCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de tipo de servicio'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un tipo de servicio'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_tipoServicio')
@@ -1156,6 +1394,16 @@ class TipoServicioActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = TipoServicioForm
 
+    def get_context_data(self, **kwargs):
+        context = super(TipoServicioActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de tipo de servicio'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_tipoServicio')
 
@@ -1173,6 +1421,16 @@ class MarcaCrear(PermissionRequiredMixin, CreateView):
     model = Marca
     form_class = MarcaForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MarcaCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de marca'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar una marca'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_marca')
@@ -1214,6 +1472,16 @@ class MarcaActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = MarcaForm
 
+    def get_context_data(self, **kwargs):
+        context = super(MarcaActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de marca'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_marca')
 
@@ -1231,6 +1499,16 @@ class ModeloCrear(PermissionRequiredMixin, CreateView):
     model = Modelo
     form_class = ModeloForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ModeloCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de modelo'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un modelo'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_modelo')
@@ -1274,6 +1552,16 @@ class ModeloActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = ModeloForm
 
+    def get_context_data(self, **kwargs):
+        context = super(ModeloActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de modelo'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_modelo')
 
@@ -1291,6 +1579,16 @@ class PropietarioCrear(PermissionRequiredMixin, CreateView):
     model = Propietario
     form_class = PropietarioForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PropietarioCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de propietario'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un propietario'
+        return context
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -1339,6 +1637,16 @@ class PropietarioActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = PropietarioForm
 
+    def get_context_data(self, **kwargs):
+        context = super(PropietarioActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de propietario'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_propietario')
 
@@ -1357,6 +1665,16 @@ class VehiculoCrear(PermissionRequiredMixin, CreateView):
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VehiculoCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de vehículo'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un vehículo'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_vehiculo')
@@ -1404,6 +1722,16 @@ class VehiculoActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'config/form_1col.html'
     form_class = VehiculoForm
 
+    def get_context_data(self, **kwargs):
+        context = super(VehiculoActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de vehículo'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_vehiculo')
 
@@ -1425,6 +1753,16 @@ class TarifaCrear(PermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(TarifaCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de tarifa'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar una tarifa'
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super(TarifaCrear, self).get_context_data(**kwargs)
         context['tipoPago'] = TipoPago.objects.all()
         return context
 
@@ -1440,6 +1778,16 @@ class TarifaActualizar(PermissionRequiredMixin, UpdateView):
     template_name = 'webapp/registro_tarifario.html'
     form_class = TarifaForm
 
+    def get_context_data(self, **kwargs):
+        context = super(TarifaActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de tarifa'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
     def get_success_url(self):
         return reverse('webapp:list_tarifa')
 
@@ -1448,14 +1796,12 @@ def tarifa_crear(request):
     template_name = 'webapp/registro_tarifario.html'
     if request.method == 'POST':
         form = TarifaForm(request.POST)
-        print(form)
         if form.is_valid():
             form.save()
             return reverse('webapp:list_tarifa')
         return render(request, template_name, {'form': form})
     else:
         form = TarifaForm()
-        print(form)
         # elif request.method == 'GET':
         #     c = Ciudad.objects.all()
         #     s = Sucursal.objects.all()
@@ -1505,7 +1851,8 @@ def tarifa_add(request):
                 pk_pago = TipoPago.objects.get(pk=pagoList[i])
                 tarifa.pago.add(pk_pago)
         except ValueError:
-            print("no se puede convertir")
+            response_data['success'] = 'fail'
+            return JsonResponse(response_data)
         response_data['success'] = 'success'
     except:
         response_data['error'] = 'error'
@@ -1604,6 +1951,38 @@ def vehiculos_chofer(request, pk):
     context = {"horarios": vehiculos, "chofer": c}
     return render(request, template_name, context)
 
+class VehiculosChoferAjaxList(BaseDatatableView):
+    redirect_field_name = 'next'
+    model = Vehiculo
+    columns = ['placa', 'anio', 'modelo', 'cromatica', 'propietario', 'economico', 'ciudad', 'asignado']
+    order_columns = ['placa', 'anio', 'modelo', 'cromatica', 'propietario', 'economico', 'ciudad']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+        chofer = Chofer.objects.get(pk = self.kwargs['pk'])
+        if column == 'asignado':
+            vehiculos = chofer.taxis.all().values_list('id', flat=True)
+            if row.pk in vehiculos:
+                return '<div class="switch"><label>Off<input type="checkbox" checked onchange=cambiar_estatus(' + str(
+                    row.pk) + ',' + str(chofer.pk) + ')><span class="lever"></span>On</label></div>'
+            else:
+                return '<div class="switch"><label>Off<input type="checkbox" onchange=cambiar_estatus(' + str(
+                    row.pk) + ',' + str(chofer.pk) + ')><span class="lever"></span>On</label></div>'
+        elif column == 'propietario':
+            return row.propietario.get_full_name()
+        elif column == 'modelo':
+            return row.modelo.nombre
+        elif column == 'ciudad':
+            return row.ciudad.nombre
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+
+        return super(VehiculosChoferAjaxList, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Vehiculo.objects.filter(estatus=True)
+
 
 class ComisionCrear(PermissionRequiredMixin, CreateView):
     redirect_field_name = 'next'
@@ -1612,6 +1991,16 @@ class ComisionCrear(PermissionRequiredMixin, CreateView):
     model = Comisiones
     form_class = ComisionForm
     template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ComisionCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de comisión'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar una comisión'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_comision')
@@ -1654,6 +2043,16 @@ class ComisionActualizar(PermissionRequiredMixin, UpdateView):
     model = Comisiones
     template_name = 'config/form_1col.html'
     form_class = ComisionForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ComisionActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de comisión'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los datos que requieras'
+        return context
 
     def get_success_url(self):
         return reverse('webapp:list_comision')

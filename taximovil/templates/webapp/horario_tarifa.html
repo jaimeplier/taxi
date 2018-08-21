@@ -2,22 +2,22 @@
 {% load static %}
 {% block content %}
     <div class="row">
-    <div class="col s1"></div>
+        <div class="col s1"></div>
         <div class="col s10">
             <h1 class="font_menu">Horarios</h1>
         </div>
     </div>
     <div class="row">
-    <div class="col s1"></div>
+        <div class="col s1"></div>
         <div class="col s10">
             <div class="panel panel-default">
                 <div class="panel-heading col-lg-12">
                     Horario de tarifa -- {{ tarifa.nombre }}
                     <div class="col-lg-offset-11">
-                        <a class="white-text modal-trigger" href ="#" onclick="actualiza()">
-                        <button type="button" class="btn btn-primary btn-sm rounded-s" id="btnAgregarHorario"
-                                data-toggle="modal" data-target="#myModal">Agregar
-                        </button>
+                        <a class="white-text modal-trigger" href="#" onclick="actualiza()">
+                            <button type="button" class="btn btn-primary btn-sm rounded-s" id="btnAgregarHorario"
+                                    data-toggle="modal" data-target="#myModal">Agregar
+                            </button>
                         </a>
                     </div>
                 </div>
@@ -25,14 +25,14 @@
                     <div class="row">
 
                         <table class="centered bordered table-hover responsive-table" id="horario">
-                           <thead>
+                            <thead>
                             <tr class="primera_fila">
                                 <th>Día</th>
                                 <th>Hora inicial</th>
                                 <th>Hora final</th>
                                 <th>Eliminar</th>
                             </tr>
-                           </thead>
+                            </thead>
 
                             {% for h in horarios %}
                                 <tr id={{ h.pk }}>
@@ -49,11 +49,14 @@
                                         <option value="7" {% if h.diasemana == 7 %} selected {% endif %}>Domingo
                                         </option>
                                     </select></td>
-                                    <td><input type="time" placeholder="hh:mm*" id="horaInicio{{ h.pk }}"
-                                               class="inputHorarioTrabajo" value="{{ h.horainicio|date:'H:i' }}"/></td>
-                                    <td><input type="time" placeholder="hh:mm*" id="horaFin{{ h.pk }}"
-                                               class="inputHorarioTrabajo" value="{{ h.horafin|date:'H:i' }}"/></td>
-                                    <td><a class="text_azul" onclick='quitarHorario({{ h.pk }})'><i class="material-icons">delete_forever</i></a></td>
+                                    <td><input input type="text" class="timepicker inputHorarioTrabajo"
+                                               placeholder="hh:mm*" id="horaInicio{{ h.pk }}"
+                                               value="{{ h.horainicio|date:'H:i' }}"/></td>
+                                    <td><input input type="text" class="timepicker inputHorarioTrabajo"
+                                               placeholder="hh:mm*" id="horaFin{{ h.pk }}"
+                                               value="{{ h.horafin|date:'H:i' }}"/></td>
+                                    <td><a class="text_azul" onclick='quitarHorario({{ h.pk }})'><i
+                                            class="material-icons">delete_forever</i></a></td>
                                     <td>
                                         <button type="button" class="btn btn-primary btn-sm rounded-s"
                                                 id="btnRegistraTarifa" onclick="guardar({{ h.pk }})">Guardar
@@ -111,11 +114,10 @@
                 <input type="hidden" name="tarifa" value="{{ tarifa.pk }}">
 
 
-
-            <div class="modal-footer">
-               <button type="submit" class="btn btn-primary btn-sm rounded-s" id="agregarHorario">Guardar</button>
-                <a href="#!" class="modal-action modal-close waves-effect waves-light btn">Cerrar</a>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-sm rounded-s" id="agregarHorario">Guardar</button>
+                    <a href="#!" class="modal-action modal-close waves-effect waves-light btn">Cerrar</a>
+                </div>
             </form>
         </div>
     </div>
@@ -126,8 +128,22 @@
     <script>
         $(document).ready(function () {
             $('select').material_select();
-        })
-            function actualiza() {
+            $('.timepicker').pickatime({
+                default: 'now', // Set default time: 'now', '1:30AM', '16:30'
+                fromnow: 0,       // set default time to * milliseconds from now (using with default = 'now')
+                twelvehour: false, // Use AM/PM or 24-hour format
+                donetext: 'OK', // text for done-button
+                cleartext: 'Clear', // text for clear-button
+                canceltext: 'Cancel', // Text for cancel-button,
+                container: undefined, // ex. 'body' will append picker to body
+                autoclose: false, // automatic close timepicker
+                ampmclickable: true, // make AM PM clickable
+                aftershow: function () {
+                } //Function for after opening timepicker
+            });
+        });
+
+        function actualiza() {
 
             $('.modal').modal({
                     dismissible: false
@@ -135,48 +151,49 @@
             );
             $('#modal1').modal('open');
         }
+
         function guardar(horarioid) {
-                if (confirm('¿Está seguro que deseas modificar el horario ?')) {
-                    $.ajax({
-                        url: "/webapp/horario/edit/" + horarioid, // the endpoint
-                        type: "POST", // http method
-                        cache: false,
-                        data: {
-                            horainicio: $("#horaInicio" + horarioid).val(),
-                            horafin: $("#horaFin" + horarioid).val(),
-                            diasemana: $("#horario" + horarioid).val()
-                        },
-                        // handle a successful response
-                        success: function (json) {
-                            console.log(json); // log the returned json to the console
+            if (confirm('¿Está seguro que deseas modificar el horario ?')) {
+                $.ajax({
+                    url: "/webapp/horario/edit/" + horarioid, // the endpoint
+                    type: "POST", // http method
+                    cache: false,
+                    data: {
+                        horainicio: $("#horaInicio" + horarioid).val(),
+                        horafin: $("#horaFin" + horarioid).val(),
+                        diasemana: $("#horario" + horarioid).val()
+                    },
+                    // handle a successful response
+                    success: function (json) {
+                        console.log(json); // log the returned json to the console
 
-                        },
+                    },
 
-                        // handle a non-successful response
-                        error: function (xhr, errmsg, err) {
-                            alert("Ocurrio un error al editar el horario");
-                        }
-                    });
-                }
+                    // handle a non-successful response
+                    error: function (xhr, errmsg, err) {
+                        alert("Ocurrio un error al editar el horario");
+                    }
+                });
+            }
         }
 
         function quitarHorario(horarioid) {
-                if (confirm('¿Está seguro que deseas eliminar el horario ?')) {
-                    $.ajax({
-                        url: "/webapp/horario/delete/" + horarioid, // the endpoint
-                        type: "POST", // http method
-                        // handle a successful response
-                        success: function (json) {
-                            console.log(json); // log the returned json to the console
-                            $("#" + horarioid).remove();
-                        },
+            if (confirm('¿Está seguro que deseas eliminar el horario ?')) {
+                $.ajax({
+                    url: "/webapp/horario/delete/" + horarioid, // the endpoint
+                    type: "POST", // http method
+                    // handle a successful response
+                    success: function (json) {
+                        console.log(json); // log the returned json to the console
+                        $("#" + horarioid).remove();
+                    },
 
-                        // handle a non-successful response
-                        error: function (xhr, errmsg, err) {
-                            alert("Ocurrio un error al eliminar el horario");
-                        }
-                    });
-                }
+                    // handle a non-successful response
+                    error: function (xhr, errmsg, err) {
+                        alert("Ocurrio un error al eliminar el horario");
+                    }
+                });
+            }
         }
     </script>
 {% endblock scripts %}
