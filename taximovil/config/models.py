@@ -42,6 +42,7 @@ class Usuario(AbstractBaseUser):
     telefono = models.CharField(max_length=20, unique=True)
     estatus = models.BooleanField(default=True)
     fecha_registro = models.DateField(auto_now_add=True)
+    customer_id = models.CharField(max_length=45, blank=True, null=True)
 
     objects = UsuarioManager()
 
@@ -126,7 +127,6 @@ class Cliente(Usuario):
     cp = models.IntegerField(blank=True, null=True)
     lada = models.IntegerField(blank=True, null=True)
     procedencia = models.CharField(max_length=45, blank=True, null=True)
-    customer_id = models.CharField(max_length=45, blank=True, null=True)
     googleid = models.CharField(max_length=256, blank=True, null=True)
     calificiacion = models.FloatField(default=5)
 
@@ -678,6 +678,7 @@ class Servicio(models.Model):
     sucursal = models.ForeignKey('Sucursal', models.DO_NOTHING, blank=True, null=True)
 
     tipo_pago = models.ForeignKey('TipoPago', models.DO_NOTHING)
+    estatus_pago = models.ForeignKey('EstatusPago', models.DO_NOTHING, blank=True, null=True)
     tarifa = models.ForeignKey('Tarifa', models.DO_NOTHING)
     tarjeta = models.ForeignKey('Tarjeta', models.DO_NOTHING, blank=True, null=True)
 
@@ -740,7 +741,7 @@ class Propietario(Usuario):
 class Tarjeta(models.Model):
     ultiimos_digitos = models.CharField(max_length=5)
     token = models.CharField(max_length=64)
-    cliente = models.ForeignKey(Cliente, models.DO_NOTHING)
+    usuario = models.ForeignKey(Usuario, models.DO_NOTHING)
     nombre = models.CharField(max_length=128)
     nombre_propietario = models.CharField(max_length=256)
 
