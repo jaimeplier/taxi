@@ -8,7 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServicio, BitacoraCredito, MonederoChofer
+from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServicio, BitacoraCredito, Vehiculo, \
+    ChoferHasVehiculo, MonederoChofer
+from config.serializers import AsignarVehiculoSerializer
 from webservices.permissions import ChoferPermission, AdministradorPermission
 from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer, \
     ChoferCreditoSerializer
@@ -117,3 +119,29 @@ class LanaChofer(APIView):
         return Response(
             {'efectivo_actual': actual_efectivo, 'tarjeta_actual': actual_tarjeta, 'efectivo_pasada': pasada_efectivo,
              'tarjeta_pasada': pasada_tarjeta}, status=status.HTTP_200_OK)
+
+
+class DesAsignarVehiculo(APIView):
+    # permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = AsignarVehiculoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        id_vehiculo = serializer.data.get('vehiculo')
+        id_chofer = serializer.data.get('chofer')
+        try:
+            chofer = Chofer.objects.get(pk=id_chofer)
+            vehiculo = Vehiculo.objects.get(pk=id_vehiculo)
+            chofer_vehiculos = chofer.taxis.all().values_list('id', flat=True)
+            if id_vehiculo in chofer_vehiculos:
+                ChoferHasVehiculo.objects.filter(vehiculo=vehiculo, chofer=chofer).delete()
+            else:
+                ChoferHasVehiculo.objects.create(vehiculo=vehiculo, chofer=chofer)
+        except:
+            return Response({'Error': 'Objeto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return AsignarVehiculoSerializer()
