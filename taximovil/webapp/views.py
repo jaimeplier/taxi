@@ -331,16 +331,12 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
             form2.instance.latlgn = pnt
 
             form.instance.set_password(form.cleaned_data['password'])
-            taxis = form.cleaned_data.get('taxis')
             form.instance.rol = Rol(pk=3)
 
             chofer = form.save(commit=False)
             chofer.direccion = form2.save()
             chofer.save()
 
-            for taxi in taxis:
-                tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
-                tc.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form, form2=form2))
@@ -447,12 +443,9 @@ class ChoferActualizar(PermissionRequiredMixin, UpdateView):
             pnt = Point(float(lon), float(lat))
             form2.instance.latlgn = pnt
 
-            taxis = form.cleaned_data.get('taxis')
+
             form.instance.set_password(form.cleaned_data['password'])
-            ChoferHasVehiculo.objects.filter(chofer__pk=id_chofer).delete()
-            for taxi in taxis:
-                tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
-                tc.save()
+
 
             chofer = form.save(commit=False)
             chofer.direccion = form2.save()
