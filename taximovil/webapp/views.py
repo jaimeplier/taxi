@@ -317,6 +317,8 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
             context['titulo'] = 'Registro de chofer'
         if 'instrucciones' not in context:
             context['instrucciones'] = 'Completa todos los campos para registrar un chofer'
+        if 'error' not in context:
+            context['error'] = ''
         return context
 
     def post(self, request, *args, **kwargs):
@@ -326,16 +328,19 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
         lon = self.request.POST.get('lgn')
         lat = self.request.POST.get('lat')
         if form.is_valid() and form2.is_valid():
+            try:
+                pnt = Point(float(lon), float(lat))
+                form2.instance.latlgn = pnt
 
-            pnt = Point(float(lon), float(lat))
-            form2.instance.latlgn = pnt
+                form.instance.set_password(form.cleaned_data['password'])
+                form.instance.rol = Rol(pk=3)
 
-            form.instance.set_password(form.cleaned_data['password'])
-            form.instance.rol = Rol(pk=3)
-
-            chofer = form.save(commit=False)
-            chofer.direccion = form2.save()
-            chofer.save()
+                chofer = form.save(commit=False)
+                chofer.direccion = form2.save()
+                chofer.save()
+            except:
+                return render(request, template_name=self.template_name,
+                              context={'form': form, 'form2':form2, 'error': 'Falta la ubicación en el mapa'})
 
             return HttpResponseRedirect(self.get_success_url())
         else:
