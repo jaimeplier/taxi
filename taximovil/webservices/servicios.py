@@ -14,12 +14,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Ciudad, Tarifa, Cliente, EstatusServicio, BitacoraEstatusServicio, Servicio, Chofer, Rutas, \
-    Usuario, ChoferHasVehiculo, ServicioChofer
+    Usuario, ChoferHasVehiculo, ServicioChofer, MonederoChofer, EstatusPago
 from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSerializer, ChoferSerializer
 from taximovil import settings
 from webservices.permissions import ChoferPermission, IsOwnerPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
     ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer, CalificacionSerializer
+from webservices.tasks import cobra_servicio
 
 
 def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, base=None):
@@ -38,6 +39,8 @@ def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, ba
 
 def buscar_choferes(servicio):
     cc = Chofer.objects.filter(estatus=True, activo=True, latlgn__distance_lte=(servicio.origen, D(km=5)))
+    if servicio.tipo_pago.pk == 1:
+        cc = cc.filter(saldo__gte=5)
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
     for c in cc:
         check = ServicioChofer.objects.filter(servicio=servicio, chofer=c).first()
@@ -80,6 +83,21 @@ def precio_tarifa(t, distancia, duracion):
     if precio < t.costo_minimo:
         precio = t.costo_minimo
     return precio
+
+
+def cobrar(servicio):
+    if servicio.tipo_pago.pk == 1:
+        c = servicio.tarifa.comision
+        mc = MonederoChofer(servicio=servicio, chofer=servicio.chofer, ganancia=(servicio.costo * (1 - c)),
+                            retencion=(servicio.costo * c))
+        mc.save()
+        cobra_servicio(servicio.pk)
+    elif servicio.tipo_pago.pk == 2:
+        servicio.estatus_pago = EstatusPago(pk=1)
+        c = servicio.chofer
+        c.saldo = c.saldo - servicio.costo*servicio.tarifa.comision
+        c.save()
+        servicio.save()
 
 
 class BuscarCiudad(APIView):
@@ -356,7 +374,7 @@ class FinalizarServicio(APIView):
             c = s.chofer
             c.activo = True
             c.save()
-            # TODO cobrar
+            cobrar(s)
             u = Usuario.objects.get(pk=s.cliente.pk)
             dispositivos = FCMDevice.objects.filter(user=u)
             if dispositivos.count() != 0:

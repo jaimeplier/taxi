@@ -1,16 +1,19 @@
+from datetime import datetime
+
 from django.contrib.gis.geos import Point
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Sum
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServicio, BitacoraCredito, Vehiculo, \
-    ChoferHasVehiculo
+    ChoferHasVehiculo, MonederoChofer
 from config.serializers import AsignarVehiculoSerializer
 from webservices.permissions import ChoferPermission, AdministradorPermission
 from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer, \
-    ChoferCreditoSerializer
+    ChoferCreditoSerializer, AgregarSaldoSerializer
 
 
 class ChoferEstatus(APIView):
@@ -98,6 +101,26 @@ class CreditoChofer(APIView):
     def get_serializer(self):
         return ChoferCreditoSerializer()
 
+
+class LanaChofer(APIView):
+    permission_classes = (IsAuthenticated, ChoferPermission)
+
+    def get(self, request):
+        c = Chofer.objects.get(pk=self.request.user)
+        f = datetime.now().isocalendar()[1]
+        actual_efectivo = Servicio.objects.filter(estatus__pk=6, chofer=c, fecha_servicio__week=f,
+                                                  tipo_pago__pk=2).aggregate(efectivo=Sum('costo'))['efectivo']
+        actual_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__fecha_servicio__week=f) \
+            .aggregate(tar_total=Sum('costo'))['tar_total']
+        pasada_efectivo = Servicio.objects.filter(estatus__pk=6, chofer=c, fecha_servicio__week=(f - 1),
+                                                  tipo_pago__pk=2).aggregate(efectivo=Sum('costo'))['efectivo']
+        pasada_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__fecha_servicio__week=(f - 1)) \
+            .aggregate(tar_total=Sum('costo'))['tar_total']
+        return Response(
+            {'efectivo_actual': actual_efectivo, 'tarjeta_actual': actual_tarjeta, 'efectivo_pasada': pasada_efectivo,
+             'tarjeta_pasada': pasada_tarjeta}, status=status.HTTP_200_OK)
+
+
 class DesAsignarVehiculo(APIView):
     # permission_classes = (IsAuthenticated,)
 
@@ -122,3 +145,16 @@ class DesAsignarVehiculo(APIView):
 
     def get_serializer(self):
         return AsignarVehiculoSerializer()
+
+
+class AgregarSaldo(APIView):
+    permission_classes = (IsAuthenticated, ChoferPermission)
+
+    def post(self, request):
+        serializer = AgregarSaldoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        monto = serializer.validated_data.get('monto')
+
+    def get_serializer(self):
+        return AgregarSaldoSerializer()

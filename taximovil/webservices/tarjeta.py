@@ -1,5 +1,3 @@
-import datetime
-
 import conekta
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
@@ -21,35 +19,36 @@ class TarjetaViewSet(viewsets.ModelViewSet):
             cliente = Cliente.objects.get(pk=self.request.user.pk)
         except Cliente.DoesNotExist:
             return Response({"error": "El cliente no existe"}, status=status.HTTP_400_BAD_REQUEST)
-        qs = Tarjeta.objects.filter(cliente=cliente)
+        qs = Tarjeta.objects.filter(usuario=self.request.user)
         serializer = TarjetaSerializer(qs, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        cliente = Cliente.objects.get(pk=self.request.user.pk)
+        usuario = self.request.user
         serializer = TarjetaEditSerializer(data=self.request.data)
         if serializer.is_valid():
             conekta.api_key = CONEKTA_PRIVATE_KEY
             conekta.locale = CONEKTA_LOCALE
             conekta.api_version = CONEKTA_VERSION
-            if cliente.customer_id is None:
+            if usuario.customer_id is None:
                 try:
                     custom = conekta.Customer.create({
                         "name": serializer.validated_data.get('nombre_propietario'),
-                        "email": cliente.email,
-                        "phone": cliente.telefono
+                        "email": usuario.email,
+                        "phone": usuario.telefono
                     })
                 except conekta.ConektaError as e:
                     return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-                cliente.customer_id = custom.id
-                cliente.save()
+                usuario.customer_id = custom.id
+                usuario.save()
             else:
-                custom = conekta.Customer.find("cus_zzmjKsnM9oacyCwV3")
+                custom = conekta.Customer.find(usuario.customer_id)
             source = custom.createPaymentSource({
                 "type": "card",
                 "token_id": serializer.validated_data.get('token')
             })
-            serializer.save(cliente=cliente)
+            print(source.id)
+            serializer.save(usuario=self.request.user, token=source.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
