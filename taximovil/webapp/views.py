@@ -317,6 +317,8 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
             context['titulo'] = 'Registro de chofer'
         if 'instrucciones' not in context:
             context['instrucciones'] = 'Completa todos los campos para registrar un chofer'
+        if 'error' not in context:
+            context['error'] = ''
         return context
 
     def post(self, request, *args, **kwargs):
@@ -326,21 +328,20 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
         lon = self.request.POST.get('lgn')
         lat = self.request.POST.get('lat')
         if form.is_valid() and form2.is_valid():
+            try:
+                pnt = Point(float(lon), float(lat))
+                form2.instance.latlgn = pnt
 
-            pnt = Point(float(lon), float(lat))
-            form2.instance.latlgn = pnt
+                form.instance.set_password(form.cleaned_data['password'])
+                form.instance.rol = Rol(pk=3)
 
-            form.instance.set_password(form.cleaned_data['password'])
-            taxis = form.cleaned_data.get('taxis')
-            form.instance.rol = Rol(pk=3)
+                chofer = form.save(commit=False)
+                chofer.direccion = form2.save()
+                chofer.save()
+            except:
+                return render(request, template_name=self.template_name,
+                              context={'form': form, 'form2':form2, 'error': 'Falta la ubicación en el mapa'})
 
-            chofer = form.save(commit=False)
-            chofer.direccion = form2.save()
-            chofer.save()
-
-            for taxi in taxis:
-                tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
-                tc.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form, form2=form2))
@@ -447,12 +448,9 @@ class ChoferActualizar(PermissionRequiredMixin, UpdateView):
             pnt = Point(float(lon), float(lat))
             form2.instance.latlgn = pnt
 
-            taxis = form.cleaned_data.get('taxis')
+
             form.instance.set_password(form.cleaned_data['password'])
-            ChoferHasVehiculo.objects.filter(chofer__pk=id_chofer).delete()
-            for taxi in taxis:
-                tc = ChoferHasVehiculo(chofer=chofer, vehiculo=taxi)
-                tc.save()
+
 
             chofer = form.save(commit=False)
             chofer.direccion = form2.save()
@@ -1324,6 +1322,11 @@ class ClienteActualizar(PermissionRequiredMixin, UpdateView):
         if 'instrucciones' not in context:
             context['instrucciones'] = 'Modifica los campos que requieras'
         return context
+
+    def form_valid(self, form):
+        form.instance.set_password(form.cleaned_data['password'])
+        form.save()
+        return redirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('webapp:list_cliente')

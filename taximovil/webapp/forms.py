@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, PasswordInput
 
 from config.models import Empresa, Usuario, Chofer, Sitio, Zona, Base, Direccion, Pais, Ciudad, Sucursal, TipoPago, \
     TipoVehiculo, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Rol
@@ -32,6 +32,7 @@ class UsuarioForm(ModelForm):
                   'password': 'Contraseña',
                   'telefono': 'Telefono',
                   }
+        widgets = {'password': PasswordInput()}
 
 
 class ChoferForm(ModelForm):
@@ -54,6 +55,7 @@ class ChoferForm(ModelForm):
                   'password': 'Contraseña',
                   'telefono': 'Telefono',
                   }
+        widgets = {'password': PasswordInput()}
 
 
 class SitioForm(ModelForm):
@@ -162,6 +164,7 @@ class ClienteForm(ModelForm):
                   'password': 'Contraseña',
                   'telefono': 'Telefono',
                   }
+        widgets = {'password': PasswordInput()}
 
 
 class TipoServicioForm(ModelForm):
@@ -217,6 +220,7 @@ class PropietarioForm(ModelForm):
                   'password': 'Contraseña',
                   'telefono': 'Telefono',
                   }
+        widgets = {'password': PasswordInput()}
 
 
 class VehiculoForm(ModelForm):
