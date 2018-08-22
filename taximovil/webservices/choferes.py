@@ -161,7 +161,13 @@ class AgregarSaldo(APIView):
         bitacora = BitacoraCredito(usuario=self.request.user, chofer=chofer, monto=monto)
         bitacora.save()
         if tipo_pago == 3:
-            pass
+            mc = MonederoChofer.objects.filter(chofer=chofer, estatus_pago__pk=2).aggregate(tar_total=Sum('ganancia'))[
+                'tar_total']
+            if monto <= mc:
+                chofer.saldo = chofer.saldo + monto
+            else:
+                return Response({'result': 0, "error": "No tienenes las ganancias suficientes"},
+                                status=status.HTTP_200_OK)
         return Response({'result': 1}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
