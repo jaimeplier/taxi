@@ -47,7 +47,6 @@ class TarjetaViewSet(viewsets.ModelViewSet):
                 "type": "card",
                 "token_id": serializer.validated_data.get('token')
             })
-            print(source.id)
             serializer.save(usuario=self.request.user, token=source.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

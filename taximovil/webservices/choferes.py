@@ -110,12 +110,13 @@ class LanaChofer(APIView):
         f = datetime.now().isocalendar()[1]
         actual_efectivo = Servicio.objects.filter(estatus__pk=6, chofer=c, fecha_servicio__week=f,
                                                   tipo_pago__pk=2).aggregate(efectivo=Sum('costo'))['efectivo']
-        actual_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__fecha_servicio__week=f) \
+        actual_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__fecha_servicio__week=f, estatus_pago__pk=2) \
             .aggregate(tar_total=Sum('costo'))['tar_total']
         pasada_efectivo = Servicio.objects.filter(estatus__pk=6, chofer=c, fecha_servicio__week=(f - 1),
                                                   tipo_pago__pk=2).aggregate(efectivo=Sum('costo'))['efectivo']
-        pasada_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__fecha_servicio__week=(f - 1)) \
-            .aggregate(tar_total=Sum('costo'))['tar_total']
+        pasada_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__fecha_servicio__week=(f - 1),
+                                                       estatus_pago__pk=2).aggregate(tar_total=Sum('costo'))[
+            'tar_total']
         return Response(
             {'efectivo_actual': actual_efectivo, 'tarjeta_actual': actual_tarjeta, 'efectivo_pasada': pasada_efectivo,
              'tarjeta_pasada': pasada_tarjeta}, status=status.HTTP_200_OK)
@@ -155,6 +156,13 @@ class AgregarSaldo(APIView):
         serializer.is_valid(raise_exception=True)
 
         monto = serializer.validated_data.get('monto')
+        tipo_pago = serializer.validated_data.get('tipo_pago')
+        chofer = Chofer.objects.get(pk=self.request.user.pk)
+        bitacora = BitacoraCredito(usuario=self.request.user, chofer=chofer, monto=monto)
+        bitacora.save()
+        if tipo_pago == 3:
+            pass
+        return Response({'result': 1}, status=status.HTTP_200_OK)
 
     def get_serializer(self):
         return AgregarSaldoSerializer()

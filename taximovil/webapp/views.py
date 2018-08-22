@@ -471,8 +471,8 @@ def chofer_eliminar(request, pk):
     u.save()
     return JsonResponse({'result': 1})
 
-class ChoferUbicacion(ListView):
 
+class ChoferUbicacion(ListView):
     model = Chofer
     template_name = 'webapp/ubicacionChofer.html'
 
@@ -1867,8 +1867,10 @@ def tarifa_listar(request):
 class TarifaListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Tarifa
-    columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre', 'horario', 'editar', 'eliminar']
-    order_columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre']
+    columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre',
+               'horario', 'editar', 'eliminar']
+    order_columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre',
+                     'ciudad.pais.nombre']
     max_display_length = 100
 
     def render_column(self, row, column):
@@ -1951,6 +1953,7 @@ def vehiculos_chofer(request, pk):
     context = {"horarios": vehiculos, "chofer": c}
     return render(request, template_name, context)
 
+
 class VehiculosChoferAjaxList(BaseDatatableView):
     redirect_field_name = 'next'
     model = Vehiculo
@@ -1959,7 +1962,7 @@ class VehiculosChoferAjaxList(BaseDatatableView):
     max_display_length = 100
 
     def render_column(self, row, column):
-        chofer = Chofer.objects.get(pk = self.kwargs['pk'])
+        chofer = Chofer.objects.get(pk=self.kwargs['pk'])
         if column == 'asignado':
             vehiculos = chofer.taxis.all().values_list('id', flat=True)
             if row.pk in vehiculos:
@@ -2113,6 +2116,7 @@ def registro_conductor(request):
     template_name = 'webapp/registro.html'
     return render(request, template_name)
 
+
 @login_required(redirect_field_name='next', login_url='/webapp/login/')
 def list_servicios_activos(request):
     template_name = 'webapp/tab_servicios_activos.html'
@@ -2246,7 +2250,7 @@ class ServiciosFinalizadosAjaxList(BaseDatatableView):
         return super(ServiciosFinalizadosAjaxList, self).render_column(row, column)
 
     def get_initial_queryset(self):
-        return Servicio.objects.filter(estatus__pk__in=[6,7])
+        return Servicio.objects.filter(estatus__pk__in=[6, 7])
 
     def filter_queryset(self, qs):
         search = self.request.GET.get(u'search[value]', None)

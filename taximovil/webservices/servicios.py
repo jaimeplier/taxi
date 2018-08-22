@@ -89,13 +89,13 @@ def cobrar(servicio):
     if servicio.tipo_pago.pk == 1:
         c = servicio.tarifa.comision
         mc = MonederoChofer(servicio=servicio, chofer=servicio.chofer, ganancia=(servicio.costo * (1 - c)),
-                            retencion=(servicio.costo * c))
+                            retencion=(servicio.costo * c), estatus_pago=EstatusPago(pk=2))
         mc.save()
         cobra_servicio(servicio.pk)
     elif servicio.tipo_pago.pk == 2:
         servicio.estatus_pago = EstatusPago(pk=1)
         c = servicio.chofer
-        c.saldo = c.saldo - servicio.costo*servicio.tarifa.comision
+        c.saldo = c.saldo - servicio.costo * servicio.tarifa.comision
         c.save()
         servicio.save()
 

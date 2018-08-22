@@ -791,6 +791,7 @@ class MonederoChofer(models.Model):
     chofer = models.ForeignKey(Chofer, models.DO_NOTHING)
     ganancia = models.FloatField()
     retencion = models.FloatField()
+    estatus_pago = models.ForeignKey(EstatusPago, on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = True
