@@ -163,7 +163,7 @@ class AgregarSaldo(APIView):
         if tipo_pago == 3:
             mc = MonederoChofer.objects.filter(chofer=chofer, estatus_pago__pk=2).aggregate(tar_total=Sum('ganancia'))[
                 'tar_total']
-            if monto <= mc:
+            if mc is not None and monto <= mc:
                 chofer.saldo = chofer.saldo + monto
             else:
                 return Response({'result': 0, "error": "No tienenes las ganancias suficientes"},
