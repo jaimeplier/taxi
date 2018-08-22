@@ -39,7 +39,7 @@ def buscar_tarifa(fecha, ciudad, tipo_vehiculo, tipo_servicio, sucursal=None, ba
 
 def buscar_choferes(servicio):
     cc = Chofer.objects.filter(estatus=True, activo=True, latlgn__distance_lte=(servicio.origen, D(km=5)))
-    if servicio.tipo_pago.pk == 1:
+    if servicio.tipo_pago.pk == 2:
         cc = cc.filter(saldo__gte=5)
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
     for c in cc:
