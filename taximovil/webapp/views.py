@@ -1323,6 +1323,11 @@ class ClienteActualizar(PermissionRequiredMixin, UpdateView):
             context['instrucciones'] = 'Modifica los campos que requieras'
         return context
 
+    def form_valid(self, form):
+        form.instance.set_password(form.cleaned_data['password'])
+        form.save()
+        return redirect(self.get_success_url())
+
     def get_success_url(self):
         return reverse('webapp:list_cliente')
 
