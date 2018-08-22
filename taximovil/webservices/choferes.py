@@ -111,11 +111,11 @@ class LanaChofer(APIView):
         actual_efectivo = Servicio.objects.filter(estatus__pk=6, chofer=c, hora_servicio__week=f,
                                                   tipo_pago__pk=2).aggregate(efectivo=Sum('costo'))['efectivo']
         actual_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__hora_servicio__week=f, estatus_pago__pk=2) \
-            .aggregate(tar_total=Sum('costo'))['tar_total']
+            .aggregate(tar_total=Sum('ganancia'))['tar_total']
         pasada_efectivo = Servicio.objects.filter(estatus__pk=6, chofer=c, hora_servicio__week=(f - 1),
                                                   tipo_pago__pk=2).aggregate(efectivo=Sum('costo'))['efectivo']
         pasada_tarjeta = MonederoChofer.objects.filter(chofer=c, servicio__hora_servicio__week=(f - 1),
-                                                       estatus_pago__pk=2).aggregate(tar_total=Sum('costo'))[
+                                                       estatus_pago__pk=2).aggregate(tar_total=Sum('ganancia'))[
             'tar_total']
         return Response(
             {'efectivo_actual': actual_efectivo, 'tarjeta_actual': actual_tarjeta, 'efectivo_pasada': pasada_efectivo,
