@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Chofer, EstatusServicio, Servicio, BitacoraEstatusServicio, BitacoraCredito, Vehiculo, \
-    ChoferHasVehiculo, MonederoChofer
+    ChoferHasVehiculo, MonederoChofer, EstatusPago
 from config.serializers import AsignarVehiculoSerializer
 from webservices.permissions import ChoferPermission, AdministradorPermission
 from webservices.serializers import ActualizarChoferSerializer, ChoferEstatusSerializer, ServicioEstatusSerializer, \
@@ -165,6 +165,19 @@ class AgregarSaldo(APIView):
                 'tar_total']
             if mc is not None and monto <= mc:
                 chofer.saldo = chofer.saldo + monto
+                mc = MonederoChofer.objects.filter(chofer=chofer, estatus_pago__pk=2)
+                for m in mc:
+                    if m.ganancia <= monto:
+                        m.estatus_pago = EstatusPago(pk=1)
+                        m.save()
+                        monto = monto - m.ganancia
+                        if monto == 0:
+                            break
+                    elif m.ganancia > monto:
+                        m.retencion = m.retencion + monto
+                        m.ganancia = m.ganancia - monto
+                        m.save()
+                        break
             else:
                 return Response({'result': 0, "error": "No tienenes las ganancias suficientes"},
                                 status=status.HTTP_200_OK)
