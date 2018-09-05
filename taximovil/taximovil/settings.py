@@ -24,7 +24,7 @@ SECRET_KEY = '3gcv0hu#@&41478@pp7+i*ue0z$=q*14)_#h3uvf#ly&^=e5+%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '35.155.214.25']
+ALLOWED_HOSTS = ['localhost', '35.155.214.25', 'taximovil.com.mx']
 
 AUTH_USER_MODEL = 'config.Usuario'
 
@@ -166,7 +166,6 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": True,
     "DELETE_INACTIVE_DEVICES": True,
 }
-
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
