@@ -24,7 +24,7 @@ SECRET_KEY = '3gcv0hu#@&41478@pp7+i*ue0z$=q*14)_#h3uvf#ly&^=e5+%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '35.155.214.25', 'taximovil.com.mx']
+ALLOWED_HOSTS = ['localhost', '54.190.140.13', 'taximovil.com.mx']
 
 AUTH_USER_MODEL = 'config.Usuario'
 
