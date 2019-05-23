@@ -143,6 +143,7 @@ class LoginChofer(APIView):
         device.type = dispositivo
         device.save()
         user.save()
+        cv = cv.first()
         cv.estatus = True
         cv.save()
         response_data['resultado'] = 1
