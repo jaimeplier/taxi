@@ -111,9 +111,14 @@ class LoginChofer(APIView):
         try:
             c = Chofer.objects.get(email=email)
             cv = ChoferHasVehiculo.objects.filter(vehiculo__placa=placas, estatus=True)
-            if cv.count() == 0:
+            if cv.exists():
                 response_data['resultado'] = 0
                 response_data['error'] = "Este vehiculo ya esta en uso por alguien mas"
+                return Response(response_data)
+            cv = ChoferHasVehiculo.objects.filter(vehiculo__placa=placas, chofer=c)
+            if not cv.exists():
+                response_data['resultado'] = 0
+                response_data['error'] = "No tienes ese coche"
                 return Response(response_data)
         except Chofer.DoesNotExist:
             response_data['resultado'] = 0
@@ -137,7 +142,6 @@ class LoginChofer(APIView):
         device.type = dispositivo
         device.save()
         user.save()
-        cv = ChoferHasVehiculo.objects.filter(chofer=c, vehiculo__placa=placas, estatus=True)
         cv.estatus = True
         cv.save()
         response_data['resultado'] = 1
