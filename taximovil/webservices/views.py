@@ -4,7 +4,6 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
-from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from fcm_django.models import FCMDevice
@@ -109,16 +108,13 @@ class LoginChofer(APIView):
         googleid = serializer.data.get('googleid')
         placas = serializer.data.get('placas')
         dispositivo = serializer.data.get('dispositivo')
-        cv = None
-        c = None
         try:
             c = Chofer.objects.get(email=email)
-            cv = ChoferHasVehiculo.objects.filter(chofer=c, vehiculo__placa=placas, estatus=False)
+            cv = ChoferHasVehiculo.objects.filter(vehiculo__placa=placas, estatus=True)
             if cv.count() == 0:
                 response_data['resultado'] = 0
                 response_data['error'] = "Este vehiculo ya esta en uso por alguien mas"
                 return Response(response_data)
-            cv = cv.first()
         except Chofer.DoesNotExist:
             response_data['resultado'] = 0
             response_data['error'] = "Usuario y/o contraseña incorrectos"
@@ -141,6 +137,7 @@ class LoginChofer(APIView):
         device.type = dispositivo
         device.save()
         user.save()
+        cv = ChoferHasVehiculo.objects.filter(chofer=c, vehiculo__placa=placas, estatus=True)
         cv.estatus = True
         cv.save()
         response_data['resultado'] = 1
@@ -305,9 +302,11 @@ class InicioApp(APIView):
     def get(self, request):
         response_data = {'result': 1}
         if self.request.user.rol.pk == 2:  # cliente
-            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5)).order_by('-id')
+            s = Servicio.objects.filter(cliente__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5)).order_by(
+                '-id')
         elif self.request.user.rol.pk == 3:  # chofer
-            s = Servicio.objects.filter(chofer__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5)).order_by('-id')
+            s = Servicio.objects.filter(chofer__pk=self.request.user.pk, estatus__pk__in=(1, 2, 3, 4, 5)).order_by(
+                '-id')
             c = Chofer.objects.get(pk=request.user.pk)
             response_data['saldo'] = c.saldo
         else:
