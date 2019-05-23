@@ -20,6 +20,7 @@ from config.models import Chofer, ChoferHasVehiculo, Servicio
 from config.models import Codigo, Usuario, Cliente
 from config.serializers import ClienteSerializer, ChoferSerializer, ServicioSerializer
 from taximovil.settings import TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER
+from webservices.permissions import ChoferPermission
 from webservices.serializers import TelefonoSerializer, CodigoSerializer, LoginSerializer, LoginChoferSerializer, \
     ResetSerializer, ChangePasswordSerializer, VerChoferSerializer, EditNombreSerializer
 
@@ -155,16 +156,15 @@ class LoginChofer(APIView):
 
 
 class LogoutChofer(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, ChoferPermission)
 
     def get(self, request):
         try:
-            cv = None
-            c = request.user.pk
+            c = Chofer.objects.get(pk=request.user.pk)
             cv = ChoferHasVehiculo.objects.filter(chofer=c, estatus=True)
-            cv = cv.first()
-            cv.estatus = False
-            cv.save()
+            cv.update(estatus=False)
+            c.activo = False
+            c.save()
             request.user.auth_token.delete()
         except (AttributeError, ObjectDoesNotExist):
             return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
