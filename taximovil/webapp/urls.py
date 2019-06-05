@@ -20,6 +20,7 @@ app_name = 'webapp'
 urlpatterns = [
     path('', views.login, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('pass_changed_succces/', views.pass_changed_succces, name='pass_changed_succces'),
 
     path('rol/nuevo/', RolCrear.as_view(), name='nuevo_rol'),
     path('rol/listar/', views.rol_listar, name='list_rol'),

@@ -132,6 +132,9 @@ def logout_view(request):
     logout(request)
     return redirect(reverse('webapp:login'))
 
+def pass_changed_succces(request):
+    return render(request, 'webapp/pass_changed.html')
+
 
 class EmpresaCrear(PermissionRequiredMixin, CreateView):
     redirect_field_name = 'next'
@@ -2076,7 +2079,7 @@ def reset_confirm(request, uidb64=None, token=None):
                                   uidb64=uidb64,
                                   token=token,
                                   # post_reset_redirect=reverse('webapp:index')
-                                  post_reset_redirect=reverse('webapp:index')
+                                  post_reset_redirect=reverse('webapp:pass_changed_succces')
                                   )
 
 
