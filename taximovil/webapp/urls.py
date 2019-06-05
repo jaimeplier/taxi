@@ -1,3 +1,4 @@
+from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from webapp.views import UsuarioCrear, UsuarioListarAjaxListView, UsuarioActualizar, EmpresaCrear, \
@@ -155,7 +156,10 @@ urlpatterns = [
     path('comision/editar/<int:pk>', ComisionActualizar.as_view(), name='edit_comision'),
     path('comision/listar/delete/<int:pk>', views.comision_eliminar, name='delete_comision'),
 
-    path('reset/<uidb64>/<token>/', views.reset_confirm, name='reset_confirm'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='webapp/reset.html',
+        success_url='/webapp/pass_changed_succces'
+    ), name='reset_confirm'),
 
     path('vehiculos_activos/', views.vehiculos_activos, name='vehiculos_activos'),
     path('todos_vehiculos/', views.todos_vehiculos, name='todos_vehiculos'),
