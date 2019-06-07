@@ -21,8 +21,9 @@ def sendMail(to, subject, message):
 @shared_task
 def cobra_servicio(servicio):
     s = Servicio.objects.get(pk=servicio)
-    if servicio.estatus_pago == 1:
-        return
+    if s.estatus_pago is not None:
+        if servicio.estatus_pago == 1:
+            return
     conekta.api_key = CONEKTA_PRIVATE_KEY
     conekta.locale = CONEKTA_LOCALE
     conekta.api_version = CONEKTA_VERSION
