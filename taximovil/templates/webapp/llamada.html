@@ -13,22 +13,15 @@
 				<div class="col s4">
 					<!--ingresar numero telefonico -->
 					<div class="row">
-						<div class="col s8 input-field">
-							<input type="text" id="numero_telefonico">
+						<div class="col s12 input-field">
+							<input type="text" id="numero_telefonico" onblur="cargarClientesTelefono()">
 							<label for="numero_telefonico">Número Telefónico</label>
-						</div>
-						<div class="col s4">
-							<a class="waves-effect waves-light btn" style="margin-top: 20%;">Buscar</a>
 						</div>
 					</div>
 					<!-- nombre del cliente -->
 					<div class="row">
 						<div class="col s8">
-							<select>
-								<option value="" disabled selected>Nombre del cliente</option>
-								<option value="1">Juana la cubana</option>
-								<option value="2">Sergio el bailador</option>
-								<option value="3">Laura no está</option>
+							<select id="nombres_usuarios">
 							</select>
 						</div>
 						<div class="col s4">
@@ -118,15 +111,68 @@
 
 {% block scripts %}
 <script type="text/javascript">
-	$("document").ready(function()
-	{
+	$("document").ready(function(){
+		$.ajax({
+			url: "/ws/buscarTelefonoCliente/?telefono=", 
+			type: "GET", // http method
+			cache: false,
+			// handle a successful response
+			success: function (json) {
+				$("#nombres_usuarios").empty().html(' ');
+                            $('#nombres_usuarios').append(
+                                $("<option></option>")
+                                    .attr("value", "")
+                                    .text("Usuario")
+                            );
+                            for (i in json) {
+                                $('#nombres_usuarios').append(
+                                    $("<option></option>")
+                                        .attr("value", json[i].pk)
+                                        .text(json[i].nombre + ' ' +  json[i].a_paterno)
+                                );
+                            }
+                            $('#nombres_usuarios').material_select();
+			}
+		});
+
 		$(".dropdown-button").dropdown();
 		$(".button-collapse").sideNav();
+
 
 		$(document).ready(function() {
     $('select').material_select();
   });
 	});
+
+	function cargarClientesTelefono() {
+		var numTelefono = $('#numero_telefonico').val();
+		$.ajax({
+			url: "/ws/buscarTelefonoCliente/?telefono=" + numTelefono , 
+			type: "GET", // http method
+			cache: false,
+			// handle a successful response
+			success: function (json) {
+				$("#nombres_usuarios").empty().html(' ');
+                            $('#nombres_usuarios').append(
+                                $("<option></option>")
+                                    .attr("value", "")
+                                    .text("Usuario")
+                            );
+                            for (i in json) {
+                                $('#nombres_usuarios').append(
+                                    $("<option></option>")
+                                        .attr("value", json[i].pk)
+                                        .text(json[i].nombre + ' ' +  json[i].a_paterno)
+                                );
+                            }
+                            $('#nombres_usuarios').material_select();
+			},
+			// handle a non-successful response
+			error: function (xhr, errmsg, err) {
+				alert("No hay usuarios registrados con ese numero");
+			}
+		});
+	}
 </script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->

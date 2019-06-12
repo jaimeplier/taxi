@@ -4908,7 +4908,7 @@ if (Vel) {
       }
 
       options.find('li:not(.optgroup)').each(function (i) {
-        $(this).click(function (e) {
+        $(this).mousedown(function (e) {
           // Check if option element is disabled
           if (!$(this).hasClass('disabled') && !$(this).hasClass('optgroup')) {
             var selected = true;
