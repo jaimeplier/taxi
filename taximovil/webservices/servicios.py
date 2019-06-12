@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, Avg
 from fcm_django.models import FCMDevice
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -124,6 +125,7 @@ class BuscarCiudad(APIView):
         return CoordenadasSerializer()
 
 class BuscarTelefonoCliente(ListAPIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, )
     serializer_class = ClienteTelSerializer
 
@@ -136,6 +138,7 @@ class BuscarTelefonoCliente(ListAPIView):
 
 
 class Cotizar(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
@@ -179,6 +182,7 @@ class Cotizar(APIView):
 
 class SolicitarServicio(CreateAPIView):
     permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         c = Cliente.objects.get(pk=request.user.pk)
@@ -199,6 +203,7 @@ class SolicitarServicio(CreateAPIView):
 
 
 class BuscarChofer(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, IsOwnerPermission,)
 
     def post(self, request):
