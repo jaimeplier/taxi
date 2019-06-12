@@ -19,7 +19,7 @@ from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSeria
 from taximovil import settings
 from webservices.permissions import ChoferPermission, IsOwnerPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
-    ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer, CalificacionSerializer
+    ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer, CalificacionSerializer, ClienteTelSerializer
 from webservices.tasks import cobra_servicio
 
 
@@ -122,6 +122,17 @@ class BuscarCiudad(APIView):
 
     def get_serializer(self):
         return CoordenadasSerializer()
+
+class BuscarTelefonoCliente(ListAPIView):
+    #permission_classes = (IsAuthenticated, )
+    serializer_class = ClienteTelSerializer
+
+    def get_queryset(self):
+        telefono = self.request.query_params.get('telefono', None)
+        queryset = Cliente.objects.none()
+        if telefono is not None:
+            queryset = Cliente.objects.filter(telefono__icontains=telefono)
+        return queryset
 
 
 class Cotizar(APIView):

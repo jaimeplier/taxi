@@ -232,3 +232,9 @@ class EditNombreSerializer(serializers.Serializer):
 class AgregarSaldoSerializer(serializers.Serializer):
     monto = serializers.FloatField()
     tipo_pago = serializers.IntegerField()
+
+
+class ClienteTelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cliente
+        fields = ('nombre', 'a_paterno', 'a_materno', 'telefono', 'estatus', 'email', 'calificiacion')
