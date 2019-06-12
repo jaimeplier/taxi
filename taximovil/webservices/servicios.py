@@ -124,7 +124,7 @@ class BuscarCiudad(APIView):
         return CoordenadasSerializer()
 
 class BuscarTelefonoCliente(ListAPIView):
-    #permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
     serializer_class = ClienteTelSerializer
 
     def get_queryset(self):

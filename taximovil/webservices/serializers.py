@@ -237,4 +237,4 @@ class AgregarSaldoSerializer(serializers.Serializer):
 class ClienteTelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = ('nombre', 'a_paterno', 'a_materno', 'telefono', 'estatus', 'email', 'calificiacion')
+        fields = ('pk','nombre', 'a_paterno', 'a_materno', 'telefono', 'estatus', 'email', 'calificiacion')
