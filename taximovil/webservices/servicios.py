@@ -104,12 +104,15 @@ def cobrar(servicio):
 class BuscarCiudad(APIView):
     """
         post:
-        Verifica el codigo enviado y regresa el resultado
-        0 el cliente no esta registrado
-        1 el cliente ya esta rgistrado con ese telefono
-        -1 el codigo es inválido
+        Recibe coordenadas
+        -latitud
+        -longitud
+
+        Regresa ciudad de las coordenadas dadas
     """
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
+
 
     def post(self, request):
         serializer = CoordenadasSerializer(data=request.data)
@@ -210,7 +213,7 @@ class BuscarChofer(APIView):
         serializer = ServicioPkSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         s = Servicio.objects.get(pk=serializer.validated_data.get('servicio'))
-        if s.estatus.pk == 2:
+        if s.estatus.pk == 2: # Servicio aceptado
             cserializer = ServicioSerializer(s, many=False)
             return Response({"servicio": cserializer.data, "estatus": 1}, status=status.HTTP_200_OK)
         c = buscar_choferes(s)
