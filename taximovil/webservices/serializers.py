@@ -238,3 +238,7 @@ class ClienteTelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = ('pk','nombre', 'a_paterno', 'a_materno', 'telefono', 'estatus', 'email', 'calificiacion')
+
+class CatalogoSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
+    nombre = serializers.CharField()
