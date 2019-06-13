@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from config.models import Usuario, Cliente, TipoPago, Servicio, Chofer
+from config.models import Usuario, Cliente, TipoPago, Servicio, Chofer, ChoferHasVehiculo, Vehiculo, Modelo
 
 
 class TelefonoSerializer(serializers.Serializer):
@@ -242,3 +242,26 @@ class ClienteTelSerializer(serializers.ModelSerializer):
 class CatalogoSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
     nombre = serializers.CharField()
+
+class ModeloSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Modelo
+        fields = '__all__'
+
+class ChoferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chofer
+        fields = '__all__'
+
+class VehiculoSerializer(serializers.ModelSerializer):
+    modelo = ModeloSerializer()
+    class Meta:
+        model = Vehiculo
+        fields = '__all__'
+
+class ChoferHasVehiculoSerializer(serializers.ModelSerializer):
+    chofer= ChoferSerializer()
+    vehiculo = VehiculoSerializer()
+    class Meta:
+        model = ChoferHasVehiculo
+        fields = ('chofer', 'vehiculo', 'estatus')

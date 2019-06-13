@@ -121,6 +121,11 @@ class LoginChofer(APIView):
                 response_data['resultado'] = 0
                 response_data['error'] = "No tienes ese coche"
                 return Response(response_data)
+            chofer_vehiculos_activos = ChoferHasVehiculo.objects.filter(chofer=c, estatus=True)
+            if chofer_vehiculos_activos.exists():
+                response_data['resultado'] = 0
+                response_data['error'] = "Ya tienes una sesión activa con otro vehículo"
+                return Response(response_data)
         except Chofer.DoesNotExist:
             response_data['resultado'] = 0
             response_data['error'] = "Usuario y/o contraseña incorrectos"
