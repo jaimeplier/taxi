@@ -747,10 +747,11 @@ class Tarjeta(models.Model):
     usuario = models.ForeignKey(Usuario, models.DO_NOTHING)
     nombre = models.CharField(max_length=128)
     nombre_propietario = models.CharField(max_length=256)
+    estatus = models.BooleanField(default=True)
 
     class Meta:
         managed = True
-        db_table = 'trajeta'
+        db_table = 'tarjeta'
 
 
 class Rutas(models.Model):
