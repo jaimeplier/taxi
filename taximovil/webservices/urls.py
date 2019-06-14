@@ -11,7 +11,7 @@ from webservices.servicios import BuscarCiudad, Cotizar, SolicitarServicio, Taxi
     BuscarTelefonoCliente
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, ChangePassword, ResetPassword, \
     LoginChofer, LogoutCliente, LogoutChofer, VerChofer, InicioApp, CambiarNombre
-from webservices.web import ListCiudad, ListVehiculoActivo
+from webservices.web import ListCiudad, ListVehiculoActivo, CambiarEstatusChofer
 
 app_name = 'webservices'
 
@@ -58,8 +58,9 @@ urlpatterns = [
     path('listaServicios/', HistorialServicios.as_view(), name='lista_servicios'),
     path('lana_choferas/', LanaChofer.as_view(), name='lana_choferes'),
     path('agrega_sado/', AgregarSaldo.as_view(), name='agrega_saldo'),
-    path('asignar_vehiculo_toogle/', DesAsignarVehiculo.as_view(), name='cambiar_estatus_usuario'),
+    path('asignar_vehiculo_toogle/', DesAsignarVehiculo.as_view(), name='asignar_vehiculo_toogle'),
     # Web
+    path('cambiar_estatus_chofer/', CambiarEstatusChofer.as_view(), name='cambiar_estatus_chofer'),
     path('list_ciudades/', ListCiudad.as_view(), name='list_ciudades'),
     path('list_vehiculos_activos/', ListVehiculoActivo.as_view(), name='list_vehiculos_activos'),
 

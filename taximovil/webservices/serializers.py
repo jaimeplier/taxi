@@ -272,3 +272,6 @@ class ChoferHasVehiculoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChoferHasVehiculo
         fields = ('chofer', 'vehiculo', 'estatus')
+
+class EstatusSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
