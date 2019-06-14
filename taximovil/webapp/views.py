@@ -403,7 +403,7 @@ class ChoferListarAjaxListView(BaseDatatableView):
         return super(ChoferListarAjaxListView, self).render_column(row, column)
 
     def get_initial_queryset(self):
-        return Chofer.objects.filter(estatus=True)
+        return Chofer.objects.all_users()
 
 
 class ChoferActualizar(PermissionRequiredMixin, UpdateView):

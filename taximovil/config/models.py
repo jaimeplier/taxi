@@ -31,6 +31,9 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def all_users(self):
+        return super(UsuarioManager, self).get_queryset().all()
+
 
 class Usuario(AbstractBaseUser):
     email = models.EmailField(unique=True, max_length=128)
