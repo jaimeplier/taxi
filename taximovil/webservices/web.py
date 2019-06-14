@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Servicio
 from config.serializers import ServicioSerializer
+from webservices.Pagination import SmallPagesPagination
 from webservices.permissions import AdministradorPermission
 from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer
 
@@ -63,9 +64,10 @@ class ListServicios(ListAPIView):
                 - 2 para servicios activos
                 - 3 Para servicios cancelados
     """
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
-    #permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
     serializer_class = ServicioSerializer
+    pagination_class = SmallPagesPagination
 
 
     def get_queryset(self):
@@ -80,5 +82,6 @@ class ListServicios(ListAPIView):
                 estatus_servicio = EstatusServicio.objects.get(pk=7)
             else:
                 return queryset
-            queryset = Servicio.objects.filter(estatus=estatus_servicio)
+            queryset = Servicio.objects.filter(estatus=estatus_servicio).order_by('hora_registro')
         return queryset
+
