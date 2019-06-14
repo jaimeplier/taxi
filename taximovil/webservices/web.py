@@ -63,9 +63,10 @@ class ListServicios(ListAPIView):
                 - 1 Para servicios notificados
                 - 2 para servicios activos
                 - 3 Para servicios cancelados
+                - 4 Para servicios concluidos
     """
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated,)
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    #permission_classes = (IsAuthenticated,)
     serializer_class = ServicioSerializer
     pagination_class = SmallPagesPagination
 
@@ -80,6 +81,8 @@ class ListServicios(ListAPIView):
                 estatus_servicio = EstatusServicio.objects.get(pk=5)
             elif estatus_servicio=='3':
                 estatus_servicio = EstatusServicio.objects.get(pk=7)
+            elif estatus_servicio=='4':
+                estatus_servicio = EstatusServicio.objects.get(pk=6)
             else:
                 return queryset
             queryset = Servicio.objects.filter(estatus=estatus_servicio).order_by('hora_registro')
