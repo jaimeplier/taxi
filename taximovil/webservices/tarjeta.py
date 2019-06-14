@@ -4,7 +4,7 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from config.models import Tarjeta, Cliente
+from config.models import Tarjeta, Cliente, Usuario
 from config.serializers import TarjetaSerializer, TarjetaEditSerializer
 from taximovil.settings import CONEKTA_PRIVATE_KEY, CONEKTA_LOCALE, CONEKTA_VERSION
 
@@ -16,10 +16,10 @@ class TarjetaViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         try:
-            cliente = Cliente.objects.get(pk=self.request.user.pk)
-        except Cliente.DoesNotExist:
-            return Response({"error": "El cliente no existe"}, status=status.HTTP_400_BAD_REQUEST)
-        qs = Tarjeta.objects.filter(usuario=self.request.user)
+            usuario = Usuario.objects.get(pk=self.request.user.pk)
+        except Usuario.DoesNotExist:
+            return Response({"error": "El usuario no existe"}, status=status.HTTP_400_BAD_REQUEST)
+        qs = Tarjeta.objects.filter(usuario=self.request.user, estatus=True)
         serializer = TarjetaSerializer(qs, many=True)
         return Response(serializer.data)
 
