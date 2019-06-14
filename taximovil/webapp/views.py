@@ -317,7 +317,7 @@ class ChoferCrear(PermissionRequiredMixin, CreateView):
         if 'formDireccion' not in context:
             context['form2'] = self.segundo_form(self.request.GET)
         if 'titulo' not in context:
-            context['titulo'] = 'Registro de chofer'
+            context['titulo'] = 'Registro de conductor'
         if 'instrucciones' not in context:
             context['instrucciones'] = 'Completa todos los campos para registrar un chofer'
         if 'error' not in context:

@@ -22,6 +22,7 @@
 					<div class="row">
 						<div class="col s8">
 							<select id="nombres_usuarios">
+                                <option value=" ">Usuario</option>
 							</select>
 						</div>
 						<div class="col s4">
@@ -101,6 +102,9 @@
 							<input type="checkbox" id="cliente_preferente">
 							<label for="cliente_preferente">Cliente preferente</label>
 						</div>
+                        <div class="col s12 center" style="margin-top: -60px;">
+							<a class="waves-effect waves-light btn" style="margin-top: 20%;">Solicitar servicio</a>
+                        </div>
 					</div>
 				</div>
 			</div>
@@ -112,29 +116,6 @@
 {% block scripts %}
 <script type="text/javascript">
 	$("document").ready(function(){
-		$.ajax({
-			url: "/ws/buscarTelefonoCliente/?telefono=", 
-			type: "GET", // http method
-			cache: false,
-			// handle a successful response
-			success: function (json) {
-				$("#nombres_usuarios").empty().html(' ');
-                            $('#nombres_usuarios').append(
-                                $("<option></option>")
-                                    .attr("value", "")
-                                    .text("Usuario")
-                            );
-                            for (i in json) {
-                                $('#nombres_usuarios').append(
-                                    $("<option></option>")
-                                        .attr("value", json[i].pk)
-                                        .text(json[i].nombre + ' ' +  json[i].a_paterno)
-                                );
-                            }
-                            $('#nombres_usuarios').material_select();
-			}
-		});
-
 		$(".dropdown-button").dropdown();
 		$(".button-collapse").sideNav();
 
@@ -146,32 +127,35 @@
 
 	function cargarClientesTelefono() {
 		var numTelefono = $('#numero_telefonico').val();
-		$.ajax({
-			url: "/ws/buscarTelefonoCliente/?telefono=" + numTelefono , 
-			type: "GET", // http method
-			cache: false,
-			// handle a successful response
-			success: function (json) {
-				$("#nombres_usuarios").empty().html(' ');
-                            $('#nombres_usuarios').append(
-                                $("<option></option>")
-                                    .attr("value", "")
-                                    .text("Usuario")
-                            );
-                            for (i in json) {
-                                $('#nombres_usuarios').append(
-                                    $("<option></option>")
-                                        .attr("value", json[i].pk)
-                                        .text(json[i].nombre + ' ' +  json[i].a_paterno)
-                                );
-                            }
-                            $('#nombres_usuarios').material_select();
-			},
-			// handle a non-successful response
-			error: function (xhr, errmsg, err) {
-				alert("No hay usuarios registrados con ese numero");
-			}
-		});
+		if ( numTelefono != " " && numTelefono != null ) {
+            $.ajax({
+                url: "/ws/buscarTelefonoCliente/?telefono=" + numTelefono,
+                type: "GET", // http method
+                cache: false,
+                // handle a successful response
+                success: function (json) {
+                    		    console.log('en ajax', json);
+                    $("#nombres_usuarios").empty().html(' ');
+                    $('#nombres_usuarios').append(
+                        $("<option></option>")
+                            .attr("value", "")
+                            .text("Usuario")
+                    );
+                    for (i in json) {
+                        $('#nombres_usuarios').append(
+                            $("<option></option>")
+                                .attr("value", json[i].pk)
+                                .text(json[i].nombre + ' ' + json[i].a_paterno)
+                        );
+                    }
+                    $('#nombres_usuarios').material_select();
+                },
+                // handle a non-successful response
+                error: function (xhr, errmsg, err) {
+                    alert("No hay usuarios registrados con ese numero");
+                }
+            });
+        }
 	}
 </script>
 {% endblock %}

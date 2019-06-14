@@ -53,15 +53,22 @@
                     <div class="row">		<!--  contraseña  -->
                         <div class="col s1"></div>
                         <div class="col s10 input-field">
-                            <input class="sombra" type="password" id="password", name="password">
+                            <input class="sombra" type="password" id="password", name="password" required="required">
                             <label for="password">Contraseña</label>
                         </div>
                         <div class="col s1"></div>
                     </div>
+
+                    <div class="row ">
+                        <p class="center" style="color: red"> {{ error_message }}</p>
+                    </div>
+
                     <div class="row">
                         <div class="col s5 m8 l8"></div>
                         <div class="col s7 m4 l4">
-                            <button type="submit" class="sesion waves-effect waves-light btn" style="background-color: #D01E88;"><label class="white-text">Iniciar Sesión</label></button>
+                            <button type="submit" class="sesion waves-effect waves-light btn" style="background-color: #D01E88;">
+                                <label class="white-text">Iniciar Sesión</label>
+                            </button>
                         </div>
                     </div>
                     {% if next %}

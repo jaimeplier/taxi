@@ -5,7 +5,7 @@
 	<div class="row">
 		<div class="col s1"></div>
 		<div class="col s4 input-field">
-			<select>
+			<select id="list_ciudades">
 				<option value="" disabled selected>Ciudad</option>
 				<option value="1">CDMX</option>
 				<option value="2">Guanajuato</option>
@@ -27,45 +27,11 @@
 				<div class="col s9">
 					<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d15052.917522571319!2d-99.16222135!3d19.4024927!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2smx!4v1521092466422" width="100%" height="600px" frameborder="0" style="border:0" allowfullscreen></iframe>
 				</div>
-				<div class="col s3">
-					<div class="box_negro">
-  							<label class="center titulo_servicio">LISTADO DE CONDUCTORES</label>
-  						</div>
-				        <div class="card servicio_container darken-1 no_top no_bottom">
-				            <div class="card-content white-text left-align">
-				              <label class="texto"><b>Ford Ikon 2016</b></label>
-				              <br>
-				              <label class="texto"><b>Chofer:</b></label><label class="texto">Juan Manuel Higuera</label>
-				            </div>
-				        </div>
-				        <div class="card servicio_container darken-1 no_top no_bottom">
-				            <div class="card-content white-text left-align">
-				              <label class="texto"><b>Ford Ikon 2016</b></label>
-				              <br>
-				              <label class="texto"><b>Chofer:</b></label><label class="texto">Juan Manuel Higuera</label>
-				            </div>
-				        </div>
-				        <div class="card servicio_container darken-1 no_top no_bottom">
-				            <div class="card-content white-text left-align">
-				              <label class="texto"><b>Ford Ikon 2016</b></label>
-				              <br>
-				              <label class="texto"><b>Chofer:</b></label><label class="texto">Juan Manuel Higuera</label>
-				            </div>
-				        </div>
-				        <div class="card servicio_container darken-1 no_top no_bottom">
-				            <div class="card-content white-text left-align">
-				              <label class="texto"><b>Ford Ikon 2016</b></label>
-				              <br>
-				              <label class="texto"><b>Chofer:</b></label><label class="texto">Juan Manuel Higuera</label>
-				            </div>
-				        </div>
-				        <div class="card servicio_container darken-1 no_top no_bottom">
-				            <div class="card-content white-text left-align">
-				              <label class="texto"><b>Ford Ikon 2016</b></label>
-				              <br>
-				              <label class="texto"><b>Chofer:</b></label><label class="texto">Juan Manuel Higuera</label>
-				            </div>
-				        </div>
+				<div class="col s3" >
+					<div class="box_negro"><label class="center titulo_servicio" style="padding-left: 25px;">LISTADO DE CONDUCTORES</label></div>
+
+                    <div id="list_conductores">
+                    </div>
 				</div>
 			</div>
 		</div>
@@ -75,15 +41,89 @@
 
 {% block scripts %}
 <script type="text/javascript">
-	$("document").ready(function()
-	{
-		$(".dropdown-button").dropdown();
-		$(".button-collapse").sideNav();
+	$("document").ready(function() {
+        $.ajax({
+			url: "/ws/list_ciudades/",
+			type: "GET", // http method
+			cache: false,
+			success: function (json) {
+				$("#list_ciudades").empty().html(' ');
+                $('#list_ciudades').append(
+                    $("<option></option>")
+                        .attr("value", "")
+                        .text("Ciudad")
+                );
+                for (i in json) {
+                    $('#list_ciudades').append(
+                        $("<option></option>")
+                            .attr("value", json[i].pk)
+                            .text(json[i].nombre )
+                    );
+                }
+                $('#list_ciudades').material_select();
+            }
+		});
+    $(".dropdown-button").dropdown();
+    $(".button-collapse").sideNav();
 
-		$(document).ready(function() {
     $('select').material_select();
-  });
+
+    $.ajax({
+			url: "/ws/list_vehiculos_activos/",
+			type: "GET", // http method
+			cache: false,
+			success: function (json) {
+			    console.log(json)
+				$("#list_conductores").empty().html(' ');
+                for (i of json) {
+                    $('#list_conductores').append(`
+                        <div class="card servicio_container darken-1 no_top no_bottom">
+				            <div class="card-content white-text left-align">
+				              <label class="texto"><b>` + i.vehiculo.modelo.marca.nombre +
+                            ' ' + i.vehiculo.modelo.nombre  + ' ' + i.vehiculo.anio +
+                        `</b></label>
+				              <br>
+				              <label class="texto"><b>Chofer:</b></label><label class="texto">` + i.chofer.nombre + ' ' +
+                        i.chofer.a_materno + ' ' + i.chofer.a_paterno +  `</label>
+				            </div>
+				        </div>
+                    `);
+                }
+                $('#list_ciudades').material_select();
+            }
+		});
+
+
+
+
 	});
+
+		function cargarEstados() {
+		$.ajax({
+            // URL DE CARGAR ESTADOS
+			url: "/ws/buscarCiudad/",
+			type: "GET", // http method
+			cache: false,
+			// handle a successful response
+			success: function (json) {
+				$("#list_ciudades").empty().html(' ');
+                $('#list_ciudades').append(
+                    $("<option></option>")
+                        .attr("value", "")
+                        .text("Ciudad")
+                );
+                for (i in json) {
+                    $('#list_ciudades').append(
+                        $("<option></option>")
+                            .attr("value", json[i].pk)
+                            .text(json[i].nombre)
+                    );
+                }
+                $('#list_ciudades').material_select();
+            }
+		});
+	}
+
 </script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->
