@@ -43,7 +43,7 @@ def cobra_servicio(servicio):
             "charges": [{
                 "payment_method": {
                     "type": "card",
-                    "token_id": s.tarjeta.token
+                    "payment_source_id": s.tarjeta.token
                 },
                 "amount": math.ceil(s.costo * 100)
             }],

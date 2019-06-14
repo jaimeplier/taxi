@@ -1,4 +1,5 @@
 import conekta
+from psycopg2._psycopg import IntegrityError
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -50,6 +51,15 @@ class TarjetaViewSet(viewsets.ModelViewSet):
             serializer.save(usuario=self.request.user, token=source.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.perform_destroy(instance)
+        except:
+            instance.estatus=False
+            instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_serializer_class(self):
         if self.request is None or self.request.method == 'POST':
