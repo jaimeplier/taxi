@@ -65,8 +65,8 @@ class ListServicios(ListAPIView):
                 - 3 Para servicios cancelados
                 - 4 Para servicios concluidos
     """
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
-    #permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
     serializer_class = ServicioSerializer
     pagination_class = SmallPagesPagination
 
