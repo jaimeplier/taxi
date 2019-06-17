@@ -112,6 +112,10 @@ class LoginChofer(APIView):
         try:
             c = Chofer.objects.get(email=email)
             cv = ChoferHasVehiculo.objects.filter(vehiculo__placa=placas, estatus=True)
+            if c.estatus==False:
+                response_data['resultado'] = 0
+                response_data['error'] = "Tu usuario ha sido inhabilitado, contacta al administrador"
+                return Response(response_data)
             if cv.exists():
                 response_data['resultado'] = 0
                 response_data['error'] = "Este vehiculo ya esta en uso por alguien mas"
@@ -200,6 +204,10 @@ class LoginUsuario(APIView):
             return Response(response_data)
         user = authenticate(email=email, password=password)
         if user is not None:
+            if user.estatus==False:
+                response_data['resultado'] = 0
+                response_data['error'] = "Tu usuario ha sido inhabilitado, contacta al administrador"
+                return Response(response_data)
             token = Token.objects.get_or_create(user=user)
         else:
             response_data['resultado'] = 0
