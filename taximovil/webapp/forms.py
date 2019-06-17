@@ -1,4 +1,4 @@
-from django.forms import ModelForm, PasswordInput
+from django.forms import ModelForm, PasswordInput, Select
 
 from config.models import Empresa, Usuario, Chofer, Sitio, Zona, Base, Direccion, Pais, Ciudad, Sucursal, TipoPago, \
     TipoVehiculo, Cliente, TipoServicio, Marca, Modelo, Propietario, Vehiculo, Tarifa, Comisiones, Rol
@@ -47,6 +47,7 @@ class ChoferForm(ModelForm):
                   'numero_licencia',
                   'turno',
                   'saldo',
+                  'estatus'
                   ]
         labels = {'nombre': 'Nombre',
                   'a_paterno': 'Apellido paterno',
@@ -55,7 +56,8 @@ class ChoferForm(ModelForm):
                   'password': 'Contraseña',
                   'telefono': 'Telefono',
                   }
-        widgets = {'password': PasswordInput()}
+        widgets = {'password': PasswordInput(),
+                   'estatus': Select(choices=[[True, 'Activo'], [False, 'Inactivo']])}
 
 
 class SitioForm(ModelForm):
