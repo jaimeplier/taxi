@@ -93,21 +93,21 @@
     </div> -->
 
 
-
+ 
 {% endblock content %}
 {% block scripts %}
     <script src="{% static "vendor/jquery-ui/jquery-ui.min.js" %}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places"></script>
     <script type="text/javascript">
-        var map;
-        {% if  latitud %}
-            var lat = {{ latitud }};
-            var lgn = {{ longitud }};
-        {% else %}
-            var lat = 19.419260;
-            var lgn = -99.164379;
-        {% endif %}
-        var marker;
+        // var map;
+        // {% if  latitud %}
+        //     var lat = {{ latitud }};
+        //     var lgn = {{ longitud }};
+        // {% else %}
+        //     var lat = 19.419260;
+        //     var lgn = -99.164379;
+        // {% endif %}
+        // var marker;
 
         // function initMap() {
         //     if (map !== undefined)
