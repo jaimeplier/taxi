@@ -47,8 +47,23 @@ class DireccionViewSet(viewsets.ModelViewSet):
     queryset = DireccionServicio.objects.all()
 
     def list(self, request):
+        """
+            get:
+
+                sin parametros:
+
+                Obtiene del request el usuario y regresa sus direcciones.
+
+                parametros opcionales:
+
+                    - cliente: Int con el ID del cliente para solicitar sus direcciones
+        """
         try:
-            cliente = Cliente.objects.get(pk=self.request.user.pk)
+            usuario = self.request.query_params.get('cliente', None)
+            if usuario is not None:
+                cliente = Cliente.objects.get(pk=usuario)
+            else:
+                cliente = Cliente.objects.get(pk=self.request.user.pk)
         except Cliente.DoesNotExist:
             Response({"error": "El cliente no existe"}, status=status.HTTP_400_BAD_REQUEST)
         qs = DireccionServicio.objects.filter(cliente=cliente, estatus=True)
