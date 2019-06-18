@@ -46,7 +46,7 @@ class ChoferSerializer(serializers.ModelSerializer):
 class CiudadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ciudad
-        fields = ('id', 'nombre', 'estatus', 'factor_tiempo', 'radio', 'pais')
+        fields = ('id', 'nombre', 'estatus', 'factor_tiempo', 'radio', 'pais', 'centro')
 
 
 class EstatusServicioSerializer(serializers.ModelSerializer):

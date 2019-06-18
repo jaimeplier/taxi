@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Servicio
-from config.serializers import ServicioSerializer
+from config.serializers import ServicioSerializer, CiudadSerializer
 from webservices.Pagination import SmallPagesPagination
 from webservices.permissions import AdministradorPermission
 from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer
@@ -15,7 +15,7 @@ from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSeriali
 class ListCiudad(ListAPIView):
     authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, )
-    serializer_class = CatalogoSerializer
+    serializer_class = CiudadSerializer
 
     def get_queryset(self):
         queryset = Ciudad.objects.all()
