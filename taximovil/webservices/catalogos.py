@@ -1,3 +1,4 @@
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -26,6 +27,7 @@ class TipoPagoList(ListAPIView):
 
 class TipoVehiculoList(ListAPIView):
     serializer_class = TipoVehiculoSerializer
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
