@@ -204,6 +204,7 @@ class Personal(Usuario):
 
 
 class Sitio(models.Model):
+    admin_ciudad = models.ForeignKey("AdministradorCiudad", models.DO_NOTHING)
     nombre = models.CharField(max_length=50)
     num_espacio = models.IntegerField()
     pv = models.CharField(max_length=45)
@@ -800,3 +801,10 @@ class MonederoChofer(models.Model):
     class Meta:
         managed = True
         db_table = 'monedero_chofer'
+
+class AdministradorCiudad(Usuario):
+    ciudad = models.ForeignKey("Ciudad", models.DO_NOTHING)
+
+    class Meta:
+        managed = True
+        db_table = 'admin_ciudad'
