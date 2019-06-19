@@ -4,6 +4,26 @@
 
 {% block content %}
 
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Modal Header</h4>
+            <p>A bunch of text</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <h4>Modal2!!!! Header!!!!</h4>
+            <p>A bunch of text</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
+    </div>
+
   		<div class="row">
   			<div class="col s1"></div>
   			<div class="col s10 center">
@@ -11,7 +31,7 @@
   					<!-- servicios notificados -->
   					<div class="col s4">
   						<div class="box_naranja">
-  							<label class="center titulo_servicio">NOTIFICADO</label>
+  							<label class="center titulo_servicio">SOLICITADO / NOTIFICADO</label>
 							</div>
 							<div id="vehiculos_notificados">
 
@@ -21,17 +41,17 @@
 						<!-- Servicios Rechazados -->
   					<div class="col s4">
 							<div class="box_rosa">
-								<label class="center titulo_servicio">COMPLETADO</label>
+								<label class="center titulo_servicio">SERVICIO ASIGNADO</label>
   						</div>
 							
-							<div id="vehiculos_completados">
+							<div id="servAsignado">
 							</div>
 							
   					</div>
   					<!-- servicios aceptados -->
   					<div class="col s4">
   						<div class="box_morado">
-  							<label class="center titulo_servicio">ACEPTADO</label>
+  							<label class="center titulo_servicio">EN SERVICIO</label>
 							</div>
 							<div id="vehiculos_aceptados"></div>
 				        <!-- <div class="card servicio_container darken-1 no_top no_bottom">
@@ -58,6 +78,8 @@
 {% block scripts %}
 <script type="text/javascript">
 	$("document").ready(function() {
+	    $('.modal').modal();
+
 		$.ajax({
 			url: "/ws/list_servicios/?tipo_servicio=1",
 			type: "GET", 
@@ -72,25 +94,39 @@
 				              <label class="texto"><b>Cliente:</b></label>
 											<label class="texto">`+
 											 i.cliente.nombre + ' ' + i.cliente.a_paterno +`</label><br>
+                                            <label class="texto"><b>Origen:</b></label>
+											<label class="texto">`
+											+ i.direccion_origen.split(',')[0] +
+											`</label><br>
 				              <label class="texto"><b>Destino:</b></label>
 											<label class="texto">`
 											+ i.direccion_destino.split(',')[0] + 
 											`</label><br>
-											<label class="texto"><b>Ciudad Origen:</b></label>
-											<label class="texto">`
-											+ i.direccion_destino.split(',')[3] + 
-											`</label><br>
-											<label class="texto"><b>Registro:</b></label>
+											<label class="texto"><b>Procedencia:</b></label>
 											<label class="texto">`+
-											 i.hora_registro +`</label><br>
+											 i.cliente.procedencia +`</label><br>
 											 <label class="texto"><b>Hora servicio:</b></label>
 											<label class="texto">`+
 											 i.hora_servicio +`</label><br>
 				            </div>
 				            <div class="card-action">
-				              <a href="#" class="right black-text"><b>Ver más</b></a>
-				              <br>
-				              <hr class="linea3 right">
+				              <div class="row">
+                                <div class="col s4">
+				                    <a href="#" class="right black-text"><b>Reenviar</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+                                <div class="col s4">
+				                    <a href="#modal1" class="right black-text modal-trigger"><b>Ver mapa</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+                                <div class="col s4">
+				                    <a href="#" class="right black-text"><b>Cancelar</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+                                </div>
 				            </div>
 				        </div>
 										`);
@@ -105,13 +141,20 @@
 			cache: false,
 			success: function (json) {
 				console.log('completados', json.results);
-				$("#vehiculos_completados").empty().html(' ');
+				$("#servAsignado").empty().html(' ');
                 for (i of json.results) {
-                    $('#vehiculos_completados').append(`
+                    $('#servAsignado').append(`
 										<div class="card servicio_container darken-1 no_top no_bottom">
 				            <div class="card-content white-text left-align">
 											<label class="texto"><b>Ford Ikon 2016</b></label>
-				              <br>
+				                            <br>
+                                            <label class="texto"><b>Cliente:</b></label>
+											<label class="texto">`+ i.cliente.nombre + ' ' + i.cliente.a_paterno + `</label>
+                                            <br>
+                                            <label class="texto"><b>Origen:</b></label>
+											<label class="texto">`
+											+ i.direccion_origen.split(',')[0] +
+											`</label><br>
 											<label class="texto"><b>Chofer:</b></label>
 											<label class="texto">`+
 											 i.chofer.nombre + ' ' + i.chofer.a_paterno + ' ' + i.chofer.a_materno +
@@ -123,10 +166,7 @@
 											<label class="texto">`
 											+ i.direccion_destino.split(',')[0] + 
 											`</label><br>
-											<label class="texto"><b>Ciudad Origen:</b></label>
-											<label class="texto">`
-											+ i.direccion_destino.split(',')[3] + 
-											`</label><br>
+
 											<label class="texto"><b>Registro:</b></label>
 											<label class="texto">`+
 											 i.hora_registro +`</label><br>
@@ -134,15 +174,28 @@
 											<label class="texto">`+
 											 i.hora_servicio +`</label><br>
 				            </div>
-				            <div class="card-action">
-				              <a href="#" class="right black-text"><b>Ver más</b></a>
-				              <br>
-				              <hr class="linea3 right">
+                            <div class="card-action">
+                                <div class="row">
+                                <div class="col s4">
+				                    <a href="#" class="right black-text"><b>Asignar</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+                                <div class="col s4">
+				                    <a href="#modal2" class="right black-text modal-trigger"><b>Ver mapa</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+                                <div class="col s4">
+				                    <a href="#" class="right black-text"><b>Concluir</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+                                </div>
 				            </div>
 				        </div>
 										`);
                 }
-                $('#list_ciudades').material_select();
             }
 		});
 
@@ -182,9 +235,19 @@
 											 i.hora_servicio +`</label><br>
 				            </div>
 				            <div class="card-action">
-				              <a href="#" class="right black-text"><b>Ver más</b></a>
-				              <br>
-				              <hr class="linea3 right">
+				              <div class="row">
+                                <div class="col s4">
+				                    <a href="#" class="right black-text"><b>Finalizar</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+                                <div class="col s4">
+				                    <a href="#" class="right black-text"><b>Ver mapa</b></a>
+				                    <br>
+				                    <hr class="linea3 right">
+                                </div>
+
+                                </div>
 				            </div>
 				        </div>
 										`);

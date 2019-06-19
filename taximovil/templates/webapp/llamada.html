@@ -51,8 +51,11 @@
 					<!--direccion origen, donde se encuentra el usuario -->
 					<div class="row">
 						<div class="col s12 input-field">
+                            <select id="direccion_origen">
+                                <option value=" ">Usuario</option>
+							</select>
 							<input type="text" id="direccion_origen">
-							<label for="direccion_origen">Ubicación del usuario</label>
+                            <label for="direccion_origen">Ubicación del usuario</label>
 						</div>
 					</div>
 					<!--direccion destino, a donde va el usuario -->
@@ -111,7 +114,7 @@
 							<option value="2">SUV</option>
 						</select>
 					</div>
-					<!-- select's -->
+					<!-- select's
 					<div class="row">
 						<div class="col s6">
 							<input type="checkbox" id="reservar"/>
@@ -121,10 +124,11 @@
 							<input type="checkbox" id="cliente_preferente">
 							<label for="cliente_preferente">Cliente preferente</label>
 						</div>
+					</div>
+					-->
                         <div class="col s12 center" style="margin-top: -60px;">
 							<a class="waves-effect waves-light btn" style="margin-top: 20%;">Solicitar servicio</a>
                         </div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -134,7 +138,6 @@
 
 {% block scripts %}
 <script src="{% static "vendor/jquery-ui/jquery-ui.min.js" %}"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places"></script>
 <script type="text/javascript">
 		// Initialize and add the map
 		var map;
@@ -217,13 +220,13 @@
 		$(".button-collapse").sideNav();
     	$('select').material_select();
 
-
 		$(document).ready(function() {
 			$.ajax({
                 url: "/ws/tipoVehiculo/",
                 type: "GET", 
                 cache: false,
                 success: function (json) {
+                    console.log('tipo de vehiculo', json)
                     $("#tipo_vehiculo").empty().html(' ');
                     $('#tipo_vehiculo').append(
                         $("<option></option>")
@@ -250,6 +253,7 @@
                 type: "GET", 
                 cache: false,
                 success: function (json) {
+
                     $("#metodo_pago").empty().html(' ');
                     $('#metodo_pago').append(
                         $("<option></option>")
@@ -306,5 +310,6 @@
         }
 	}
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places&callback=initMap"></script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->

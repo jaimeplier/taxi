@@ -1,11 +1,14 @@
 <!-- SOFTIC SOLUTIONS-->
 {% extends 'config/base.html' %}
 {% load widget_tweaks %}
+{% block style %}
+{% endblock style %}
+{% load static %}
 {% block content %}
 	<div class="row">
 		<div class="col s1"></div>
 		<div class="col s4 input-field">
-			<select id="list_ciudades">
+			<select id="list_ciudades" onchange="setCenter()">
 				<option value="" disabled selected>Ciudad</option>
 			</select>
 		</div>
@@ -19,31 +22,123 @@
 	<!-- mapa y servicios -->
 	<div class="row">
     <div class="col s1"></div>
-		<div class="col s10">
+		<div class="col s11">
 			<div class="row">
 				<div class="col s9">
-					<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d15052.917522571319!2d-99.16222135!3d19.4024927!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2smx!4v1521092466422" width="100%" height="600px" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    <div id="map" style="width:100%;height:600px;border:1px solid #DCDCDC;"></div>
+					<!-- <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d15052.917522571319!2d-99.16222135!3d19.4024927!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2smx!4v1521092466422" width="100%" height="600px" frameborder="0" style="border:0" allowfullscreen></iframe>
+					-->
 				</div>
-				<div class="col s3" >
+				<div class="col s3 center">
 					<div class="box_negro"><label class="center titulo_servicio" style="padding-left: 25px;">LISTADO DE CONDUCTORES</label></div>
-
                     <div id="list_conductores">
                     </div>
 				</div>
 			</div>
 		</div>
-    <div class="col s1"></div>
+    <!-- <div class="col s1"></div> -->
 	</div>
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static "vendor/jquery-ui/jquery-ui.min.js" %}"></script>
 <script type="text/javascript">
+		// Initialize and add the map
+        var list_ciudades;
+        var list_conductores;
+		var map;
+        {% if  latitud %}
+            var lat = {{ latitud }};
+            var lgn = {{ longitud }};
+        {% else %}
+            var lat = 19.419260;
+            var lgn = -99.164379;
+        {% endif %}
+        var marker;
+
+        function initMap() {
+            if (map !== undefined)
+                return;
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: lat, lng: lgn},
+                zoom: 14
+            });
+
+            var input = /** @type {!HTMLInputElement} */(
+                document.getElementById('searchTextField'));
+
+            var types = [];
+
+            /*
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.setTypes(types);
+            autocomplete.bindTo('bounds', map);
+            */
+
+            var infowindow = new google.maps.InfoWindow();
+
+            /*
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                anchorPoint: new google.maps.Point(0, -29),
+                position: {lat: lat, lng: lgn},
+            }); */
+
+
+            marker.addListener('dragend', function () {
+                lat = this.position.lat();
+                lgn = this.position.lng();
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+            });
+            marker.setVisible(true);
+
+            /*
+            autocomplete.addListener('place_changed', function () {
+                infowindow.close();
+                marker.setVisible(false);
+                var place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    window.alert("Autocomplete's returned place contains no geometry");
+                    return;
+                }
+
+                // If the place has a geometry, then present it on a map.
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);  // Why 17? Because it looks good.
+                }
+                marker.setPosition(place.geometry.location);
+                marker.setVisible(true);
+
+                lat = place.geometry.location.lat()
+                lgn = place.geometry.location.lng();
+
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
+            });
+            */
+
+            /* map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: testLoc,
+                gestureHandling: 'cooperative'
+            });
+            */
+        }
+
 	$("document").ready(function() {
         $.ajax({
 			url: "/ws/list_ciudades/",
 			type: "GET", // http method
 			cache: false,
 			success: function (json) {
+			    list_ciudades = json;
+                console.log('ciudades', json);
 				$("#list_ciudades").empty().html(' ');
                 $('#list_ciudades').append(
                     $("<option></option>")
@@ -53,7 +148,7 @@
                 for (i in json) {
                     $('#list_ciudades').append(
                         $("<option></option>")
-                            .attr("value", json[i].pk)
+                            .attr("value", json[i].id)
                             .text(json[i].nombre )
                     );
                 }
@@ -70,18 +165,33 @@
 			type: "GET", // http method
 			cache: false,
 			success: function (json) {
-			    console.log(json)
+			    console.log('conduct', json)
+                list_conductores = json;
 				$("#list_conductores").empty().html(' ');
                 for (i of json) {
                     $('#list_conductores').append(`
-                        <div class="card servicio_container darken-1 no_top no_bottom">
+                        <div class="card servicio_container darken-1 no_top no_bottom" style="cursor: pointer;"
+                            onclick="setChofer(` + i.chofer.latlgn.coordinates[0] + `,` + i.chofer.latlgn.coordinates[1] + `)">
 				            <div class="card-content white-text left-align">
 				              <label class="texto"><b>` + i.vehiculo.modelo.marca.nombre +
                             ' ' + i.vehiculo.modelo.nombre  + ' ' + i.vehiculo.anio +
                         `</b></label>
 				              <br>
-				              <label class="texto"><b>Chofer:</b></label><label class="texto">` + i.chofer.nombre + ' ' +
+				              <label class="texto"><b>Chofer:</b></label><label class="texto"> ` + i.chofer.nombre + ' ' +
                         i.chofer.a_materno + ' ' + i.chofer.a_paterno +  `</label>
+                                <br>
+				              <label class="texto"><b>Modelo:</b></label><label class="texto"> ` + i.vehiculo.modelo.nombre + `</label>
+                                <br>
+				              <label class="texto"><b>Placa:</b></label><label class="texto"> ` + i.vehiculo.placa + `</label>
+				              <br>
+				              <label class="texto"><b>Económico:</b></label><label class="texto"> ` + i.vehiculo.economico + `</label>
+                              <br>
+				              <label class="texto"><b>Teléfono:</b></label><label class="texto"> ` + i.chofer.telefono+ `</label>
+				            </div>
+                            <div class="card-action">
+				              <a class="right black-text"><b>Ver mapa</b></a>
+				              <br>
+				              <hr class="linea3 right">
 				            </div>
 				        </div>
                     `);
@@ -89,38 +199,30 @@
                 $('#list_ciudades').material_select();
             }
 		});
-
-
-
-
 	});
 
-		function cargarEstados() {
-		$.ajax({
-            // URL DE CARGAR ESTADOS
-			url: "/ws/buscarCiudad/",
-			type: "GET", // http method
-			cache: false,
-			// handle a successful response
-			success: function (json) {
-				$("#list_ciudades").empty().html(' ');
-                $('#list_ciudades').append(
-                    $("<option></option>")
-                        .attr("value", "")
-                        .text("Ciudad")
-                );
-                for (i in json) {
-                    $('#list_ciudades').append(
-                        $("<option></option>")
-                            .attr("value", json[i].pk)
-                            .text(json[i].nombre)
-                    );
-                }
-                $('#list_ciudades').material_select();
-            }
-		});
-	}
+	function setCenter() {
+	    var ciudad = $('#list_ciudades').val()
+	    var objCentro = list_ciudades.find( el => el.id == ciudad);
+	    var centro = {lat: objCentro.centro.coordinates[1], lng : objCentro.centro.coordinates[0] }
+	    map.setCenter(centro);
+    }
+
+    function setChofer(lng, lat) {
+	    var marker = new google.maps.Marker()
+	    marker.setMap(null);
+	    var pointChofer = {lat: lat  , lng: lng};
+	    marker = new google.maps.Marker({
+            position: pointChofer,
+            title:"Hello World!"
+        });
+        map.setCenter(pointChofer);
+        // To add the marker to the map, call setMap();
+        marker.setMap(map);
+
+    }
 
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places&callback=initMap"></script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->
