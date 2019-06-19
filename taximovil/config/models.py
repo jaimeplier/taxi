@@ -816,3 +816,9 @@ class AdministradorSitio(Usuario):
         managed = True
         db_table = 'admin_sitio'
 
+class Callcenter(Usuario):
+    sitio = models.ForeignKey("Sitio", models.DO_NOTHING)
+
+    class Meta:
+        managed = True
+        db_table = 'callcenter'
