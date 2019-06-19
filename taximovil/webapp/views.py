@@ -112,6 +112,12 @@ def login(request):
                 auth_login(request, user)
                 if request.POST.get('next') is not None:
                     return redirect(request.POST.get('next'))
+                elif user.rol.pk == 9: # Administrador softic
+                    return redirect(reverse('webapp:index'))
+                elif user.rol.pk == 10: # Administrador de sitio
+                    return redirect(reverse('webapp:index'))
+                elif user.rol.pk == 12: # Callcenter
+                    return redirect(reverse('callcenter:llamada'))
                 return redirect(reverse('webapp:list_chofer'))
             else:
                 error_message = "Usuario inactivo"

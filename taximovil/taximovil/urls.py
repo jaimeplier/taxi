@@ -22,6 +22,7 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path('docs/', include_docs_urls(title='Taximovil', public=True)),
     path('admin/', admin.site.urls),
+    path('callcenter/', include('callcenter.urls')),
     path('webapp/', include('webapp.urls')),
     path('ws/', include('webservices.urls')),
 ]

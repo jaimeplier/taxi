@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def llamada(request):
+    template_name = 'webapp/llamada.html'
+    return render(request, template_name)

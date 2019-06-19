@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'fcm_django',
     'config.apps.ConfigConfig',
     'webapp.apps.WebappConfig',
+    'callcenter.apps.CallcenterConfig',
 ]
 
 MIDDLEWARE = [
