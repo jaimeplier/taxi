@@ -808,3 +808,11 @@ class AdministradorCiudad(Usuario):
     class Meta:
         managed = True
         db_table = 'admin_ciudad'
+
+class AdministradorSitio(Usuario):
+    sitio = models.ForeignKey("Sitio", models.DO_NOTHING)
+
+    class Meta:
+        managed = True
+        db_table = 'admin_sitio'
+
