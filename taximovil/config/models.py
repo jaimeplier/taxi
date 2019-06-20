@@ -843,3 +843,21 @@ class Callcenter(Usuario):
     class Meta:
         managed = True
         db_table = 'callcenter'
+
+class ConfigUsuariosSitio(models.Model):
+    sitio = models.OneToOneField("Sitio", models.DO_NOTHING, unique=True)
+    max_administradores = models.PositiveIntegerField(default=3)
+    max_callcenter = models.PositiveIntegerField(default=12)
+
+    class Meta:
+        managed = True
+        db_table = 'config_usuarios_sitio'
+
+
+class ConfigUsuariosCiudad(models.Model):
+    ciudad = models.OneToOneField("Ciudad", models.DO_NOTHING, unique=True)
+    max_administradores = models.PositiveIntegerField(default=3)
+
+    class Meta:
+        managed = True
+        db_table = 'config_usuarios_ciudad'
