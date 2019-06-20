@@ -23,6 +23,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('pass_changed_succces/', views.pass_changed_succces, name='pass_changed_succces'),
 
+    path('login_unauthorized', views.login_unauthorized, name='login_unauthorized'),
+
     path('rol/nuevo/', RolCrear.as_view(), name='nuevo_rol'),
     path('rol/listar/', views.rol_listar, name='list_rol'),
     path('tabla_rol/', RolListarAjaxListView.as_view(), name='tab_list_rol'),

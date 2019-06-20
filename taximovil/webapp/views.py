@@ -113,12 +113,13 @@ def login(request):
                 if request.POST.get('next') is not None:
                     return redirect(request.POST.get('next'))
                 elif user.rol.pk == 9: # Administrador softic
-                    return redirect(reverse('webapp:index'))
+                    return redirect(reverse('webapp:list_chofer'))
                 elif user.rol.pk == 10: # Administrador de sitio
                     return redirect(reverse('admin_sitio:list_tarifa'))
                 elif user.rol.pk == 12: # Callcenter
                     return redirect(reverse('callcenter:llamada'))
-                return redirect(reverse('webapp:list_chofer'))
+                logout(request)
+                return redirect(reverse('webapp:login_unauthorized'))
             else:
                 error_message = "Usuario inactivo"
         else:
@@ -141,6 +142,9 @@ def logout_view(request):
 def pass_changed_succces(request):
     return render(request, 'webapp/pass_changed.html')
 
+def login_unauthorized(request):
+    template_name = 'config/login_no_autorizado.html'
+    return render(request, template_name)
 
 class EmpresaCrear(PermissionRequiredMixin, CreateView):
     redirect_field_name = 'next'
