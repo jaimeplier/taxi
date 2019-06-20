@@ -112,6 +112,20 @@ class Usuario(AbstractBaseUser):
             return False
 
     @property
+    def is_admin_sitio(self):
+        if self.rol.pk == 10:
+            return True
+        else:
+            return False
+
+    @property
+    def is_admin_softic(self):
+        if self.rol.pk == 9:
+            return True
+        else:
+            return False
+
+    @property
     def is_active(self):
         return self.estatus
 
