@@ -105,6 +105,13 @@ class Usuario(AbstractBaseUser):
             return False
 
     @property
+    def is_callcenter(self):
+        if self.rol.pk == 12:
+            return True
+        else:
+            return False
+
+    @property
     def is_active(self):
         return self.estatus
 
