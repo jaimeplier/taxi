@@ -115,7 +115,7 @@ def login(request):
                 elif user.rol.pk == 9: # Administrador softic
                     return redirect(reverse('webapp:index'))
                 elif user.rol.pk == 10: # Administrador de sitio
-                    return redirect(reverse('webapp:index'))
+                    return redirect(reverse('admin_sitio:list_tarifa'))
                 elif user.rol.pk == 12: # Callcenter
                     return redirect(reverse('callcenter:llamada'))
                 return redirect(reverse('webapp:list_chofer'))
