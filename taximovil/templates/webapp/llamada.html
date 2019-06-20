@@ -40,7 +40,7 @@
 					<!-- nombre del cliente -->
 					<div class="row">
 						<div class="col s8">
-							<select id="nombres_usuarios">
+							<select id="nombres_usuarios" onchange="cargarDirecciones()">
                                 <option value=" ">Usuario</option>
 							</select>
 						</div>
@@ -51,20 +51,20 @@
 					<!--direccion origen, donde se encuentra el usuario -->
 					<div class="row">
 						<div class="col s12 input-field">
-                            <select id="direccion_origen">
-                                <option value=" ">Usuario</option>
+                            <select id="direccion_origen" onchange="cargarTiposVehiculos()">
+                                <option value=" ">Ubicación del usuario</option>
 							</select>
-							<input type="text" id="direccion_origen">
-                            <label for="direccion_origen">Ubicación del usuario</label>
+							<!-- <input type="text" id="direccion_origen">
+                            <label for="direccion_origen">Ubicación del usuario</label> -->
 						</div>
 					</div>
-					<!--direccion destino, a donde va el usuario -->
-					<div class="row">
+					<!-- *****TODO : direccion fuera de registro, destino, a donde va el usuario -->
+					<!-- <div class="row">
 						<div class="col s12 input-field">
 							<input type="text" id="direccion_destino">
 							<label for="direccion_destino">Dirección destino</label>
 						</div>
-					</div>
+					</div> -->
 					<!-- referencia del lugar -->
 					<div class="row">
 						<div class="col s12 input-field">
@@ -93,11 +93,12 @@
 							<label for="cotizar_viaje">Cotizar Viaje</label>
 						</div>
 						<div class="col s4">
-							<a class="waves-effect waves-light btn" style="margin-top: 20%;">Cotizar</a>
+                            <a class="waves-effect waves-light btn" 
+                            style="margin-top: 20%;" onclick="cotizar()">Cotizar</a>
 						</div>
 					</div>
 					<!-- tipo de pago -->
-					<div class="row">
+					<!-- <div class="row">
 						<div class="col s12">
 							<select id="metodo_pago">
 								<option value="" disabled selected>Seleccione</option>
@@ -105,13 +106,11 @@
 								<option value="2">Tarjeta</option>
 							</select>
 						</div>
-					</div>
+					</div> -->
 					<!-- tipo de vehiculo -->
 					<div class="row">
 						<select id="tipo_vehiculo">
-							<option value="" disabled selected>Seeleccione</option>
-							<option value="1">Sedán</option>
-							<option value="2">SUV</option>
+							<option value="" disabled selected>Vehículo</option>
 						</select>
 					</div>
 					<!-- select's
@@ -138,9 +137,12 @@
 
 {% block scripts %}
 <script src="{% static "vendor/jquery-ui/jquery-ui.min.js" %}"></script>
+<script type="text/javascript" src="{% static 'js/crsfajax.js' %}"></script>
 <script type="text/javascript">
 		// Initialize and add the map
 		var map;
+        var list_direcciones;
+        var ciudad_id;
         {% if  latitud %}
             var lat = {{ latitud }};
             var lgn = {{ longitud }};
@@ -181,6 +183,7 @@
                 lgn = this.position.lng();
                 $('#lat').val(lat);
                 $('#lgn').val(lgn);
+                console.log('latlng marker', lat, lgn)
             });
             marker.setVisible(true);
 
@@ -221,60 +224,33 @@
     	$('select').material_select();
 
 		$(document).ready(function() {
-			$.ajax({
-                url: "/ws/tipoVehiculo/",
-                type: "GET", 
-                cache: false,
-                success: function (json) {
-                    console.log('tipo de vehiculo', json)
-                    $("#tipo_vehiculo").empty().html(' ');
-                    $('#tipo_vehiculo').append(
-                        $("<option></option>")
-                            .attr("value", "")
-                            .text("Tipo de vehículo")
-                    );
-                    for (i in json) {
-                        $('#tipo_vehiculo').append(
-                            $("<option></option>")
-                                .attr("value", json[i].pk)
-                                .text(json[i].nombre + ' ' + json[i].a_paterno)
-                        );
-                    }
-                    $('#tipo_vehiculo').material_select();
-                },
-                // handle a non-successful response
-                error: function (xhr, errmsg, err) {
-                    alert("No se pudo cargar tipo de vehículos");
-                }
-            });
+			// $.ajax({
+            //     url: "/ws/tipoPago/",
+            //     type: "GET", 
+            //     cache: false,
+            //     success: function (json) {
 
-			$.ajax({
-                url: "/ws/tipoPago/",
-                type: "GET", 
-                cache: false,
-                success: function (json) {
-
-                    $("#metodo_pago").empty().html(' ');
-                    $('#metodo_pago').append(
-                        $("<option></option>")
-                            .attr("value", "")
-                            .text("Forma de pago")
-                    );
-                    for (i in json) {
-                        $('#metodo_pago').append(
-                            $("<option></option>")
-                                .attr("value", json[i].pk)
-                                .text(json[i].nombre + ' ' + json[i].a_paterno)
-                        );
-                    }
-                    $('#metodo_pago').material_select();
-                },
-                // handle a non-successful response
-                error: function (xhr, errmsg, err) {
-                    alert("No se pudo cargar tipo de vehículos");
-                }
-            });
-  });
+            //         $("#metodo_pago").empty().html(' ');
+            //         $('#metodo_pago').append(
+            //             $("<option></option>")
+            //                 .attr("value", "")
+            //                 .text("Forma de pago")
+            //         );
+            //         for (i in json) {
+            //             $('#metodo_pago').append(
+            //                 $("<option></option>")
+            //                     .attr("value", json[i].pk)
+            //                     .text(json[i].nombre + ' ' + json[i].a_paterno)
+            //             );
+            //         }
+            //         $('#metodo_pago').material_select();
+            //     },
+            //     // handle a non-successful response
+            //     error: function (xhr, errmsg, err) {
+            //         alert("No se pudo cargar tipo de vehículos");
+            //     }
+            // });
+        });
 	});
 
 	function cargarClientesTelefono() {
@@ -308,6 +284,126 @@
                 }
             });
         }
+	}
+
+	function cargarDirecciones() {
+		var id_usuario = $('#nombres_usuarios').val();
+		
+            $.ajax({
+                url: "/ws/direccion/?cliente=" + id_usuario,
+                type: "GET", // http method
+                cache: false,
+                // handle a successful response
+                success: function (json) {
+                    list_direcciones = json;
+                    console.log('direcciones', json);
+                    $("#direccion_origen").empty().html(' ');
+                    $('#direccion_origen').append(
+                        $("<option></option>")
+                            .attr("value", "")
+                            .text("Ubicación del usuario")
+                    );
+                    for (i in json) {
+                        $('#direccion_origen').append(
+                            $("<option></option>")
+                                .attr("value", json[i].id)
+                                .text(json[i].direccion )
+                        );
+                    }
+                    $('#direccion_origen').material_select();
+                }
+            });
+    }
+    
+    function cotizar() {
+        var direccion_usuario = list_direcciones.find(
+            el => el.id == $('#direccion_origen').val());
+
+        var data_cotizar = {
+            fecha: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+            ciudad: ciudad_id,	
+            tipo_vehiculo: $('#tipo_vehiculo').val(),
+            tipo_servicio: $('#numero_economico').val(),
+            sucursal: null,
+            base: null,
+            lat_origen: direccion_usuario.latitud,
+            lon_origen: direccion_usuario.longitud,
+            lat_destino: lat,	
+            lon_destino: lgn
+        }
+
+        $.ajax({
+                url: "/ws/cotizar/" ,
+                type: "POST",
+                cache: false,
+                data: data_cotizar,
+                success: function (json) {
+                    console.log('res cotizar',json)
+                },
+                error: function (xhr, errmsg, err) {
+                    alert(errmsg, err);
+                }
+        });
+    }
+
+	function cargarTiposVehiculos() {
+        var direccion_usuario = list_direcciones.find(
+            el => el.id == $('#direccion_origen').val());
+		var latLng = {
+            latitud: direccion_usuario.latitud ,
+            longitud: direccion_usuario.longitud
+        };
+        console.log('dir us',direccion_usuario)
+
+        marker.setMap(null);
+
+        marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                anchorPoint: new google.maps.Point(0, -29),
+                position: {
+                    lat: +direccion_usuario.latitud, 
+                    lng: +direccion_usuario.longitud},
+                });
+                
+                map.setCenter({
+                    lat: +direccion_usuario.latitud, 
+                    lng: +direccion_usuario.longitud
+                });
+
+            $.ajax({
+                url: "/ws/buscarCiudad/" ,
+                type: "POST",
+                cache: false,
+                data: latLng,
+                success: function (json) {
+
+                    console.log('buscar ciudad', json);
+                    $.ajax({
+                        url: "/ws/tipoVehiculo/?ciudad=" + json.id,
+                        type: "GET", // http method
+                        cache: false,
+                        success: function (json) {
+                            ciudad_id = json.id;
+                            console.log('tipo vehiculo', json)
+                            $("#tipo_vehiculo").empty().html(' ');
+                            $('#tipo_vehiculo').append(
+                                $("<option></option>")
+                                    .attr("value", "")
+                                    .text("Vehículo")
+                            );
+                            for (i in json) {
+                                $('#tipo_vehiculo').append(
+                                    $("<option></option>")
+                                        .attr("value", json[i].id)
+                                        .text(json[i].nombre )
+                                );
+                            }
+                            $('#tipo_vehiculo').material_select();
+                        }
+                    });
+                }   
+            });
 	}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places&callback=initMap"></script>
