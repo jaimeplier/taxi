@@ -118,6 +118,115 @@
                     </li>
                 {% endif %}
 
+            {% if user.is_admin_ciudad %}
+                    <!-- configuracion de vehículos -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">build</i>Configuración de vehículos
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_vehiculo' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_vehiculo' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configuracion de conductor -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">airline_seat_recline_normal</i>Configuración
+                            del conductor
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_chofer' %}"><i class="material-icons left">add</i>Registrar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_chofer' %}"><i class="material-icons left">search</i>Consultar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configuracion del dueño -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">business_center</i>Configuración del
+                            dueño
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_propietario' %}"><i
+                                            class="material-icons left">add</i>Registrar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_propietario' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configurar paises -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">public</i>Configurar países</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_pais' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_pais' %}"><i
+                                            class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configurar ciudades -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">location_city</i>Configuración de
+                            ciudades
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_ciudad' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_ciudad' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configurar zonas -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">gps_fixed</i>Configuración de zonas
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_zona' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_zona' %}"><i
+                                            class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
                 {% if user.is_admin_sitio %}
                     <!-- configuracion de vehículos -->
                     <li>
@@ -254,6 +363,112 @@
                     <!-- clientes -->
                     <li>
                         <div class="collapsible-header"><i class="material-icons">people</i>Clientes</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_cliente' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_cliente' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configurar modalidad del sistema -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">settings</i>Configurar modalidad del
+                            sistema
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"><i
+                                            class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+            {% if user.is_admin_ciudad %}
+                    <!-- configurar categorias de vehículos -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">view_carousel</i>Configurar categoría
+                            de vehículos
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_tipo_vehiculo' %}"><i
+                                            class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_tipo_vehiculo' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configurar formas de pago -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">attach_money</i>Configurar formas de
+                            pago
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_forma_pago' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_forma_pago' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configurar tarifarios -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">account_balance_wallet</i>Configuración
+                            del tarifario
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_tarifa' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_tarifa' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- configurar empresas -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">business</i>Configurar empresas</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:nuevo_empresa' %}"><i class="material-icons left">add</i>Agregar</a>
+                                </div>
+                                <div class="col s6 center">
+                                    <a class="waves-effect waves-light btn btn_rosa"
+                                       href="{% url 'webapp:list_empresa' %}"><i class="material-icons left">remove_red_eye</i>Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- clientes -->
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">people</i>Administradores de sitio</div>
                         <div class="collapsible-body">
                             <div class="row">
                                 <div class="col s6 center">

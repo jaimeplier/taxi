@@ -112,6 +112,13 @@ class Usuario(AbstractBaseUser):
             return False
 
     @property
+    def is_admin_ciudad(self):
+        if self.rol.pk == 5:
+            return True
+        else:
+            return False
+
+    @property
     def is_admin_sitio(self):
         if self.rol.pk == 10:
             return True

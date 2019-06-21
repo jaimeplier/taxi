@@ -118,6 +118,8 @@ def login(request):
                     return redirect(reverse('admin_sitio:list_tarifa'))
                 elif user.rol.pk == 12: # Callcenter
                     return redirect(reverse('callcenter:llamada'))
+                elif user.rol.pk == 5: # Callcenter
+                    return redirect(reverse('webapp:configuraciones'))
                 logout(request)
                 return redirect(reverse('webapp:login_unauthorized'))
             else:
