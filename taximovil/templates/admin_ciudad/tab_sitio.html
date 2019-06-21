@@ -1,0 +1,32 @@
+<!--   SOFTIC SOLUTIONS   -->
+{% extends "config/tab_base.html" %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Sitios</h5><a class="waves-effect waves-light btn" href="{% url 'admin_ciudad:nuevo_sitio' %}" style="position: absolute; left: 40%;"><i class="material-icons left">add</i>Agregar</a>{% endblock %}
+{% load static %}
+{% block campos %}
+    <th>Nombre</th>
+    <th>Numero de espacios</th>
+    <th>PV</th>
+    <th>Editar</th>
+    <th>Eliminar</th>
+{% endblock %}
+
+{% block scripts_tabla %}
+        function eliminar() {
+            $.ajax({
+                url: "delete/" + id,
+                type: "POST", // http method
+                // handle a successful response
+                success: function (aData) {
+                    $('#tabla').dataTable()._fnAjaxUpdate();
+                },
+
+                // handle a non-successful response
+                error: function (xhr, errmsg, err) {
+                    alert("Ocurrio un error");
+                }
+            });
+        }
+{% endblock %}
+
+{% block url_ajax %}{% url 'admin_ciudad:tab_list_sitio' %}{% endblock %}
+
