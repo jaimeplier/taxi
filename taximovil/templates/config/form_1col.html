@@ -23,7 +23,9 @@
                                         </div>
                                     {% endfor %}
 					  			</div>
-                            {{ error }}
+                            <div class="row">
+                                <p style="color: darkred"><b><u>{{ error }}</u></b></p>
+                            </div>
                         {% if messages %}
                             <ul class="messages">
                                 {% for message in messages %}
