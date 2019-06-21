@@ -86,6 +86,15 @@
 							<label for="numero_economico">Número de económico</label>
 						</div>
 					</div>
+
+                    <div class="row">
+                        <div class="col s12 input-field">
+						<select id="tipo_vehiculo">
+							<option value="" disabled selected>Vehículo</option>
+						</select>
+                        </div>
+					</div>
+
 					<!-- costo del viaje -->
 					<div class="row">
 						<div class="col s8 input-field">
@@ -108,11 +117,7 @@
 						</div>
 					</div> -->
 					<!-- tipo de vehiculo -->
-					<div class="row">
-						<select id="tipo_vehiculo">
-							<option value="" disabled selected>Vehículo</option>
-						</select>
-					</div>
+
 					<!-- select's
 					<div class="row">
 						<div class="col s6">
@@ -319,18 +324,28 @@
         var direccion_usuario = list_direcciones.find(
             el => el.id == $('#direccion_origen').val());
 
+
+        // new Date().toJSON().slice(0,10).replace(/-/g,'/'),
         var data_cotizar = {
-            fecha: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+            // fecha: new Date().toJSON(),
+            fecha: "2019-06-20 18:52",
             ciudad: ciudad_id,	
             tipo_vehiculo: $('#tipo_vehiculo').val(),
-            tipo_servicio: $('#numero_economico').val(),
+            tipo_servicio: "2",
             sucursal: null,
             base: null,
-            lat_origen: direccion_usuario.latitud,
+            lon_origen: -99.18240007013083,
+            lat_origen: 19.413000142702117,
+            lon_destino: -99.18240007013083,
+            lat_destino: 19.413000142702117
+
+            /* lat_origen: direccion_usuario.latitud,
             lon_origen: direccion_usuario.longitud,
             lat_destino: lat,	
             lon_destino: lgn
+            */
         }
+        console.log(data_cotizar)
 
         $.ajax({
                 url: "/ws/cotizar/" ,
@@ -377,15 +392,16 @@
                 cache: false,
                 data: latLng,
                 success: function (json) {
-
+                    ciudad_id = json.id;
                     console.log('buscar ciudad', json);
                     $.ajax({
                         url: "/ws/tipoVehiculo/?ciudad=" + json.id,
-                        type: "GET", // http method
+                        type: "GET",
                         cache: false,
                         success: function (json) {
-                            ciudad_id = json.id;
-                            console.log('tipo vehiculo', json)
+
+                            console.log('tipo vehiculo', json);
+                            console.log('tipo vehiculo', ciudad_id);
                             $("#tipo_vehiculo").empty().html(' ');
                             $('#tipo_vehiculo').append(
                                 $("<option></option>")

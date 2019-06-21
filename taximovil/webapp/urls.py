@@ -165,7 +165,6 @@ urlpatterns = [
 
     path('vehiculos_activos/', views.vehiculos_activos, name='vehiculos_activos'),
     path('todos_vehiculos/', views.todos_vehiculos, name='todos_vehiculos'),
-    path('llamada/', views.llamada, name='llamada'),
     path('mensajes/', views.mensajes, name='mensajes'),
     path('reportes/', views.reportes, name='reportes'),
     path('creditos/', views.creditos, name='creditos'),

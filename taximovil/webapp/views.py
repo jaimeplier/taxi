@@ -2103,11 +2103,6 @@ def todos_vehiculos(request):
     return render(request, template_name)
 
 
-def llamada(request):
-    template_name = 'webapp/llamada.html'
-    return render(request, template_name)
-
-
 def mensajes(request):
     template_name = 'webapp/mensajes.html'
     return render(request, template_name)

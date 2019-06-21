@@ -1,28 +1,24 @@
 <!-- SOFTIC SOLUTIONS-->
 {% extends 'config/base.html' %}
+{% load static %}
 {% load widget_tweaks %}
 
 {% block content %}
 
+    <!-- MODALS -->
     <div id="modal1" class="modal">
         <div class="modal-content">
-            <h4>Modal Header</h4>
-            <p>A bunch of text</p>
+            <h4>Mapa</h4>
+
+            <div id="map" style="width:100%;height:450px;border:1px solid #DCDCDC;"></div>
+
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
         </div>
     </div>
 
-    <div id="modal2" class="modal">
-        <div class="modal-content">
-            <h4>Modal2!!!! Header!!!!</h4>
-            <p>A bunch of text</p>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-        </div>
-    </div>
+    <!-- END MODALS -->
 
   		<div class="row">
   			<div class="col s1"></div>
@@ -53,7 +49,7 @@
   						<div class="box_morado">
   							<label class="center titulo_servicio">EN SERVICIO</label>
 							</div>
-							<div id="vehiculos_aceptados"></div>
+							<div id="vehiculos_servicio"></div>
 				        <!-- <div class="card servicio_container darken-1 no_top no_bottom">
 				            <div class="card-content white-text left-align">
 				              <label class="texto"><b>Ford Ikon 2016</b></label>
@@ -76,6 +72,63 @@
 {% endblock %}
 
 {% block scripts %}
+
+<script src="{% static "vendor/jquery-ui/jquery-ui.min.js" %}"></script>
+<script type="text/javascript" src="{% static 'js/crsfajax.js' %}"></script>
+<script type="text/javascript">
+		// Initialize and add the map
+		var map;
+        {% if  latitud %}
+            var lat = {{ latitud }};
+            var lgn = {{ longitud }};
+        {% else %}
+            var lat = 19.419260;
+            var lgn = -99.164379;
+        {% endif %}
+        var marker;
+
+        function initMap() {
+			console.log('in mapa!')
+            if (map !== undefined)
+                return;
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: lat, lng: lgn},
+                zoom: 14
+            });
+
+            var input = /** @type {!HTMLInputElement} */(
+                document.getElementById('searchTextField'));
+
+            var types = [];
+
+
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.setTypes(types);
+            autocomplete.bindTo('bounds', map);
+
+            var infowindow = new google.maps.InfoWindow();
+            /*
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                anchorPoint: new google.maps.Point(0, -29),
+                position: {lat: lat, lng: lgn},
+            });
+            */
+
+            marker.addListener('dragend', function () {
+                lat = this.position.lat();
+                lgn = this.position.lng();
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+                console.log('latlng marker', lat, lgn)
+            });
+            marker.setVisible(true);
+
+        }
+</script>
+
+
 <script type="text/javascript">
 	$("document").ready(function() {
 	    $('.modal').modal();
@@ -85,39 +138,41 @@
 			type: "GET", 
 			cache: false,
 			success: function (json) {
-				console.log(json.results);
+				console.log('serv 1', json);
 				$("#vehiculos_notificados").empty().html(' ');
                 for (i of json.results) {
                     $('#vehiculos_notificados').append(`
-										<div class="card servicio_container darken-1 no_top no_bottom">
+                       <div id="notificados` + i.pk + `">
+                        <div class="card servicio_container darken-1 no_top no_bottom">
 				            <div class="card-content white-text left-align">
 				              <label class="texto"><b>Cliente:</b></label>
-											<label class="texto">`+
-											 i.cliente.nombre + ' ' + i.cliente.a_paterno +`</label><br>
-                                            <label class="texto"><b>Origen:</b></label>
-											<label class="texto">`
-											+ i.direccion_origen.split(',')[0] +
-											`</label><br>
+                                <label class="texto">`+
+                                 i.cliente.nombre + ' ' + i.cliente.a_paterno +`</label><br>
+                                <label class="texto"><b>Origen:</b></label>
+                                <label class="texto">`
+                                + i.direccion_origen.split(',')[0] +
+                                `</label><br>
 				              <label class="texto"><b>Destino:</b></label>
-											<label class="texto">`
-											+ i.direccion_destino.split(',')[0] + 
-											`</label><br>
-											<label class="texto"><b>Procedencia:</b></label>
-											<label class="texto">`+
-											 i.cliente.procedencia +`</label><br>
-											 <label class="texto"><b>Hora servicio:</b></label>
-											<label class="texto">`+
-											 i.hora_servicio +`</label><br>
+                                <label class="texto">`
+                                + i.direccion_destino.split(',')[0] +
+                                `</label><br>
+                                <label class="texto"><b>Procedencia:</b></label>
+                                <label class="texto">`+
+                                 i.cliente.procedencia +`</label><br>
+                                 <label class="texto"><b>Hora servicio:</b></label>
+                                <label class="texto">`+
+                                 i.hora_servicio +`</label><br>
 				            </div>
 				            <div class="card-action">
 				              <div class="row">
                                 <div class="col s4">
-				                    <a href="#" class="right black-text"><b>Reenviar</b></a>
+				                    <a href="#" class="right black-text"><b>Asignar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a href="#modal1" class="right black-text modal-trigger"><b>Ver mapa</b></a>
+				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
+                                    + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] + `)"><b>Ver mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -144,7 +199,8 @@
 				$("#servAsignado").empty().html(' ');
                 for (i of json.results) {
                     $('#servAsignado').append(`
-										<div class="card servicio_container darken-1 no_top no_bottom">
+                       <div id="completado` + i.pk + `">
+                        <div class="card servicio_container darken-1 no_top no_bottom">
 				            <div class="card-content white-text left-align">
 											<label class="texto"><b>Ford Ikon 2016</b></label>
 				                            <br>
@@ -177,12 +233,12 @@
                             <div class="card-action">
                                 <div class="row">
                                 <div class="col s4">
-				                    <a href="#" class="right black-text"><b>Asignar</b></a>
+				                    <a href="#" class="right black-text"><b>Reenviar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a href="#modal2" class="right black-text modal-trigger"><b>Ver mapa</b></a>
+				                    <a href="#modal1" class="right black-text modal-trigger"><b>Ver mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -194,6 +250,7 @@
                                 </div>
 				            </div>
 				        </div>
+                       </div>
 										`);
                 }
             }
@@ -205,10 +262,11 @@
 			cache: false,
 			success: function (json) {
 				console.log('aceptados', json.results);
-				$("#vehiculos_aceptados").empty().html(' ');
+				$("#vehiculos_servicio").empty().html(' ');
                 for (i of json.results) {
-                    $('#vehiculos_aceptados').append(`
-										<div class="card servicio_container darken-1 no_top no_bottom">
+                    $('#vehiculos_servicio').append(`
+                         <div id="servicio` + i.pk + `">
+                            <div class="card servicio_container darken-1 no_top no_bottom">
 				            <div class="card-content white-text left-align">
 											<label class="texto"><b>Ford Ikon 2016</b></label>
 				              <br>
@@ -220,19 +278,19 @@
 											<label class="texto">`+
 											 i.cliente.nombre + ' ' + i.cliente.a_paterno +`</label><br>
 				              <label class="texto"><b>Destino:</b></label>
-											<label class="texto">`
-											+ i.direccion_destino.split(',')[0] + 
-											`</label><br>
-											<label class="texto"><b>Ciudad Origen:</b></label>
-											<label class="texto">`
-											+ i.direccion_destino.split(',')[3] + 
-											`</label><br>
-											<label class="texto"><b>Registro:</b></label>
-											<label class="texto">`+
-											 i.hora_registro +`</label><br>
-											 <label class="texto"><b>Hora servicio:</b></label>
-											<label class="texto">`+
-											 i.hora_servicio +`</label><br>
+                                <label class="texto">`
+                                + i.direccion_destino.split(',')[0] +
+                                `</label><br>
+                                <label class="texto"><b>Ciudad Origen:</b></label>
+                                <label class="texto">`
+                                + i.direccion_destino.split(',')[3] +
+                                `</label><br>
+                                <label class="texto"><b>Registro:</b></label>
+                                <label class="texto">`+
+                                 i.hora_registro +`</label><br>
+                                 <label class="texto"><b>Hora servicio:</b></label>
+                                <label class="texto">`+
+                                 i.hora_servicio +`</label><br>
 				            </div>
 				            <div class="card-action">
 				              <div class="row">
@@ -252,13 +310,63 @@
 				        </div>
 										`);
                 }
-                $('#list_ciudades').material_select();
             }
 		});
-
 		$(".dropdown-button").dropdown();
 		$(".button-collapse").sideNav();
 	});
+
+	function reenviarSolicitud( id, idx) {
+
+	    // pop idx
+	    $.ajax({
+			url: "/ws/" + id,
+			type: "GET",
+			cache: false,
+			success: function (json) {
+
+			}
+        })
+    }
+
+    function addMarcadoresDestinos(origen_lon, origen_lat, destino_lon, destino_lat, chofer_lon = null, chofer_lat = null  ) {
+
+	    console.log('markers', origen_lon, origen_lat, destino_lon, destino_lat);
+
+	    var locations = [
+            {lat: +origen_lat, lng: +origen_lon},
+            {lat: +destino_lat, lng: +destino_lon},
+        ];
+
+	    map.setCenter({
+                    lat: +origen_lat,
+                    lng: +origen_lon
+                });
+
+
+	    /*
+	    marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                anchorPoint: new google.maps.Point(0, -29),
+                position: {lat: origen_lat, lng: origen_lon}
+            });
+            */
+	    var markers = locations.map(function(location) {
+          return new google.maps.Marker({
+            position: location,
+          });
+        });
+
+	    var markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+    }
+
+
+
 </script>
+
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"> </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places&callback=initMap"></script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->
