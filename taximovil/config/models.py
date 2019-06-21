@@ -847,7 +847,7 @@ class Callcenter(Usuario):
 class ConfigUsuariosSitio(models.Model):
     sitio = models.OneToOneField("Sitio", models.DO_NOTHING, unique=True)
     max_administradores = models.PositiveIntegerField(default=3)
-    max_callcenter = models.PositiveIntegerField(default=12)
+    max_callcenter = models.PositiveIntegerField(default=15)
 
     class Meta:
         managed = True
