@@ -1,0 +1,51 @@
+<!--   SOFTIC SOLUTIONS   -->
+{% extends "config/tab_base.html" %}
+{% block titulo_tabla %}<h5 class="black-text margin_114">Personal de callcenter</h5><a class="waves-effect waves-light btn" href="{% url 'admin_sitio:nuevo_callcenter' %}" style="position: absolute; left: 40%;"><i class="material-icons left">add</i>Agregar</a>{% endblock %}
+{% load static %}
+{% block campos %}
+    <th>Nombre</th>
+    <th>Correo</th>
+    <th>Telefono</th>
+    <th data-orderable="false">Editar</th>
+    <th>Estatus</th>
+{% endblock %}
+
+{% block scripts_tabla %}
+        function eliminar() {
+            $.ajax({
+                url: "delete/" + id,
+                type: "POST", // http method
+                // handle a successful response
+                success: function (aData) {
+                    $('#tabla').dataTable()._fnAjaxUpdate();
+                },
+
+                // handle a non-successful response
+                error: function (xhr, errmsg, err) {
+                    alert("Ocurrio un error");
+                }
+            });
+        }
+
+    function cambiar_estatus(id){
+        $.ajax({
+                url: "{% url 'webservices:cambiar_estatus_callcenter' %}",
+                data: {pk: id},
+                type: "POST", // http method
+                // handle a successful response
+                success: function (aData) {
+                $('#tabla').dataTable()._fnAjaxUpdate();
+                },
+
+                // handle a non-successful response
+                error: function (xhr, errmsg, err) {
+                alert("Ocurrio un error: " + xhr.responseJSON.Error);
+                $('#tabla').dataTable()._fnAjaxUpdate();
+                }
+            });
+        }
+{% endblock %}
+
+{% block url_ajax %}{% url 'admin_sitio:tab_list_callcenter' %}{% endblock %}
+
+
