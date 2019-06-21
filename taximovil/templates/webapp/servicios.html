@@ -238,7 +238,10 @@
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a href="#modal1" class="right black-text modal-trigger"><b>Ver mapa</b></a>
+				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
+                                    + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] 
+									+ `,` + i.chofer.coordinates[1] + `,` + i.chofer.coordinates[0] `)"
+									><b>Ver mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -300,7 +303,10 @@
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a href="#" class="right black-text"><b>Ver mapa</b></a>
+				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
+                                    + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] 
+									+ `,` + i.chofer.coordinates[1] + `,` + i.chofer.coordinates[0] `)"
+									><b>Ver mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -337,6 +343,12 @@
             {lat: +origen_lat, lng: +origen_lon},
             {lat: +destino_lat, lng: +destino_lon},
         ];
+
+		if(chofer_lon && chofer_lat ) {
+			locations.push({
+				lat: +chofer_lat, lng: +chofer_lon
+			})
+		}
 
 	    map.setCenter({
                     lat: +origen_lat,
