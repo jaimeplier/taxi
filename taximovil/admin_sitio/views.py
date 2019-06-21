@@ -127,13 +127,6 @@ class CallcenterActualizar(PermissionRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('admin_sitio:list_callcenter')
 
-@permission_required(perm='admin_sitio', login_url='/webapp/')
-def callcenter_eliminar(request, pk):
-    u = get_object_or_404(Callcenter, pk=pk)
-    u.estatus = False
-    u.save()
-    return JsonResponse({'result': 1})
-
 
 class TarifaCrear(PermissionRequiredMixin, CreateView):
     redirect_field_name = 'next'
