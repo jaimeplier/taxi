@@ -24,7 +24,7 @@ class TipoPagoList(ListAPIView):
             queryset = queryset.filter(tarifa__tipo_vehiculo__pk=tipo_vehiculo, tarifa__ciudad__pk=ciudad)
         return queryset
 
-
+# TODO revisar filtro pod ciudad
 class TipoVehiculoList(ListAPIView):
     serializer_class = TipoVehiculoSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication)

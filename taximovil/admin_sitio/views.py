@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -13,7 +14,7 @@ from config.models import Tarifa, TipoPago, Ciudad, Pais, Empresa, Sucursal, Zon
 class TarifaCrear(PermissionRequiredMixin, CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
-    permission_required = 'add_tarifa'
+    permission_required = 'admin_sitio'
     model = Tarifa
     form_class = TarifaForm
     template_name = 'webapp/registro_tarifario.html'
@@ -37,7 +38,7 @@ class TarifaCrear(PermissionRequiredMixin, CreateView):
 class TarifaActualizar(PermissionRequiredMixin, UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
-    permission_required = 'change_tarifa'
+    permission_required = 'admin_sitio'
     model = Tarifa
     template_name = 'webapp/registro_tarifario.html'
     form_class = TarifaForm
@@ -55,7 +56,7 @@ class TarifaActualizar(PermissionRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('webapp:list_tarifa')
 
-
+@permission_required(perm='admin_sitio', login_url = '/webapp/')
 def tarifa_crear(request):
     template_name = 'webapp/registro_tarifario.html'
     if request.method == 'POST':
@@ -84,7 +85,7 @@ def tarifa_crear(request):
         # form = TarifaForm()
         return render(request, template_name, {'form': form})
 
-
+@permission_required(perm='admin_sitio', login_url = '/webapp/')
 def tarifa_add(request):
     response_data = {}
     try:
@@ -122,14 +123,16 @@ def tarifa_add(request):
         response_data['error'] = 'error'
     return JsonResponse(response_data)
 
-
+@permission_required(perm='admin_sitio', login_url = '/webapp/')
 def tarifa_listar(request):
     template_name = 'webapp/tab_tarifa.html'
     return render(request, template_name)
 
 
-class TarifaListarAjaxListView(BaseDatatableView):
+class TarifaListarAjaxListView(BaseDatatableView, PermissionRequiredMixin):
     redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'admin_sitio'
     model = Tarifa
     columns = ['tarifa_base', 'ciudad', 'sitio', 'sucursal.empresa.nombre', 'sucursal.nombre', 'ciudad.pais.nombre',
                'horario', 'editar', 'eliminar']
