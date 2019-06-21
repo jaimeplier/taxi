@@ -28,6 +28,19 @@ class AdministradorPermission(permissions.BasePermission):
             return request.user.rol.pk == 9 or request.user.rol.pk == 1
         return False
 
+class AdministradorSitioPermission(permissions.BasePermission):
+    """
+    Permisos del administrador
+    Rol:
+    superuser: 1
+    administrador: 9
+    administrador de sitio 10
+    """
+
+    def has_permission(self, request, view):
+        if request.user is not None:
+            return request.user.rol.pk == 9 or request.user.rol.pk == 1 or request.user.rol.pk == 10
+        return False
 
 class IsOwnerPermission(permissions.BasePermission):
     """

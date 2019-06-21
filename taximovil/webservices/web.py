@@ -5,10 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Servicio
+from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Servicio, Callcenter, AdministradorSitio, \
+    ConfigUsuariosSitio
 from config.serializers import ServicioSerializer, CiudadSerializer
 from webservices.Pagination import SmallPagesPagination
-from webservices.permissions import AdministradorPermission
+from webservices.permissions import AdministradorPermission, AdministradorSitioPermission
 from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer
 
 
@@ -89,3 +90,52 @@ class ListServicios(ListAPIView):
             queryset = Servicio.objects.filter(estatus=estatus_servicio).order_by('hora_registro')
         return queryset
 
+class CambiarEstatusCallcenter(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, AdministradorSitioPermission)
+
+    def post(self, request):
+        serializer = EstatusSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            callcenter = Callcenter.objects.get(pk=serializer.data.get('pk'))
+            config_sitio = ConfigUsuariosSitio.objects.get(sitio=callcenter.sitio)
+            if self.request.user.is_admin_sitio:
+                admin_sitio = AdministradorSitio.objects.get(pk=self.request.user.pk)
+                usuarios_callcenter = Callcenter.objects.filter(sitio=admin_sitio.sitio).values_list('pk', flat=True)
+                if callcenter.pk in usuarios_callcenter:
+                    if callcenter.estatus:
+                        callcenter.estatus = False
+                    else:
+                        num_usuarios_callcenter = Callcenter.objects.filter(sitio=admin_sitio.sitio, estatus=True).count()
+                        if num_usuarios_callcenter >= config_sitio.max_callcenter:
+                            return Response({'Error': 'Estan registrados ' + str(
+                                                       num_usuarios_callcenter) + ' usuarios activos de ' +
+                                                            str(
+                                                                config_sitio.max_callcenter) + ' permitidos, no puedes activar mas.'},
+                                            status=status.HTTP_401_UNAUTHORIZED)
+                        callcenter.estatus = True
+                    callcenter.save()
+                else:
+                    return Response({'Error': 'No puedes realizar cambios a éste usuario'}, status=status.HTTP_403_FORBIDDEN)
+            else:
+                if callcenter.estatus:
+                    callcenter.estatus = False
+                else:
+                    num_usuarios_callcenter = Callcenter.objects.filter(sitio=callcenter.sitio, estatus=True).count()
+                    if num_usuarios_callcenter >= config_sitio.max_callcenter:
+                        return Response({'Error': 'Estan registrados ' + str(
+                            num_usuarios_callcenter) + ' usuarios activos de ' +
+                                                  str(
+                                                      config_sitio.max_callcenter) + ' permitidos, no puedes activar mas.'},
+                                        status=status.HTTP_401_UNAUTHORIZED)
+                    callcenter.estatus = True
+                callcenter.save()
+        except:
+            return Response({'Error': 'Objeto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return EstatusSerializer()
