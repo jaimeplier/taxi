@@ -148,6 +148,8 @@
 		var map;
         var list_direcciones;
         var ciudad_id;
+        var locations = [];
+
         {% if  latitud %}
             var lat = {{ latitud }};
             var lgn = {{ longitud }};
@@ -180,17 +182,18 @@
                 map: map,
                 draggable: true,
                 anchorPoint: new google.maps.Point(0, -29),
-                position: {lat: lat, lng: lgn},
+                // position: {lat: lat, lng: lgn},
             });
 
-            marker.addListener('dragend', function () {
-                lat = this.position.lat();
-                lgn = this.position.lng();
-                $('#lat').val(lat);
-                $('#lgn').val(lgn);
-                console.log('latlng marker', lat, lgn)
-            });
-            marker.setVisible(true);
+            // marker.addListener('dragend', function () {
+            //     lat = this.position.lat();
+            //     lgn = this.position.lng();
+            //     $('#lat').val(lat);
+            //     $('#lgn').val(lgn);
+            //     console.log('latlng marker', lat, lgn)
+            // });
+            
+            // marker.setVisible(true);
 
             autocomplete.addListener('place_changed', function () {
                 infowindow.close();
@@ -228,34 +231,39 @@
 		$(".button-collapse").sideNav();
     	$('select').material_select();
 
-		$(document).ready(function() {
-			// $.ajax({
-            //     url: "/ws/tipoPago/",
-            //     type: "GET", 
-            //     cache: false,
-            //     success: function (json) {
+            $.ajax({
+			url: "/ws/list_vehiculos_activos/",
+			type: "GET", 
+			cache: false,
+			success: function (json) {
+                console.log('res maps',json)
+                json.map(function(el){
+                    locations.push({
+                        lat: el.chofer.latlgn.coordinates[1],
+                        lng: el.chofer.latlgn.coordinates[0]})
+                })
+                console.log('arr',locations)
+                // var locations = [
+                //     {lat: +origen_lat, lng: +origen_lon},
+                //     {lat: +destino_lat, lng: +destino_lon},
+                // ];
 
-            //         $("#metodo_pago").empty().html(' ');
-            //         $('#metodo_pago').append(
-            //             $("<option></option>")
-            //                 .attr("value", "")
-            //                 .text("Forma de pago")
-            //         );
-            //         for (i in json) {
-            //             $('#metodo_pago').append(
-            //                 $("<option></option>")
-            //                     .attr("value", json[i].pk)
-            //                     .text(json[i].nombre + ' ' + json[i].a_paterno)
-            //             );
-            //         }
-            //         $('#metodo_pago').material_select();
-            //     },
-            //     // handle a non-successful response
-            //     error: function (xhr, errmsg, err) {
-            //         alert("No se pudo cargar tipo de vehículos");
-            //     }
-            // });
-        });
+                // map.setCenter({
+                //             lat: +origen_lat,
+                //             lng: +origen_lon
+                //         });
+
+                var markers = locations.map(function(location) {
+                return new google.maps.Marker({
+                    position: location,
+                });
+                });
+
+                // var markerCluster = new MarkerClusterer(map, markers,
+                //     {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+            
+            }
+		});
 	});
 
 	function cargarClientesTelefono() {
@@ -327,23 +335,23 @@
 
         // new Date().toJSON().slice(0,10).replace(/-/g,'/'),
         var data_cotizar = {
-            // fecha: new Date().toJSON(),
-            fecha: "2019-06-20 18:52",
+            fecha: new Date().toJSON(),
+            // fecha: "2019-06-20 18:52",
             ciudad: ciudad_id,	
             tipo_vehiculo: $('#tipo_vehiculo').val(),
             tipo_servicio: "2",
             sucursal: null,
             base: null,
-            lon_origen: -99.18240007013083,
-            lat_origen: 19.413000142702117,
-            lon_destino: -99.18240007013083,
-            lat_destino: 19.413000142702117
+            // lon_origen: -99.18240007013083,
+            // lat_origen: 19.413000142702117,
+            // lon_destino: -99.18240007013083,
+            // lat_destino: 19.413000142702117
 
-            /* lat_origen: direccion_usuario.latitud,
+            lat_origen: direccion_usuario.latitud,
             lon_origen: direccion_usuario.longitud,
             lat_destino: lat,	
             lon_destino: lgn
-            */
+            
         }
         console.log(data_cotizar)
 
@@ -420,8 +428,45 @@
                     });
                 }   
             });
+
+            $.ajax({
+			url: "/ws/list_vehiculos_activos/",
+			type: "GET", 
+			cache: false,
+			success: function (json) {
+                console.log('res maps',json)
+                locations = [];
+                json.map(function(el){
+                    locations.push({
+                        lat: el.chofer.latlgn.coordinates[1],
+                        lng: el.chofer.latlgn.coordinates[0]})
+                })
+                console.log('arr',locations)
+                // var locations = [
+                //     {lat: +origen_lat, lng: +origen_lon},
+                //     {lat: +destino_lat, lng: +destino_lon},
+                // ];
+
+                // map.setCenter({
+                //             lat: +origen_lat,
+                //             lng: +origen_lon
+                //         });
+
+                var markers = locations.map(function(location) {
+                return new google.maps.Marker({
+                    position: location,
+                });
+                });
+
+            var markerCluster = new MarkerClusterer(map, markers,
+                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+                });
+            }        
+		});
+
 	}
 </script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"> </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places&callback=initMap"></script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->
