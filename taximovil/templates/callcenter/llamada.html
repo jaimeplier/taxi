@@ -97,13 +97,12 @@
 
 					<!-- costo del viaje -->
 					<div class="row">
-						<div class="col s8 input-field">
-							<input type="text" id="cotizar_viaje">
-							<label for="cotizar_viaje">Cotizar Viaje</label>
-						</div>
-						<div class="col s4">
-                            <a class="waves-effect waves-light btn" 
+                        <div class="col s4">
+                            <a class="waves-effect waves-light btn input-field" 
                             style="margin-top: 20%;" onclick="cotizar()">Cotizar</a>
+                        </div>
+						<div class="col s8 center" id="cotizar">
+							
 						</div>
 					</div>
 					<!-- tipo de pago -->
@@ -131,7 +130,9 @@
 					</div>
 					-->
                         <div class="col s12 center" style="margin-top: -60px;">
-							<a class="waves-effect waves-light btn" style="margin-top: 20%;">Solicitar servicio</a>
+                            <a class="waves-effect waves-light btn" 
+                            onclick="solicitarServicio()"
+                            style="margin-top: 20%;">Solicitar servicio</a>
                         </div>
 				</div>
 			</div>
@@ -148,6 +149,7 @@
 		var map;
         var list_direcciones;
         var ciudad_id;
+        var destino_text;
         var locations = [];
 
         {% if  latitud %}
@@ -160,7 +162,6 @@
         var marker;
 
         function initMap() {
-			console.log('in mapa!')
             if (map !== undefined)
                 return;
             map = new google.maps.Map(document.getElementById('map'), {
@@ -185,15 +186,29 @@
                 // position: {lat: lat, lng: lgn},
             });
 
-            // marker.addListener('dragend', function () {
-            //     lat = this.position.lat();
-            //     lgn = this.position.lng();
-            //     $('#lat').val(lat);
-            //     $('#lgn').val(lgn);
-            //     console.log('latlng marker', lat, lgn)
-            // });
+            marker.addListener('dragend', function () {
+                lat = this.position.lat();
+                lgn = this.position.lng();
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
+                // geocodePosition(marker.getPosition());
+
+                geocoder = new google.maps.Geocoder();
+                geocoder.geocode({
+                        latLng: marker.getPosition()
+                    }, 
+                        function(results, status) 
+                        {
+                            if (status == google.maps.GeocoderStatus.OK) 
+                            {
+                                destino_text = results[0].formatted_address     
+                            } 
+                        }
+                    );
+            });
             
-            // marker.setVisible(true);
+            marker.setVisible(true);
 
             autocomplete.addListener('place_changed', function () {
                 infowindow.close();
@@ -203,7 +218,6 @@
                     window.alert("Autocomplete's returned place contains no geometry");
                     return;
                 }
-
                 // If the place has a geometry, then present it on a map.
                 if (place.geometry.viewport) {
                     map.fitBounds(place.geometry.viewport);
@@ -236,13 +250,11 @@
 			type: "GET", 
 			cache: false,
 			success: function (json) {
-                console.log('res maps',json)
                 json.map(function(el){
                     locations.push({
                         lat: el.chofer.latlgn.coordinates[1],
                         lng: el.chofer.latlgn.coordinates[0]})
                 })
-                console.log('arr',locations)
                 // var locations = [
                 //     {lat: +origen_lat, lng: +origen_lon},
                 //     {lat: +destino_lat, lng: +destino_lon},
@@ -275,7 +287,6 @@
                 cache: false,
                 // handle a successful response
                 success: function (json) {
-                    		    console.log('en ajax', json);
                     $("#nombres_usuarios").empty().html(' ');
                     $('#nombres_usuarios').append(
                         $("<option></option>")
@@ -309,7 +320,6 @@
                 // handle a successful response
                 success: function (json) {
                     list_direcciones = json;
-                    console.log('direcciones', json);
                     $("#direccion_origen").empty().html(' ');
                     $('#direccion_origen').append(
                         $("<option></option>")
@@ -329,9 +339,13 @@
     }
     
     function cotizar() {
+        if (!list_direcciones) {
+            alert("Agrega una dirección de origen")
+            return
+        }
+
         var direccion_usuario = list_direcciones.find(
             el => el.id == $('#direccion_origen').val());
-
 
         // new Date().toJSON().slice(0,10).replace(/-/g,'/'),
         var data_cotizar = {
@@ -339,7 +353,7 @@
             // fecha: "2019-06-20 18:52",
             ciudad: ciudad_id,	
             tipo_vehiculo: $('#tipo_vehiculo').val(),
-            tipo_servicio: "2",
+            tipo_servicio: "1",
             sucursal: null,
             base: null,
             // lon_origen: -99.18240007013083,
@@ -351,23 +365,102 @@
             lon_origen: direccion_usuario.longitud,
             lat_destino: lat,	
             lon_destino: lgn
-            
         }
-        console.log(data_cotizar)
-
         $.ajax({
                 url: "/ws/cotizar/" ,
                 type: "POST",
                 cache: false,
                 data: data_cotizar,
                 success: function (json) {
-                    console.log('res cotizar',json)
+                    $('#cotizar').empty();
+                    $('#cotizar').append(`
+                        <p> <b>Precio: $</b>`+ Math.ceil(json.precio) + `</p>
+                        <p> <b>Distancia: </b>`+ json.distance_text + `</p>
+                        <p> <b>Duración: </b>`+ json.duracion_text + `</p>
+                    `)
                 },
                 error: function (xhr, errmsg, err) {
                     alert(errmsg, err);
                 }
         });
     }
+
+    
+    function solicitarServicio() {
+        if (!list_direcciones) {
+            alert("Agrega una dirección de origen")
+        }
+
+        var direccion_usuario = list_direcciones.find(
+            el => el.id == $('#direccion_origen').val());
+        
+        var data_cotizar = {
+            fecha: new Date().toJSON(),
+            ciudad: ciudad_id,	
+            tipo_vehiculo: $('#tipo_vehiculo').val(),
+            tipo_servicio: "1",
+            sucursal: null,
+            base: null,
+            lat_origen: direccion_usuario.latitud,
+            lon_origen: direccion_usuario.longitud,
+            lat_destino: lat,	
+            lon_destino: lgn
+        }
+
+
+            $.ajax({
+                url: "/ws/cotizar/" ,
+                type: "POST",
+                cache: false,
+                data: data_cotizar,
+                success: function (json) {
+
+                    var origen_usuario = list_direcciones.find(
+                        el => el.id == $('#direccion_origen').val());
+                    // new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                    var data_solicitar = {
+                        hora_servicio : new Date().toJSON(),
+                        origen: origen_usuario.direccion,
+                        destino: destino_text,
+                        direccion_origen : origen_usuario.direccion,
+                        direccion_destino: destino_text,
+                        ref_lugar : $('#referencia_lugar').val() ,
+                        ref_persona	: $('#referencia_persona').val(),
+                        distancia : json.distance ,
+                        tiempo_aproximado_servicio : json.duracion ,
+                        costo : json.precio,
+                        tipo_servicio : 1 ,
+                        sitio : json.tarifa.sitio,
+                        tipo_pago: 2,	
+                        tarifa 	: json.tarifa.tarifa_base,
+                        tarjeta : null,
+                        // fecha: "2019-06-20 18:52",
+                    }
+
+                    $.ajax({
+                        url: "/ws/solicitar/" ,
+                        type: "POST",
+                        cache: false,
+                        data: data_solicitar,
+                        success: function (res) {
+                            console.log('res solicitar',res)
+                        },
+                        error: function (xhr, errmsg, err) {
+                            alert(errmsg, err);
+                        }
+                    });
+
+                },
+                error: function (xhr, errmsg, err) {
+                    alert(errmsg, err);
+                }
+        });
+
+      
+
+        
+    }
+
 
 	function cargarTiposVehiculos() {
         var direccion_usuario = list_direcciones.find(
@@ -376,7 +469,6 @@
             latitud: direccion_usuario.latitud ,
             longitud: direccion_usuario.longitud
         };
-        console.log('dir us',direccion_usuario)
 
         marker.setMap(null);
 
@@ -401,15 +493,11 @@
                 data: latLng,
                 success: function (json) {
                     ciudad_id = json.id;
-                    console.log('buscar ciudad', json);
                     $.ajax({
                         url: "/ws/tipoVehiculo/?ciudad=" + json.id,
                         type: "GET",
                         cache: false,
                         success: function (json) {
-
-                            console.log('tipo vehiculo', json);
-                            console.log('tipo vehiculo', ciudad_id);
                             $("#tipo_vehiculo").empty().html(' ');
                             $('#tipo_vehiculo').append(
                                 $("<option></option>")
@@ -434,14 +522,12 @@
 			type: "GET", 
 			cache: false,
 			success: function (json) {
-                console.log('res maps',json)
                 locations = [];
                 json.map(function(el){
                     locations.push({
                         lat: el.chofer.latlgn.coordinates[1],
                         lng: el.chofer.latlgn.coordinates[0]})
                 })
-                console.log('arr',locations)
                 // var locations = [
                 //     {lat: +origen_lat, lng: +origen_lon},
                 //     {lat: +destino_lat, lng: +destino_lon},
