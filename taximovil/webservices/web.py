@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from admin_ciudad.utils import is_callcenter_owner
 from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Servicio, Callcenter, AdministradorSitio, \
     ConfigUsuariosSitio, AdministradorCiudad
 from config.serializers import ServicioSerializer, CiudadSerializer
@@ -109,6 +110,22 @@ class CambiarEstatusCallcenter(APIView):
                         callcenter.estatus = False
                     else:
                         num_usuarios_callcenter = Callcenter.objects.filter(sitio=admin_sitio.sitio, estatus=True).count()
+                        if num_usuarios_callcenter >= config_sitio.max_callcenter:
+                            return Response({'Error': 'Estan registrados ' + str(
+                                                       num_usuarios_callcenter) + ' usuarios activos de ' +
+                                                            str(
+                                                                config_sitio.max_callcenter) + ' permitidos, no puedes activar mas.'},
+                                            status=status.HTTP_401_UNAUTHORIZED)
+                        callcenter.estatus = True
+                    callcenter.save()
+                else:
+                    return Response({'Error': 'No puedes realizar cambios a éste usuario'}, status=status.HTTP_403_FORBIDDEN)
+            elif self.request.user.is_admin_ciudad:
+                if is_callcenter_owner(self.request.user, callcenter):
+                    if callcenter.estatus:
+                        callcenter.estatus = False
+                    else:
+                        num_usuarios_callcenter = Callcenter.objects.filter(sitio=callcenter.sitio, estatus=True).count()
                         if num_usuarios_callcenter >= config_sitio.max_callcenter:
                             return Response({'Error': 'Estan registrados ' + str(
                                                        num_usuarios_callcenter) + ' usuarios activos de ' +
