@@ -116,14 +116,14 @@
             });
             */
 
-            marker.addListener('dragend', function () {
-                lat = this.position.lat();
-                lgn = this.position.lng();
-                $('#lat').val(lat);
-                $('#lgn').val(lgn);
-                console.log('latlng marker', lat, lgn)
-            });
-            marker.setVisible(true);
+            // marker.addListener('dragend', function () {
+            //     lat = this.position.lat();
+            //     lgn = this.position.lng();
+            //     $('#lat').val(lat);
+            //     $('#lgn').val(lgn);
+            //     console.log('latlng marker', lat, lgn)
+            // });
+            // marker.setVisible(true);
 
         }
 </script>
@@ -166,7 +166,7 @@
 				            <div class="card-action">
 				              <div class="row">
                                 <div class="col s4">
-				                    <a href="#" class="right black-text"><b>Asignar</b></a>
+				                    <a class="right black-text"><b>Asignar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -177,7 +177,8 @@
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a href="#" class="right black-text"><b>Cancelar</b></a>
+									<a onclick="cancelarServicio(`+ i.pk + `)"
+									 class="right black-text"><b>Cancelar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -298,7 +299,7 @@
 				            <div class="card-action">
 				              <div class="row">
                                 <div class="col s4">
-				                    <a href="#" class="right black-text"><b>Finalizar</b></a>
+				                    <a class="right black-text"><b>Finalizar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -322,15 +323,32 @@
 		$(".button-collapse").sideNav();
 	});
 
-	function reenviarSolicitud( id, idx) {
+	function cancelarServicio(id) {
+		$.ajax({
+			url: "/ws/cambiarEstatusServicio/",
+			type: "POST",
+			cache: false,
+			data: {
+				servicio : id,
+				estatus : 7
+			},
+			success: function (json) {
+				console.log('cambio con exito', json)
+				$('#notificados'+ id ).empty();
+			},
+			error: function (xhr, errmsg, err) {
+                    alert(errmsg, err);
+                }
+        })
+	}
 
+	function reenviarSolicitud( id, idx) {
 	    // pop idx
 	    $.ajax({
 			url: "/ws/" + id,
 			type: "GET",
 			cache: false,
 			success: function (json) {
-
 			}
         })
     }
