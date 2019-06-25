@@ -13,9 +13,8 @@ urlpatterns = [
     path('sitio/editar/<int:pk>', SitioActualizar.as_view(), name='edit_sitio'),
     path('sitio/listar/delete/<int:pk>', views.sitio_eliminar, name='delete_sitio'),
 
-    # path('admin_sitio/nuevo/', AdministradorSitioCrear.as_view(), name='nuevo_admin_sitio'),
-    # path('admin_sitio/listar/', views.admin_sitio_listar, name='list_admin_sitio'),
-    # path('tabla_admin_sitio/', AdministradorSitioListarAjaxListView.as_view(), name='tab_list_admin_sitio'),
-    # path('admin_sitio/editar/<int:pk>', AdministradorSitioActualizar.as_view(), name='edit_admin_sitio'),
-    # path('admin_sitio/listar/delete/<int:pk>', views.admin_sitio_eliminar, name='delete_admin_sitio'),
+    path('admin_sitio/nuevo/<int:sitio>', AdministradorSitioCrear.as_view(), name='nuevo_admin_sitio'),
+    path('admin_sitio/listar/<int:sitio>', views.admin_sitio_listar, name='list_admin_sitio'),
+    path('tabla_admin_sitio/<int:sitio>', AdministradorSitioListarAjaxListView.as_view(), name='tab_list_admin_sitio'),
+    path('admin_sitio/editar/<int:pk>/<int:sitio>', AdministradorSitioActualizar.as_view(), name='edit_admin_sitio')
 ]
