@@ -42,6 +42,20 @@ class AdministradorSitioPermission(permissions.BasePermission):
             return request.user.rol.pk == 9 or request.user.rol.pk == 1 or request.user.rol.pk == 10
         return False
 
+class AdministradorCiudadPermission(permissions.BasePermission):
+    """
+    Permisos del administrador
+    Rol:
+    superuser: 1
+    administrador: 9
+    administrador de ciudad 5
+    """
+
+    def has_permission(self, request, view):
+        if request.user is not None:
+            return request.user.rol.pk == 9 or request.user.rol.pk == 1 or request.user.rol.pk == 5
+        return False
+
 class IsOwnerPermission(permissions.BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.
