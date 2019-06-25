@@ -91,6 +91,29 @@ class ListServicios(ListAPIView):
             queryset = Servicio.objects.filter(estatus=estatus_servicio).order_by('hora_registro')
         return queryset
 
+class CambiarEstatusAdminCiudad(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, AdministradorSitioPermission)
+
+    def post(self, request):
+        serializer = EstatusSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            admin_ciudad = AdministradorCiudad.objects.get(pk=serializer.validated_data.get('pk'))
+            if admin_ciudad.estatus:
+                admin_ciudad.estatus = False
+            else:
+                admin_ciudad.estatus = True
+            admin_ciudad.save()
+        except:
+            return Response({'Error': 'Objeto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return EstatusSerializer()
+
 class CambiarEstatusCallcenter(APIView):
     authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, AdministradorSitioPermission)
