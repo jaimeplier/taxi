@@ -93,7 +93,7 @@ class ListServicios(ListAPIView):
 
 class CambiarEstatusAdminCiudad(APIView):
     authentication_classes = (TokenAuthentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated, AdministradorSitioPermission)
+    permission_classes = (IsAuthenticated, AdministradorPermission)
 
     def post(self, request):
         serializer = EstatusSerializer(data=request.data)
