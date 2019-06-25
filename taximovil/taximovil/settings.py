@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'webapp.apps.WebappConfig',
     'callcenter.apps.CallcenterConfig',
     'admin_ciudad.apps.AdminCiudadConfig',
-    'admin_sitio.apps.AdminSitioConfig'
+    'admin_sitio.apps.AdminSitioConfig',
+    'admin_softic.apps.AdminSofticConfig'
 ]
 
 MIDDLEWARE = [

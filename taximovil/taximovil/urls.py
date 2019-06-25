@@ -25,6 +25,7 @@ urlpatterns = [
     path('callcenter/', include('callcenter.urls')),
     path('admin_sitio/', include('admin_sitio.urls')),
     path('admin_ciudad/', include('admin_ciudad.urls')),
+    path('admin_softic/', include('admin_softic.urls')),
     path('webapp/', include('webapp.urls')),
     path('ws/', include('webservices.urls')),
 ]
