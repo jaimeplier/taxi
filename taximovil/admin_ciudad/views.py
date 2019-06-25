@@ -7,7 +7,9 @@ from django.views.generic import CreateView, UpdateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from admin_ciudad.forms import SitioForm, AdministradorSitioForm
-from config.models import AdministradorSitio, Sitio, Rol, AdministradorCiudad, ConfigUsuariosSitio
+from admin_sitio.forms import CallcenterForm
+from config.models import AdministradorSitio, Sitio, Rol, AdministradorCiudad, ConfigUsuariosSitio, Callcenter
+
 
 def sitio_owner(request, sitio_pk):
     try:
@@ -50,8 +52,8 @@ def sitio_listar(request):
 class SitioListarAjaxListView(BaseDatatableView):
     redirect_field_name = 'next'
     model = Sitio
-    columns = ['nombre', 'num_espacio', 'pv', 'admin_sitio', 'editar', 'eliminar']
-    order_columns = ['nombre', 'num_espacio', 'pv', '', '', '']
+    columns = ['nombre', 'num_espacio', 'pv', 'admin_sitio', 'personal_callcenter', 'editar', 'eliminar']
+    order_columns = ['nombre', 'num_espacio', 'pv', '', '', '', '']
     max_display_length = 100
 
     def render_column(self, row, column):
@@ -67,6 +69,10 @@ class SitioListarAjaxListView(BaseDatatableView):
             return '<a class="" href ="' + reverse('admin_ciudad:list_admin_sitio',
                                                    kwargs={
                                                        'sitio': row.pk}) + '"><i class="material-icons">people</i></a>'
+        elif column == 'personal_callcenter':
+            return '<a class="" href ="' + reverse('admin_ciudad:list_callcenter',
+                                                   kwargs={
+                                                       'sitio': row.pk}) + '"><i class="material-icons">contact_phone</i></a>'
 
         return super(SitioListarAjaxListView, self).render_column(row, column)
 
@@ -214,3 +220,116 @@ class AdministradorSitioActualizar(PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('admin_ciudad:list_admin_sitio', kwargs={'sitio': self.kwargs['sitio']})
+
+
+class CallcenterCrear(PermissionRequiredMixin, CreateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'admin_ciudad'
+    model = Callcenter
+    form_class = CallcenterForm
+    template_name = 'config/form_1col.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CallcenterCrear, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Registro de callcenter'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Completa todos los campos para registrar un personal de callcenter'
+        return context
+
+    def form_valid(self, form):
+        sitio = self.kwargs['sitio']
+        if sitio_owner(self.request, sitio):
+            config_sitio = ConfigUsuariosSitio.objects.get(sitio__pk = sitio)
+            num_usuarios_callcenter = Callcenter.objects.filter(sitio__pk=sitio, estatus=True).count()
+            if num_usuarios_callcenter >= config_sitio.max_callcenter:
+                return render(self.request, template_name=self.template_name,
+                              context={'form': form,
+                                       'error': 'Tienes registrados '+ str(num_usuarios_callcenter) + ' usuarios activos de '+
+                                                str(config_sitio.max_callcenter)+ ' permitidos, no puedes registrar mas.'})
+
+            user = form.save(commit=False)
+            user.set_password(user.password)
+            user.rol = Rol(pk=10)
+            user.sitio = config_sitio.sitio
+            user.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return HttpResponseForbidden()
+
+    def get_success_url(self):
+        return reverse('admin_ciudad:list_callcenter', kwargs={'sitio', self.kwargs['sitio']})
+
+@permission_required(perm='admin_ciudad', login_url='/webapp/')
+def callcenter_listar(request, sitio):
+    if sitio_owner(request, sitio):
+        template_name = 'admin_ciudad/tab_callcenter.html'
+        sitio = Sitio.objects.get(pk=sitio)
+        context = {'sitio': sitio}
+        return render(request, template_name, context)
+    else:
+        return HttpResponseForbidden()
+
+
+class CallcenterListarAjaxListView(PermissionRequiredMixin, BaseDatatableView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'admin_ciudad'
+    model = Callcenter
+    columns = ['nombre', 'email', 'telefono', 'editar', 'estatus']
+    order_columns = ['nombre', 'email', 'telefono', '', 'estatus']
+    max_display_length = 100
+
+    def render_column(self, row, column):
+
+        if column == 'editar':
+            return '<a class="" href ="' + reverse('admin_ciudad:edit_callcenter',
+                                                   kwargs={
+                                                       'pk': row.pk, 'sitio': self.kwargs['sitio']}) + '"><i class="material-icons">edit</i></a>'
+        elif column == 'nombre':
+            return row.get_full_name()
+        elif column == 'eliminar':
+            return '<a class=" modal-trigger" href ="#" onclick="actualiza(' + str(
+                row.pk) + ')"><i class="material-icons">delete_forever</i></a>'
+        elif column == 'estatus':
+            if row.estatus:
+                return '<div class="switch"><label>Off<input type="checkbox" checked onchange=cambiar_estatus(' + str(
+                    row.pk) + ')><span class="lever"></span>On</label></div>'
+            else:
+                return '<div class="switch"><label>Off<input type="checkbox" onchange=cambiar_estatus(' + str(
+                    row.pk) + ')><span class="lever"></span>On</label></div>'
+
+        return super(CallcenterListarAjaxListView, self).render_column(row, column)
+
+    def get_initial_queryset(self):
+        return Callcenter.objects.filter(sitio__pk=self.kwargs['sitio'])
+
+
+class CallcenterActualizar(PermissionRequiredMixin, UpdateView):
+    redirect_field_name = 'next'
+    login_url = '/webapp/'
+    permission_required = 'admin_ciudad'
+    model = Callcenter
+    template_name = 'config/form_1col.html'
+    form_class = CallcenterForm
+
+    def get_context_data(self, **kwargs):
+        context = super(CallcenterActualizar, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'titulo' not in context:
+            context['titulo'] = 'Modificación de callcenter'
+        if 'instrucciones' not in context:
+            context['instrucciones'] = 'Modifica los campos que requieras'
+        return context
+
+    def form_valid(self, form):
+        form.instance.set_password(form.cleaned_data['password'])
+        form.save()
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('admin_ciudad:list_callcenter', kwargs={'sitio':self.kwargs['sitio']})

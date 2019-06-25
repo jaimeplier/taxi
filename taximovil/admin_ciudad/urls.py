@@ -1,6 +1,8 @@
 from django.urls import path
 
-from admin_ciudad.views import SitioCrear, SitioListarAjaxListView, SitioActualizar, AdministradorSitioCrear, AdministradorSitioListarAjaxListView, AdministradorSitioActualizar
+from admin_ciudad.views import SitioCrear, SitioListarAjaxListView, SitioActualizar, AdministradorSitioCrear, \
+    AdministradorSitioListarAjaxListView, AdministradorSitioActualizar, CallcenterCrear, CallcenterListarAjaxListView, \
+    CallcenterActualizar
 from admin_ciudad import views
 
 app_name = 'admin_ciudad'
@@ -16,5 +18,10 @@ urlpatterns = [
     path('admin_sitio/nuevo/<int:sitio>', AdministradorSitioCrear.as_view(), name='nuevo_admin_sitio'),
     path('admin_sitio/listar/<int:sitio>', views.admin_sitio_listar, name='list_admin_sitio'),
     path('tabla_admin_sitio/<int:sitio>', AdministradorSitioListarAjaxListView.as_view(), name='tab_list_admin_sitio'),
-    path('admin_sitio/editar/<int:pk>/<int:sitio>', AdministradorSitioActualizar.as_view(), name='edit_admin_sitio')
+    path('admin_sitio/editar/<int:pk>/<int:sitio>', AdministradorSitioActualizar.as_view(), name='edit_admin_sitio'),
+
+    path('callcenter/nuevo/<int:sitio>', CallcenterCrear.as_view(), name='nuevo_callcenter'),
+    path('callcenter/listar/<int:sitio>', views.callcenter_listar, name='list_callcenter'),
+    path('tabla_callcenter/<int:sitio>', CallcenterListarAjaxListView.as_view(), name='tab_list_callcenter'),
+    path('callcenter/editar/<int:pk>/<int:sitio>', CallcenterActualizar.as_view(), name='edit_callcenter'),
 ]
