@@ -170,6 +170,13 @@ class SolicitarServicioSerializer(serializers.ModelSerializer):
             'distancia', 'tiempo_aproximado_servicio', 'costo', 'tipo_servicio', 'sitio', 'tipo_pago', 'tarifa',
             'tarjeta')
 
+class SolicitarServicioWebSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servicio
+        fields = (
+            'hora_servicio', 'origen', 'destino', 'direccion_origen', 'direccion_destino', 'ref_lugar', 'ref_persona',
+            'distancia', 'tiempo_aproximado_servicio', 'costo', 'tipo_servicio', 'sitio', 'tipo_pago', 'tarifa',
+            'tarjeta', 'cliente')
 
 class ServicioPkSerializer(serializers.Serializer):
     servicio = serializers.IntegerField()

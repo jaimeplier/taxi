@@ -20,7 +20,8 @@ from config.serializers import CiudadSerializer, TarifaSerializer, ServicioSeria
 from taximovil import settings
 from webservices.permissions import ChoferPermission, IsOwnerPermission
 from webservices.serializers import CoordenadasSerializer, CotizarSerializer, SolicitarServicioSerializer, \
-    ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer, CalificacionSerializer, ClienteTelSerializer
+    ServicioPkSerializer, ChoferCoordenadasSerializer, RutaSerializer, CalificacionSerializer, ClienteTelSerializer, \
+    SolicitarServicioWebSerializer
 from webservices.tasks import cobra_servicio
 
 
@@ -204,6 +205,26 @@ class SolicitarServicio(CreateAPIView):
     def get_serializer(self):
         return SolicitarServicioSerializer()
 
+class SolicitarServicioWeb(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        e = EstatusServicio(pk=1)
+        serializer = SolicitarServicioWebSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        c = Cliente.objects.get(pk=serializer.validated_data.get('cliente'))
+        if serializer.validated_data.get('tipo_pago').pk == 1:
+            if serializer.validated_data.get('tarjeta') is None:
+                return Response({"error": "La forma de pago necesito una tarjeta"}, status=status.HTTP_201_CREATED)
+        serializer.save(cliente=c, estatus=e)
+        b = BitacoraEstatusServicio(estatus=e, servicio=serializer.instance)
+        b.save()
+        ser = ServicioSerializer(serializer.instance, many=False)
+        return Response(ser.data, status=status.HTTP_201_CREATED)
+
+    def get_serializer(self):
+        return SolicitarServicioWebSerializer()
 
 class BuscarChofer(APIView):
     authentication_classes = (TokenAuthentication, SessionAuthentication)
