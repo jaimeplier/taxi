@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 
 from admin_ciudad.utils import is_callcenter_owner
 from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Servicio, Callcenter, AdministradorSitio, \
-    ConfigUsuariosSitio, AdministradorCiudad
-from config.serializers import ServicioSerializer, CiudadSerializer
+    ConfigUsuariosSitio, AdministradorCiudad, DireccionServicio, Cliente
+from config.serializers import ServicioSerializer, CiudadSerializer, DireccionClienteSerializer, DireccionSerializer
 from webservices.Pagination import SmallPagesPagination
 from webservices.permissions import AdministradorPermission, AdministradorSitioPermission, AdministradorCiudadPermission
 from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer
@@ -113,6 +113,28 @@ class CambiarEstatusAdminCiudad(APIView):
 
     def get_serializer(self):
         return EstatusSerializer()
+
+class AgregarDireccionCliente(APIView):
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    #permission_classes = (IsAuthenticated, AdministradorPermission)
+
+    def post(self, request):
+        serializer = DireccionClienteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            cliente = Cliente.objects.get(pk=serializer.validated_data.get('cliente'))
+            direccion = DireccionServicio(cliente=cliente, nombre=serializer.validated_data.get('nombre'),
+                                  direccion=serializer.validated_data.get('direccion'))
+            direccion.set_point(serializer.validated_data.get('latitud'),
+                        serializer.validated_data.get('longitud'))
+            direccion.save()
+        except:
+            return Response({'Error': 'Objeto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return DireccionClienteSerializer()
 
 class CambiarEstatusCallcenter(APIView):
     authentication_classes = (TokenAuthentication, SessionAuthentication)

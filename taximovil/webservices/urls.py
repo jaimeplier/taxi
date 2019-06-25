@@ -12,7 +12,7 @@ from webservices.servicios import BuscarCiudad, Cotizar, SolicitarServicio, Taxi
 from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, ChangePassword, ResetPassword, \
     LoginChofer, LogoutCliente, LogoutChofer, VerChofer, InicioApp, CambiarNombre
 from webservices.web import ListCiudad, ListVehiculoActivo, CambiarEstatusChofer, ListServicios, \
-    CambiarEstatusCallcenter, CambiarEstatusAdminSitio, CambiarEstatusAdminCiudad
+    CambiarEstatusCallcenter, CambiarEstatusAdminSitio, CambiarEstatusAdminCiudad, AgregarDireccionCliente
 
 app_name = 'webservices'
 
@@ -66,6 +66,7 @@ urlpatterns = [
     path('list_ciudades/', ListCiudad.as_view(), name='list_ciudades'),
     path('list_vehiculos_activos/', ListVehiculoActivo.as_view(), name='list_vehiculos_activos'),
     path('list_servicios/', ListServicios.as_view(), name='list_servicios'),
+    path('add_direccion_cliente/', AgregarDireccionCliente.as_view(), name='add_direccion_cliente'),
     # Administrador softic
     path('cambiar_estatus_admin_ciudad/', CambiarEstatusAdminCiudad.as_view(), name='cambiar_estatus_admin_ciudad'),
     # Administrador de sitio
