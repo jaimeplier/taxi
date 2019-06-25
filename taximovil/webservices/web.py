@@ -115,8 +115,8 @@ class CambiarEstatusAdminCiudad(APIView):
         return EstatusSerializer()
 
 class AgregarDireccionCliente(APIView):
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
-    #permission_classes = (IsAuthenticated, AdministradorPermission)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, AdministradorPermission)
 
     def post(self, request):
         serializer = DireccionClienteSerializer(data=request.data)
