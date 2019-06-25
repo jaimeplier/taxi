@@ -4,6 +4,7 @@ from django.contrib.gis.geos import Point
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -40,6 +41,7 @@ class CambiarEstatusServicio(APIView):
     post:
         Cambiar estatus del servicio
     """
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
