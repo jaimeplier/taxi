@@ -11,7 +11,8 @@ from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Se
     ConfigUsuariosSitio, AdministradorCiudad, DireccionServicio, Cliente, BitacoraEstatusServicio, Usuario
 from config.serializers import ServicioSerializer, CiudadSerializer, DireccionClienteSerializer, DireccionSerializer
 from webservices.Pagination import SmallPagesPagination
-from webservices.permissions import AdministradorPermission, AdministradorSitioPermission, AdministradorCiudadPermission
+from webservices.permissions import AdministradorPermission, AdministradorSitioPermission, \
+    AdministradorCiudadPermission, CallcenterPermission
 from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer, \
     AsignarChoferSerializer
 
@@ -59,8 +60,8 @@ class CambiarEstatusChofer(APIView):
         return EstatusSerializer()
 
 class AsignarChofer(APIView):
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated, AdministradorPermission)
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = (IsAuthenticated, CallcenterPermission)
 
     def post(self, request):
         serializer = AsignarChoferSerializer(data=request.data)
