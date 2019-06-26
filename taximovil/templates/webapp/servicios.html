@@ -23,9 +23,9 @@
   		<div class="row">
   			<div class="col s1"></div>
   			<div class="col s10 center">
-  				<div class="row">
+  				<div class="row" >
   					<!-- servicios notificados -->
-  					<div class="col s4">
+  					<div class="col s4" >
   						<div class="box_naranja">
   							<label class="center titulo_servicio">SOLICITADO / NOTIFICADO</label>
 							</div>
@@ -162,6 +162,9 @@
                                  <label class="texto"><b>Hora servicio:</b></label>
                                 <label class="texto">`+
                                  i.hora_servicio +`</label><br>
+                                <label class="texto"><b>Id:</b></label>
+                                <label class="texto">`+
+                                 i.pk +`</label>
 				            </div>
 				            <div class="card-action">
 				              <div class="row">
@@ -203,8 +206,6 @@
                        <div id="completado` + i.pk + `">
                         <div class="card servicio_container darken-1 no_top no_bottom">
 				            <div class="card-content white-text left-align">
-											<label class="texto"><b>Ford Ikon 2016</b></label>
-				                            <br>
                                             <label class="texto"><b>Cliente:</b></label>
 											<label class="texto">`+ i.cliente.nombre + ' ' + i.cliente.a_paterno + `</label>
                                             <br>
@@ -240,14 +241,15 @@
                                 </div>
                                 <div class="col s4">
 				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
-                                    + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] 
-									+ `,` + i.chofer.coordinates[1] + `,` + i.chofer.coordinates[0] `)"
+                                    + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1]
+									+ `,` + i.chofer.latlgn.coordinates[1] + `,` + i.chofer.latlgn.coordinates[0] + `)"
 									><b>Ver mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a href="#" class="right black-text"><b>Concluir</b></a>
+				                    <a onclick="concluirServicio(`+ i.pk + `)"
+				                    href="#" class="right black-text"><b>Concluir</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -259,6 +261,8 @@
                 }
             }
 		});
+
+		// + `,` + i.chofer.latlgn.coordinates[1] + `,` + i.chofer.latlgn.coordinates[0]
 
 		$.ajax({
 			url: "/ws/list_servicios/?tipo_servicio=2",
@@ -306,7 +310,7 @@
                                 <div class="col s4">
 				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
                                     + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] 
-									+ `,` + i.chofer.coordinates[1] + `,` + i.chofer.coordinates[0] `)"
+									+ `,` + i.chofer.latlgn.coordinates[1] + `,` + i.chofer.latlgn.coordinates[0] + `)"
 									><b>Ver mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
@@ -335,6 +339,25 @@
 			success: function (json) {
 				console.log('cambio con exito', json)
 				$('#notificados'+ id ).empty();
+			},
+			error: function (xhr, errmsg, err) {
+                    alert(errmsg, err);
+                }
+        })
+	}
+
+	function concluirServicio(id) {
+		$.ajax({
+			url: "/ws/cambiarEstatusServicio/",
+			type: "POST",
+			cache: false,
+			data: {
+				servicio : id,
+				estatus : 6
+			},
+			success: function (json) {
+				console.log('cambio con exito', json)
+				$('#completado'+ id ).empty();
 			},
 			error: function (xhr, errmsg, err) {
                     alert(errmsg, err);

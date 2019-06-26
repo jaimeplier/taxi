@@ -13,19 +13,55 @@
 		}
 </style> -->
 
+     <div id="modal2" class="modal">
+        <div class="modal-content">
+            <h4>Añadir dirección</h4>
+                    <div class="row">
+						<div class="col s12 input-field" style="float: right">
+							<input type="text" placeholder="" id="searchDireccion"/>
+                            <label for="searchDireccion">Buscar ubicación</label>
+						</div>
+                    </div>
+            <div id="map2" style="width:100%;height:450px;border:1px solid #DCDCDC;"></div>
+
+            <br>
+            <div class="row">
+                <div class="col s4">
+                    <label for="nueva_direccion">Dirección</label>
+                    <input type="text" id="nueva_direccion"/>
+                </div>
+                <div class="col s4">
+                    <label for="nueva_nombre">Nombre</label>
+                    <input type="text" id="nueva_nombre"/>
+                </div>
+                <div class="col s4">
+                    <label for="nueva_cliente">Cliente</label>
+                    <input type="text" id="nueva_cliente"/>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+            <a class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
+        </div>
+     </div>
+
 	<!-- mapa y servicios -->
 	<div class="row">
 		<div class="col s12">
 			<div class="row">
                 <div class="col s1"></div>
 				<div class="col s7">
-					<div class="row">
+					<!--
+                    <div class="row">
 						<div class="col s2">Ubicación:</div>
 						<div class="col s8">
 							<input type="text" id="searchTextField"/>
 						</div>
 					</div>
-						<div id="map" style="width:100%;height:450px;border:1px solid #DCDCDC;"></div> 
+                    -->
+						<div id="map" style="width:100%;height:550px;border:1px solid #DCDCDC;"></div>
 						<!-- /.panel  -->
 						<!-- <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d15052.917522571319!2d-99.16222135!3d19.4024927!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2smx!4v1521092466422" width="100%" height="600px" frameborder="0" style="border:0" allowfullscreen></iframe> -->
 				</div>
@@ -39,25 +75,36 @@
 					</div>
 					<!-- nombre del cliente -->
 					<div class="row">
-						<div class="col s8">
+						<div class="col s10">
 							<select id="nombres_usuarios" onchange="cargarDirecciones()">
                                 <option value=" ">Usuario</option>
 							</select>
 						</div>
-						<div class="col s4">
-							<a class="waves-effect waves-light btn">Buscar</a>
-						</div>
+                        <a target="_blank" href="{% url 'webapp:nuevo_usuario' %}"><div class="col s1 input-field"><i class="material-icons">add</i></div></a>
+						<div class="col s1 input-field"><i class="material-icons">refresh</i></div>
 					</div>
 					<!--direccion origen, donde se encuentra el usuario -->
 					<div class="row">
-						<div class="col s12 input-field">
+						<div class="col s10 input-field">
                             <select id="direccion_origen" onchange="cargarTiposVehiculos()">
-                                <option value=" ">Ubicación del usuario</option>
+                                <option value=" ">Destino del usuario</option>
 							</select>
 							<!-- <input type="text" id="direccion_origen">
                             <label for="direccion_origen">Ubicación del usuario</label> -->
 						</div>
+
+                        <a class="modal-trigger" href="#modal2" data-target="modal2">
+                            <div class="col s1 input-field " ><i class="material-icons">add</i></div>
+                        </a>
+                        <div class="col s1 input-field"><i class="material-icons">refresh</i></div>
 					</div>
+
+                    <div class="row">
+						<div class="col s12 input-field">
+							<input type="text" placeholder="" id="searchTextField"/>
+                            <label for="searchTextField">Origen</label>
+						</div>
+                    </div>
 					<!-- *****TODO : direccion fuera de registro, destino, a donde va el usuario -->
 					<!-- <div class="row">
 						<div class="col s12 input-field">
@@ -146,6 +193,7 @@
 <script type="text/javascript" src="{% static 'js/crsfajax.js' %}"></script>
 <script type="text/javascript">
 		// Initialize and add the map
+        var map2;
 		var map;
         var list_direcciones;
         var ciudad_id;
@@ -214,6 +262,7 @@
                 infowindow.close();
                 marker.setVisible(false);
                 var place = autocomplete.getPlace();
+                console.log('place',place)
                 if (!place.geometry) {
                     window.alert("Autocomplete's returned place contains no geometry");
                     return;
@@ -228,6 +277,8 @@
                 marker.setPosition(place.geometry.location);
                 marker.setVisible(true);
 
+                destino_text = place.formatted_address;
+
                 lat = place.geometry.location.lat()
                 lgn = place.geometry.location.lng();
 
@@ -241,15 +292,20 @@
 
 <script type="text/javascript">
 	$("document").ready(function(){
+	    $('.modal').modal();
 		$(".dropdown-button").dropdown();
 		$(".button-collapse").sideNav();
     	$('select').material_select();
+
+    	// Empieza mapa de modal
+    	startMap();
 
             $.ajax({
 			url: "/ws/list_vehiculos_activos/",
 			type: "GET", 
 			cache: false,
 			success: function (json) {
+			    console.log('v activos',json)
                 json.map(function(el){
                     locations.push({
                         lat: el.chofer.latlgn.coordinates[1],
@@ -271,6 +327,10 @@
                 });
                 });
 
+            var markerCluster = new MarkerClusterer(map, markers,
+                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+                });
+
                 // var markerCluster = new MarkerClusterer(map, markers,
                 //     {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
             
@@ -287,6 +347,7 @@
                 cache: false,
                 // handle a successful response
                 success: function (json) {
+                    console.log(json, 'a')
                     $("#nombres_usuarios").empty().html(' ');
                     $('#nombres_usuarios').append(
                         $("<option></option>")
@@ -347,6 +408,7 @@
         var direccion_usuario = list_direcciones.find(
             el => el.id == $('#direccion_origen').val());
 
+        console.log('dir usuario', direccion_usuario)
         // new Date().toJSON().slice(0,10).replace(/-/g,'/'),
         var data_cotizar = {
             fecha: new Date().toJSON(),
@@ -372,6 +434,7 @@
                 cache: false,
                 data: data_cotizar,
                 success: function (json) {
+                    console.log('cotizar', json)
                     $('#cotizar').empty();
                     $('#cotizar').append(`
                         <p> <b>Precio: $</b>`+ Math.ceil(json.precio) + `</p>
@@ -417,11 +480,13 @@
 
                     var origen_usuario = list_direcciones.find(
                         el => el.id == $('#direccion_origen').val());
+
                     // new Date().toJSON().slice(0,10).replace(/-/g,'/'),
                     var data_solicitar = {
                         hora_servicio : new Date().toJSON(),
-                        origen: origen_usuario.direccion,
-                        destino: destino_text,
+                        // coordenadas
+                        origen: "POINT("+ origen_usuario.longitud + ' ' + origen_usuario.latitud + ')',
+                        destino: "POINT("+ lgn + ' ' + lat + ')',
                         direccion_origen : origen_usuario.direccion,
                         direccion_destino: destino_text,
                         ref_lugar : $('#referencia_lugar').val() ,
@@ -432,13 +497,16 @@
                         tipo_servicio : 1 ,
                         sitio : json.tarifa.sitio,
                         tipo_pago: 2,	
-                        tarifa 	: json.tarifa.tarifa_base,
+                        tarifa 	: json.tarifa.id,
                         tarjeta : null,
+                        cliente: $('#nombres_usuarios').val()
                         // fecha: "2019-06-20 18:52",
                     }
 
+                    console.log('data', data_solicitar);
+
                     $.ajax({
-                        url: "/ws/solicitar/" ,
+                        url: "/ws/solicitar_servicio_web/" ,
                         type: "POST",
                         cache: false,
                         data: data_solicitar,
@@ -455,10 +523,84 @@
                     alert(errmsg, err);
                 }
         });
-
-      
-
         
+    }
+
+    function startMap() {
+            map2 = new google.maps.Map(document.getElementById('map2'), {
+                center: {lat: lat, lng: lgn},
+                zoom: 14
+            });
+
+            var input2 = /** @type {!HTMLInputElement} */(
+                document.getElementById('searchDireccion'));
+
+            var types = [];
+
+            var autocomplete = new google.maps.places.Autocomplete(input2);
+            autocomplete.setTypes(types);
+            autocomplete.bindTo('bounds', map2);
+
+            var infowindow = new google.maps.InfoWindow();
+            marker = new google.maps.Marker({
+                map: map2,
+                draggable: true,
+                anchorPoint: new google.maps.Point(0, -29),
+                // position: {lat: lat, lng: lgn},
+            });
+
+            marker.addListener('dragend', function () {
+                lat = this.position.lat();
+                lgn = this.position.lng();
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
+                // geocodePosition(marker.getPosition());
+
+                geocoder = new google.maps.Geocoder();
+                geocoder.geocode({
+                        latLng: marker.getPosition()
+                    },
+                        function(results, status)
+                        {
+                            if (status == google.maps.GeocoderStatus.OK)
+                            {
+                                destino_text = results[0].formatted_address
+                            }
+                        }
+                    );
+            });
+
+            marker.setVisible(true);
+
+            autocomplete.addListener('place_changed', function () {
+                infowindow.close();
+                marker.setVisible(false);
+                var place = autocomplete.getPlace();
+                console.log('place',place)
+                if (!place.geometry) {
+                    window.alert("Autocomplete's returned place contains no geometry");
+                    return;
+                }
+                // If the place has a geometry, then present it on a map.
+                if (place.geometry.viewport) {
+                    map2.fitBounds(place.geometry.viewport);
+                } else {
+                    map2.setCenter(place.geometry.location);
+                    map2.setZoom(17);  // Why 17? Because it looks good.
+                }
+                marker.setPosition(place.geometry.location);
+                marker.setVisible(true);
+
+                destino_text = place.formatted_address;
+
+                lat = place.geometry.location.lat()
+                lgn = place.geometry.location.lng();
+
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
+            });
     }
 
 
