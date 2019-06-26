@@ -282,3 +282,33 @@ class ChoferHasVehiculoSerializer(serializers.ModelSerializer):
 
 class EstatusSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
+
+class AsignarChoferSerializer(serializers.Serializer):
+    chofer = serializers.IntegerField()
+    servicio = serializers.IntegerField()
+
+    def validate_chofer(self, value):
+        """
+        Check that servicio exists
+        """
+        try:
+            chofer = Chofer.objects.get(pk=value)
+            if chofer.activo:
+                return value
+            else:
+                raise serializers.ValidationError("El chofer se encuentra inactivo")
+        except:
+            raise serializers.ValidationError("El chofer no existe")
+
+    def validate_servicio(self, value):
+        """
+        Check that servicio exists
+        """
+        try:
+            servicio = Servicio.objects.get(pk=value)
+            if servicio.estatus.pk == 1:
+                return value
+            else:
+                raise serializers.ValidationError("El servicio no puede ser asignado")
+        except:
+            raise serializers.ValidationError("El servicio no existe")

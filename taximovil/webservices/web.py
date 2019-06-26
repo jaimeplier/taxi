@@ -1,3 +1,4 @@
+from fcm_django.models import FCMDevice
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.generics import ListAPIView
@@ -7,11 +8,12 @@ from rest_framework.views import APIView
 
 from admin_ciudad.utils import is_callcenter_owner
 from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Servicio, Callcenter, AdministradorSitio, \
-    ConfigUsuariosSitio, AdministradorCiudad, DireccionServicio, Cliente
+    ConfigUsuariosSitio, AdministradorCiudad, DireccionServicio, Cliente, BitacoraEstatusServicio, Usuario
 from config.serializers import ServicioSerializer, CiudadSerializer, DireccionClienteSerializer, DireccionSerializer
 from webservices.Pagination import SmallPagesPagination
 from webservices.permissions import AdministradorPermission, AdministradorSitioPermission, AdministradorCiudadPermission
-from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer
+from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer, \
+    AsignarChoferSerializer
 
 
 class ListCiudad(ListAPIView):
@@ -55,6 +57,55 @@ class CambiarEstatusChofer(APIView):
 
     def get_serializer(self):
         return EstatusSerializer()
+
+class AsignarChofer(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, AdministradorPermission)
+
+    def post(self, request):
+        serializer = AsignarChoferSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        id_chofer = serializer.validated_data.get('chofer')
+        id_servicio = serializer.validated_data.get('servicio')
+        try:
+            chofer = Chofer.objects.get(pk=id_chofer)
+            servicio = Servicio.objects.get(pk=id_servicio)
+            estatus_servicio = EstatusServicio.objects.get(pk=2)
+            if chofer.estatus and servicio.estatus.pk==1:
+                bs = BitacoraEstatusServicio(servicio=servicio, estatus=estatus_servicio)
+                bs.save()
+                servicio.estatus = estatus_servicio
+                servicio.chofer = chofer
+                cv = ChoferHasVehiculo.objects.filter(chofer=chofer, estatus=True)
+                cv = cv.first()
+                servicio.vehiculo = cv.vehiculo
+                servicio.save()
+                chofer.estatus = False
+                chofer.save()
+                u = Usuario.objects.get(pk=chofer.pk)
+                dispositivos = FCMDevice.objects.filter(user=u)
+                if dispositivos.count() != 0:
+                    data_push = {}
+                    d = dispositivos.first()
+                    serializerServicio = ServicioSerializer(servicio, many=False)
+                    data_push['servicio'] = serializerServicio.data
+                    try:
+                        d.send_message(title='Tienes un nuevo servicio',
+                                       body='Se te asignó el servicio' + str(servicio.pk), data=data_push)
+                    except Exception as e:
+                        pass
+
+            else:
+                return Response({'Error': 'No puede asignar el servicio a éste chofer o el servicio ya fue aceptado'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        except:
+            return Response({'Error': 'Objeto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'result': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return AsignarChoferSerializer()
 
 class ListServicios(ListAPIView):
     """
