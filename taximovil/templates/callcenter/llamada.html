@@ -77,7 +77,7 @@
 					<div class="row">
 						<div class="col s10">
 							<select id="nombres_usuarios" onchange="cargarDirecciones()">
-                                <option value=" ">Usuario</option>
+                                <option value="">Usuario</option>
 							</select>
 						</div>
                         <a target="_blank" href="{% url 'webapp:nuevo_usuario' %}"><div class="col s1 input-field"><i class="material-icons">add</i></div></a>
@@ -87,7 +87,7 @@
 					<div class="row">
 						<div class="col s10 input-field">
                             <select id="direccion_origen" onchange="cargarTiposVehiculos()">
-                                <option value=" ">Destino del usuario</option>
+                                <option value="">Destino del usuario</option>
 							</select>
 							<!-- <input type="text" id="direccion_origen">
                             <label for="direccion_origen">Ubicación del usuario</label> -->
@@ -208,6 +208,7 @@
             var lgn = -99.164379;
         {% endif %}
         var marker;
+        var marker2;
 
         function initMap() {
             if (map !== undefined)
@@ -399,9 +400,49 @@
             });
     }
     
+    function validar(tipo) {
+        var validaciones = [];
+
+         // alert($('#tipo_vehiculo').val())
+        if ($('#numero_telefonico').val() == '') {
+            validaciones.push('Introduce un número telefónico ');
+        }
+        
+        if ($('#nombres_usuarios').val() == '') {
+            validaciones.push('Selecciona un nombre de usuario ');
+        }
+
+        if ($('#direccion_origen').val() == '') {
+            validaciones.push('Agrega una dirección de origen ');
+        }
+
+        if ($('#searchTextField').val() == '') {
+            validaciones.push('Selecciona una ubicación de origen ');
+        }
+
+        if( tipo != 'cotizar') {
+            if ($('#numero_economico').val() == '') {
+                validaciones.push('Introduce un número económico ');
+            }
+        }
+
+        if ($('#tipo_vehiculo').val() == null) {
+            validaciones.push('Elige un tipo de vehículo ');
+        }
+
+        alert(validaciones);
+
+        if (validaciones.length >= 1) {
+            return 1
+        } 
+
+        return 0
+    }
+
+
     function cotizar() {
-        if (!list_direcciones) {
-            alert("Agrega una dirección de origen")
+        var validez = validar('cotizar');
+        if (validez != 1) {
             return
         }
 
@@ -450,9 +491,7 @@
 
     
     function solicitarServicio() {
-        if (!list_direcciones) {
-            alert("Agrega una dirección de origen")
-        }
+        validar('solicitar');
 
         var direccion_usuario = list_direcciones.find(
             el => el.id == $('#direccion_origen').val());
@@ -535,21 +574,21 @@
             var input2 = /** @type {!HTMLInputElement} */(
                 document.getElementById('searchDireccion'));
 
-            var types = [];
+            var types2 = [];
 
-            var autocomplete = new google.maps.places.Autocomplete(input2);
-            autocomplete.setTypes(types);
-            autocomplete.bindTo('bounds', map2);
+            var autocomplete2 = new google.maps.places.Autocomplete(input2);
+            autocomplete2.setTypes(types2);
+            autocomplete2.bindTo('bounds', map2);
 
             var infowindow = new google.maps.InfoWindow();
-            marker = new google.maps.Marker({
+            marker2 = new google.maps.Marker({
                 map: map2,
                 draggable: true,
                 anchorPoint: new google.maps.Point(0, -29),
                 // position: {lat: lat, lng: lgn},
             });
 
-            marker.addListener('dragend', function () {
+            marker2.addListener('dragend', function () {
                 lat = this.position.lat();
                 lgn = this.position.lng();
                 $('#lat').val(lat);
@@ -559,7 +598,7 @@
 
                 geocoder = new google.maps.Geocoder();
                 geocoder.geocode({
-                        latLng: marker.getPosition()
+                        latLng: marker2.getPosition()
                     },
                         function(results, status)
                         {
@@ -571,12 +610,12 @@
                     );
             });
 
-            marker.setVisible(true);
+            marker2.setVisible(true);
 
-            autocomplete.addListener('place_changed', function () {
+            autocomplete2.addListener('place_changed', function () {
                 infowindow.close();
-                marker.setVisible(false);
-                var place = autocomplete.getPlace();
+                marker2.setVisible(false);
+                var place = autocomplete2.getPlace();
                 console.log('place',place)
                 if (!place.geometry) {
                     window.alert("Autocomplete's returned place contains no geometry");
@@ -589,8 +628,8 @@
                     map2.setCenter(place.geometry.location);
                     map2.setZoom(17);  // Why 17? Because it looks good.
                 }
-                marker.setPosition(place.geometry.location);
-                marker.setVisible(true);
+                marker2.setPosition(place.geometry.location);
+                marker2.setVisible(true);
 
                 destino_text = place.formatted_address;
 

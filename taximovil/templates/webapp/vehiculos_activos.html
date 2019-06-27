@@ -14,7 +14,7 @@
 		</div>
 		<div class="col s1"></div>
 		<div class="col s4 input-field">
-			<input type="text" id="buscar">
+			<input type="text" id="buscar" onkeyup="filtrarEconomico(event)">
 			<label for="buscar">Buscar</label>
 		</div>
 		<div class="col s2"></div>
@@ -30,7 +30,10 @@
 					-->
 				</div>
 				<div class="col s3 center">
-					<div class="box_negro"><label class="center titulo_servicio" style="padding-left: 25px;">LISTADO DE CONDUCTORES</label></div>
+                    <div class="box_negro"><label class="center titulo_servicio" 
+                        style="padding-left: 25px;">
+                        LISTADO DE CONDUCTORES
+                    </label></div>
                     <div id="list_conductores">
                     </div>
 				</div>
@@ -170,7 +173,8 @@
 				$("#list_conductores").empty().html(' ');
                 for (i of json) {
                     $('#list_conductores').append(`
-                        <div class="card servicio_container darken-1 no_top no_bottom" style="cursor: pointer;"
+                        <div class="card servicio_container darken-1 no_top no_bottom" id="`+ i.chofer.id + `"
+                        style="cursor: pointer;"
                             onclick="setChofer(` + i.chofer.latlgn.coordinates[0] + `,` + i.chofer.latlgn.coordinates[1] + `)">
 				            <div class="card-content white-text left-align">
 				              <label class="texto"><b>` + i.vehiculo.modelo.marca.nombre +
@@ -200,6 +204,17 @@
             }
 		});
 	});
+
+    function filtrarEconomico(e) {
+        var busqueda = $('#buscar').val();
+        list_conductores.map(function(x) {
+            if (x.vehiculo.economico.includes(busqueda) && Number(busqueda) !== NaN) {
+                $('#' +x.chofer.id).show()
+            } else {
+                $('#' +x.chofer.id).hide()
+            }
+        });
+    }
 
 	function setCenter() {
 	    var ciudad = $('#list_ciudades').val()
