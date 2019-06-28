@@ -7,11 +7,12 @@ class ChoferPermission(permissions.BasePermission):
     Rol:
     superuser: 1
     chofer: 3
+    callcenter: 12
     """
 
     def has_permission(self, request, view):
         if request.user is not None:
-            return request.user.rol.pk == 3 or request.user.rol.pk == 1
+            return request.user.rol.pk == 3 or request.user.rol.pk == 1 or request.user.rol.pk == 12
         return False
 
 class CallcenterPermission(permissions.BasePermission):
