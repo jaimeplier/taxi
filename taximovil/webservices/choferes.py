@@ -22,7 +22,6 @@ class ChoferEstatus(APIView):
     post:
         Cambiar estatus del chofer
     """
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated, ChoferPermission)
 
     def post(self, request):
