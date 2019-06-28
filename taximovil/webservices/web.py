@@ -312,8 +312,8 @@ class ChoferActivoEstatus(APIView):
     post:
         Cambiar estatus del chofer
     """
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = (IsAuthenticated, ChoferPermission)
+    #authentication_classes = (SessionAuthentication, TokenAuthentication)
+    #permission_classes = (IsAuthenticated, ChoferPermission)
 
     def post(self, request):
         serializer = ChoferEstatusActivoSerializer(data=request.data)

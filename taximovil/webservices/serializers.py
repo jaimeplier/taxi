@@ -324,7 +324,7 @@ class ChoferEstatusActivoSerializer(serializers.Serializer):
         """
         try:
             chofer = Chofer.objects.get(pk=value)
-            servicios = Servicio.objects.filter(chofer=chofer, chofer__activo=True)
+            servicios = Servicio.objects.filter(chofer=chofer, chofer__activo=True, estatus__in=[2,3,4,5])
             if len(servicios)>1:
                 raise serializers.ValidationError("Finaliza primero los servicios de este chofer")
             else:
