@@ -312,3 +312,22 @@ class AsignarChoferSerializer(serializers.Serializer):
                 raise serializers.ValidationError("El servicio no puede ser asignado")
         except:
             raise serializers.ValidationError("El servicio no existe")
+
+
+class ChoferEstatusActivoSerializer(serializers.Serializer):
+    chofer = serializers.IntegerField()
+    activo = serializers.BooleanField()
+
+    def validate_chofer(self, value):
+        """
+        Check that servicio exists
+        """
+        try:
+            chofer = Chofer.objects.get(pk=value)
+            servicios = Servicio.objects.filter(chofer=chofer, chofer__activo=True)
+            if len(servicios)>1:
+                raise serializers.ValidationError("Finaliza primero los servicios de este chofer")
+            else:
+                return value
+        except:
+            raise serializers.ValidationError("El chofer no existe")

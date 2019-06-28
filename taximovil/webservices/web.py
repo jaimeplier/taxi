@@ -12,9 +12,9 @@ from config.models import Ciudad, ChoferHasVehiculo, Chofer, EstatusServicio, Se
 from config.serializers import ServicioSerializer, CiudadSerializer, DireccionClienteSerializer, DireccionSerializer
 from webservices.Pagination import SmallPagesPagination
 from webservices.permissions import AdministradorPermission, AdministradorSitioPermission, \
-    AdministradorCiudadPermission, CallcenterPermission
+    AdministradorCiudadPermission, CallcenterPermission, ChoferPermission
 from webservices.serializers import CatalogoSerializer, ChoferHasVehiculoSerializer, EstatusSerializer, \
-    AsignarChoferSerializer
+    AsignarChoferSerializer, ChoferEstatusActivoSerializer
 
 
 class ListCiudad(ListAPIView):
@@ -306,3 +306,22 @@ class CambiarEstatusAdminSitio(APIView):
 
     def get_serializer(self):
         return EstatusSerializer()
+
+class ChoferActivoEstatus(APIView):
+    """
+    post:
+        Cambiar estatus del chofer
+    """
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = (IsAuthenticated, ChoferPermission)
+
+    def post(self, request):
+        serializer = ChoferEstatusActivoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        c = Chofer.objects.get(pk=serializer.validated_data.get('chofer'))
+        c.activo = serializer.validated_data.get('activo')
+        c.save()
+        return Response({'resultado': 1}, status=status.HTTP_200_OK)
+
+    def get_serializer(self):
+        return ChoferEstatusActivoSerializer()

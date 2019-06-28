@@ -13,7 +13,7 @@ from webservices.views import EnviarCodigo, VerificaCodigo, LoginUsuario, Change
     LoginChofer, LogoutCliente, LogoutChofer, VerChofer, InicioApp, CambiarNombre
 from webservices.web import ListCiudad, ListVehiculoActivo, CambiarEstatusChofer, ListServicios, \
     CambiarEstatusCallcenter, CambiarEstatusAdminSitio, CambiarEstatusAdminCiudad, AgregarDireccionCliente, \
-    AsignarChofer
+    AsignarChofer, ChoferActivoEstatus
 
 app_name = 'webservices'
 
@@ -64,6 +64,7 @@ urlpatterns = [
     path('asignar_vehiculo_toogle/', DesAsignarVehiculo.as_view(), name='asignar_vehiculo_toogle'),
     # Web
     path('cambiar_estatus_chofer/', CambiarEstatusChofer.as_view(), name='cambiar_estatus_chofer'),
+    path('cambiar_estatus_activo_chofer/', ChoferActivoEstatus.as_view(), name='cambiar_estatus_activo_chofer'),
     path('asignar_chofer/', AsignarChofer.as_view(), name='asignar_chofer'),
     path('list_ciudades/', ListCiudad.as_view(), name='list_ciudades'),
     path('list_vehiculos_activos/', ListVehiculoActivo.as_view(), name='list_vehiculos_activos'),
