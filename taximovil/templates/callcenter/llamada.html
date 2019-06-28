@@ -19,6 +19,8 @@
     .pac-container {
         z-index: 10000 !important;
     }
+
+    .modal { width: 75% !important ; height: 75% !important ; }
 </style>
 
      <div id="modal2" class="modal">
@@ -30,7 +32,11 @@
                             <label for="nuevaDireccion">Buscar ubicación</label>
 						</div>
                     </div>
-            <div id="map2" style="width:100%;height:450px;border:1px solid #DCDCDC;"></div>
+
+            <div class="col s2"></div>
+            <div class="col s8">
+                <div id="map2" style="width:100%;height:450px;border:1px solid #DCDCDC;"></div>
+            </div>
 
             <br>
             <div class="row">
@@ -39,19 +45,19 @@
                     <input type="text" id="nueva_direccion"/>
                 </div>
                 <div class="col s4">
-                    <label for="nueva_nombre">Nombre</label>
-                    <input type="text" id="nueva_nombre"/>
+                    <label for="nuevo_nombre">Nombre</label>
+                    <input type="text" id="nuevo_nombre"/>
                 </div>
                 <div class="col s4">
-                    <label for="nueva_cliente">Cliente</label>
-                    <input type="text" id="nueva_cliente"/>
+                    <label for="nuevo_cliente">Cliente</label>
+                    <input disabled="disabled" type="text" id="nuevo_cliente" value="Elige un usuario"/>
                 </div>
             </div>
 
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-            <a class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
+            <a class="modal-close waves-effect waves-green btn-flat" onclick="agregarDireccion()">Aceptar</a>
         </div>
      </div>
 
@@ -78,7 +84,7 @@
 					<!--ingresar numero telefonico -->
 					<div class="row">
 						<div class="col s12 input-field">
-							<input type="text" id="numero_telefonico" onblur="cargarClientesTelefono()">
+                            <input type="text" id="numero_telefonico" >
 							<label for="numero_telefonico">Número Telefónico</label>
 						</div>
 					</div>
@@ -90,7 +96,9 @@
 							</select>
 						</div>
                         <a target="_blank" href="{% url 'webapp:nuevo_usuario' %}"><div class="col s1 input-field"><i class="material-icons">add</i></div></a>
-						<div class="col s1 input-field"><i class="material-icons">refresh</i></div>
+                        <div style="cursor: pointer" onclick="cargarClientesTelefono()" 
+                        class="col s1 input-field">
+                            <i class="material-icons">refresh</i></div>
 					</div>
 					<!--direccion origen, donde se encuentra el usuario -->
 					<div class="row">
@@ -102,10 +110,11 @@
                             <label for="direccion_origen">Ubicación del usuario</label> -->
 						</div>
 
-                        <a class="modal-trigger" href="#modal2" data-target="modal2">
+                        <a class="modal-trigger" href="#modal2" data-target="modal2" onclick="startMap()">
                             <div class="col s1 input-field " ><i class="material-icons">add</i></div>
                         </a>
-                        <div class="col s1 input-field"><i class="material-icons">refresh</i></div>
+                        <div class="col s1 input-field" style="cursor: pointer" onclick="cargarDirecciones()">
+                            <i class="material-icons">refresh</i></div>
 					</div>
 
                     <div class="row">
@@ -202,12 +211,15 @@
 <script type="text/javascript" src="{% static 'js/crsfajax.js' %}"></script>
 <script type="text/javascript">
 		// Initialize and add the map
+
         var map2;
 		var map;
         var list_direcciones;
         var ciudad_id;
         var destino_text;
         var locations = [];
+        var lat2;
+        var lgn2;
 
         {% if  latitud %}
             var lat = {{ latitud }};
@@ -220,23 +232,6 @@
         var marker2;
 
         function initMap() {
-
-              pickupLocation = new google.maps.places.Autocomplete(
-    /** @type {!HTMLInputElement} */
-    (document.getElementById('searchTextField')), {
-      types: ['geocode']
-    });
-
-    dropLocation = new google.maps.places.Autocomplete(
-    /** @type {!HTMLInputElement} */
-    (document.getElementById('nuevaDireccion')), {
-      types: ['geocode']
-    });
-
-
-            // startMap();
-
-
             if (map !== undefined)
                 return;
             map = new google.maps.Map(document.getElementById('map'), {
@@ -244,16 +239,8 @@
                 zoom: 14
             });
 
-            map2 = new google.maps.Map(document.getElementById('map2'), {
-                center: {lat: lat, lng: lgn},
-                zoom: 14
-            });
-
             var input = /** @type {!HTMLInputElement} */(
                 document.getElementById('searchTextField'));
-
-            var input2 = /** @type {!HTMLInputElement} */(
-                document.getElementById('searchDireccion'));
 
             var types = [];
 
@@ -261,19 +248,8 @@
             autocomplete.setTypes(types);
             autocomplete.bindTo('bounds', map);
 
-            var autocomplete2 = new google.maps.places.Autocomplete(input2);
-            autocomplete2.setTypes(types);
-            autocomplete2.bindTo('bounds', map2);
-
             var infowindow = new google.maps.InfoWindow();
             marker = new google.maps.Marker({
-                map: map,
-                draggable: true,
-                anchorPoint: new google.maps.Point(0, -29),
-                // position: {lat: lat, lng: lgn},
-            });
-
-            marker2 = new google.maps.Marker({
                 map: map,
                 draggable: true,
                 anchorPoint: new google.maps.Point(0, -29),
@@ -302,56 +278,6 @@
                     );
             });
 
-            marker2.addListener('dragend', function () {
-                lat = this.position.lat();
-                lgn = this.position.lng();
-                $('#lat').val(lat);
-                $('#lgn').val(lgn);
-
-                // geocodePosition(marker.getPosition());
-
-                geocoder = new google.maps.Geocoder();
-                geocoder.geocode({
-                        latLng: marker2.getPosition()
-                    },
-                        function(results, status)
-                        {
-                            if (status == google.maps.GeocoderStatus.OK)
-                            {
-                                destino_text = results[0].formatted_address
-                            }
-                        }
-                    );
-            });
-
-            autocomplete2.addListener('place_changed', function () {
-                infowindow.close();
-                marker2.setVisible(false);
-                var place = autocomplete2.getPlace();
-                console.log('place',place)
-                if (!place.geometry) {
-                    window.alert("Autocomplete's returned place contains no geometry");
-                    return;
-                }
-                // If the place has a geometry, then present it on a map.
-                if (place.geometry.viewport) {
-                    map2.fitBounds(place.geometry.viewport);
-                } else {
-                    map2.setCenter(place.geometry.location);
-                    map2.setZoom(17);  // Why 17? Because it looks good.
-                }
-                marker2.setPosition(place.geometry.location);
-                marker2.setVisible(true);
-
-                destino_text = place.formatted_address;
-
-                lat = place.geometry.location.lat()
-                lgn = place.geometry.location.lng();
-
-                $('#lat').val(lat);
-                $('#lgn').val(lgn);
-
-            });
             
             marker.setVisible(true);
 
@@ -384,34 +310,34 @@
 
             });
 
-            autocomplete2.addListener('place_changed', function () {
-                infowindow.close();
-                marker2.setVisible(false);
-                var place = autocomplete2.getPlace();
-                console.log('place',place)
-                if (!place.geometry) {
-                    window.alert("Autocomplete's returned place contains no geometry");
-                    return;
-                }
-                // If the place has a geometry, then present it on a map.
-                if (place.geometry.viewport) {
-                    map2.fitBounds(place.geometry.viewport);
-                } else {
-                    map2.setCenter(place.geometry.location);
-                    map2.setZoom(17);  // Why 17? Because it looks good.
-                }
-                marker2.setPosition(place.geometry.location);
-                marker2.setVisible(true);
+            // autocomplete2.addListener('place_changed', function () {
+            //     infowindow.close();
+            //     marker2.setVisible(false);
+            //     var place = autocomplete2.getPlace();
+            //     console.log('place',place)
+            //     if (!place.geometry) {
+            //         window.alert("Autocomplete's returned place contains no geometry");
+            //         return;
+            //     }
+            //     // If the place has a geometry, then present it on a map.
+            //     if (place.geometry.viewport) {
+            //         map2.fitBounds(place.geometry.viewport);
+            //     } else {
+            //         map2.setCenter(place.geometry.location);
+            //         map2.setZoom(17);  // Why 17? Because it looks good.
+            //     }
+            //     marker2.setPosition(place.geometry.location);
+            //     marker2.setVisible(true);
 
-                destino_text = place.formatted_address;
+            //     destino_text = place.formatted_address;
 
-                lat = place.geometry.location.lat()
-                lgn = place.geometry.location.lng();
+            //     lat = place.geometry.location.lat()
+            //     lgn = place.geometry.location.lng();
 
-                $('#lat').val(lat);
-                $('#lgn').val(lgn);
+            //     $('#lat').val(lat);
+            //     $('#lgn').val(lgn);
 
-            });
+            // });
 
         }
 
@@ -460,9 +386,6 @@
                 {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
                 });
 
-                // var markerCluster = new MarkerClusterer(map, markers,
-                //     {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-            
             }
 		});
 	});
@@ -500,8 +423,58 @@
         }
 	}
 
+    function validarNuevaDir() {
+        var validaciones = [];
+
+        if ( $('#nueva_direccion').val() == '') {
+        validaciones.push('Selecciona una ubicación ');
+        }
+
+        if ($('#nuevo_nombre').val() == '') {
+        validaciones.push('Nombra la dirreción elegida ');
+        }
+
+        if ($('#nombres_usuarios').val() == '') {
+        validaciones.push('Selecciona un usuario con su numero telefónico ');
+        }
+
+        if (validaciones.length >= 1) {
+        alert(validaciones);
+        return 1
+        } 
+
+        return 0
+    }
+
+    function agregarDireccion() {
+        var a = validarNuevaDir();
+        if (a) return;
+        var datosNuevaDireccion = {
+            direccion : $('#nueva_direccion').val(),
+            nombre : $('#nuevo_nombre').val(),
+            latitud: lat2,	
+            longitud : lgn2,
+            cliente: $('#nombres_usuarios').val()
+        }
+
+        $.ajax({
+                url: "/ws/add_direccion_cliente/" ,
+                type: "POST",
+                cache: false,
+                data: datosNuevaDireccion,
+                success: function (json) {
+                   alert('Dirección añadida')
+                },
+                error: function (xhr, errmsg, err) {
+                    alert(errmsg, err);
+                }
+        });
+    }
+
 	function cargarDirecciones() {
 		var id_usuario = $('#nombres_usuarios').val();
+        $("#nuevo_cliente").val($( "#nombres_usuarios option:selected" ).text())
+
 		
             $.ajax({
                 url: "/ws/direccion/?cliente=" + id_usuario,
@@ -509,6 +482,7 @@
                 cache: false,
                 // handle a successful response
                 success: function (json) {
+                    console.log('direcciones', json)
                     list_direcciones = json;
                     $("#direccion_origen").empty().html(' ');
                     $('#direccion_origen').append(
@@ -700,7 +674,7 @@
             });
 
             var input2 = /** @type {!HTMLInputElement} */(
-                document.getElementById('searchDireccion'));
+                document.getElementById('nuevaDireccion'));
 
             var types2 = [];
 
@@ -715,16 +689,11 @@
                 anchorPoint: new google.maps.Point(0, -29),
                 // position: {lat: lat, lng: lgn},
             });
-            console.log('sigo aca')
 
             marker2.addListener('dragend', function () {
-                lat = this.position.lat();
-                lgn = this.position.lng();
-                $('#lat').val(lat);
-                $('#lgn').val(lgn);
-
-                // geocodePosition(marker.getPosition());
-
+                lat2 = this.position.lat();
+                lgn2 = this.position.lng();
+                
                 geocoder = new google.maps.Geocoder();
                 geocoder.geocode({
                         latLng: marker2.getPosition()
@@ -734,7 +703,9 @@
                             console.log('results geocoder', results, status);
                             if (status == google.maps.GeocoderStatus.OK)
                             {
-                                destino_text = results[0].formatted_address
+                                $("#nueva_direccion").val(results[0].formatted_address)
+                                lat2 = results[0].geometry.location.lat()
+                                lgn2 = results[0].geometry.location.lng();
                             }
                         }
                     );
@@ -742,12 +713,10 @@
 
             marker2.setVisible(true);
 
-            console.log('sigo aca x2')
             autocomplete2.addListener('place_changed', function () {
                 infowindow.close();
                 marker2.setVisible(false);
                 var place = autocomplete2.getPlace();
-                console.log('place',place)
                 if (!place.geometry) {
                     window.alert("Autocomplete's returned place contains no geometry");
                     return;
@@ -762,17 +731,35 @@
                 marker2.setPosition(place.geometry.location);
                 marker2.setVisible(true);
 
+                console.log('place',place)
+                $("#nueva_direccion").val(place.formatted_address);
+
                 destino_text = place.formatted_address;
 
-                lat = place.geometry.location.lat()
-                lgn = place.geometry.location.lng();
-
-                $('#lat').val(lat);
-                $('#lgn').val(lgn);
+                lat2 = place.geometry.location.lat()
+                lgn2 = place.geometry.location.lng();
 
             });
+
     }
 
+    // function debounce_cargarClientesTelefono() {
+    //     debounce(function() {
+	//         cargarClientesTelefono()
+    //     }, 250);
+    // }
+
+
+    const debounce = (func, delay) => { 
+        let debounceTimer 
+        return function() { 
+            const context = this
+            const args = arguments 
+                clearTimeout(debounceTimer) 
+                    debounceTimer 
+                = setTimeout(() => func.apply(context, args), delay) 
+        } 
+    }  
 
 	function cargarTiposVehiculos() {
         var direccion_usuario = list_direcciones.find(
@@ -863,8 +850,13 @@
 		});
 
 	}
+
+    document.getElementById('numero_telefonico').addEventListener(
+            'keydown', debounce(function() {
+	        cargarClientesTelefono()
+        }, 250) )
 </script>
-<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"> </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYY4fBmf4bsSTaWS7AArMpXtPiz4Iy9Gs&libraries=places&callback=initMap"></script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"> </script>
 {% endblock %}
 <!-- Developed By Softic Web Team -->

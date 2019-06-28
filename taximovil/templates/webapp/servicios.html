@@ -5,6 +5,19 @@
 
 {% block content %}
 
+<style>
+#demo {
+	position: fixed;
+   top: 50%;
+   left: 50%;
+   width: 250px;
+   height: 250px;
+   margin-top: -125px;
+   margin-left: -125px; 
+   z-index: 1000;
+}
+</style>
+
     <!-- MODALS -->
     <div id="modal1" class="modal">
         <div class="modal-content">
@@ -19,6 +32,17 @@
     </div>
 
     <!-- END MODALS -->
+	<div class="preloader-wrapper big active" id="demo">
+		<div class="spinner-layer spinner-blue-only">
+		  <div class="circle-clipper left">
+			<div class="circle"></div>
+		  </div><div class="gap-patch">
+			<div class="circle"></div>
+		  </div><div class="circle-clipper right">
+			<div class="circle"></div>
+		  </div>
+		</div>
+	  </div>
 
   		<div class="row">
   			<div class="col s1"></div>
@@ -133,6 +157,8 @@
 <script type="text/javascript">
 	$("document").ready(function() {
 	    $('.modal').modal();
+		$('#demo').show()
+		// cambiarEstatusChofer();
 
 		$.ajax({
 			url: "/ws/list_servicios/?tipo_servicio=1",
@@ -170,7 +196,7 @@
                                    <div class="row">
                                     <div class="col s8" style="color:black">
                                         <select id="listaChoferes`+ i.pk + `" >
-                                            <option style="color:black">Conductor</option>
+                                           
                                         </select>
                                     </div>
                                     <div class="col s4">
@@ -263,7 +289,7 @@
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a onclick="concluirServicio(`+ i.pk + `, "completado")"
+				                    <a onclick="concluirServicio(`+ i.pk + `, 'completado')"
 				                    href="#" class="right black-text"><b>Concluir</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
@@ -274,6 +300,7 @@
                        </div>
 										`);
                 }
+				$('#demo').hide()
             }
 		});
 
@@ -316,7 +343,7 @@
 				            <div class="card-action">
 				              <div class="row">
                                 <div class="col s4">
-				                    <a class="right black-text" onclick="concluirServicio(`+ i.pk + `, "servicio")">
+				                    <a class="right black-text" onclick="concluirServicio(`+ i.pk + `, 'servicio')">
                                         <b>Finalizar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
@@ -360,6 +387,25 @@
         })
 	}
 
+	function cambiarEstatusChofer() {
+		$.ajax({
+			url: "/ws/cambiar_estatus_activo_chofer/",
+			type: "POST",
+			cache: false,
+			data: {
+				chofer : 53,
+				activo : true
+			},
+			success: function (json) {
+				console.log('cambio con exito', json)
+			},
+			error: function (xhr, errmsg, err) {
+                    alert(errmsg, err);
+					console.log(xhr)
+                }
+        })
+	}
+
 	function displayChoferes(id) {
         $('#asignar_chofer' + id).show();
 	    $.ajax({
@@ -367,7 +413,7 @@
 			type: "GET",
 			cache: false,
 			success: function (json) {
-                    $("#listaChoferes"+ id).empty().html('');
+                  //  $("#listaChoferes"+ id).empty().html('');
                     $('#listaChoferes'+ id).append(
                         $("<option></option>")
                             .attr("value", "")
@@ -441,7 +487,7 @@
         })
     }
 
-    function addMarcadoresDestinos(origen_lon, origen_lat, destino_lon, destino_lat, chofer_lon = null, chofer_lat = null  ) {
+    function addMarcadoresDestinos(origen_lon, origen_lat, destino_lon, destino_lat, chofer_lat = null, chofer_lon = null  ) {
 
         for(let i=0; i < marcadores.length; i++){
             marcadores[i].setMap(null);
