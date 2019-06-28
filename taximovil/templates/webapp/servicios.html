@@ -86,6 +86,7 @@
             var lgn = -99.164379;
         {% endif %}
         var marker;
+        var marcadores = [];
 
         function initMap() {
 			console.log('in mapa!')
@@ -165,22 +166,36 @@
                                 <label class="texto"><b>Id:</b></label>
                                 <label class="texto">`+
                                  i.pk +`</label>
+                                <div id="asignar_chofer` + i.pk + `" style="display:none">
+                                   <div class="row">
+                                    <div class="col s8" style="color:black">
+                                        <select id="listaChoferes`+ i.pk + `" >
+                                            <option style="color:black">Conductor</option>
+                                        </select>
+                                    </div>
+                                    <div class="col s4">
+                                        <a class="waves-effect waves-light btn" style="height: 24px;line-height: 24px;padding: 0 1rem; "
+                                        onclick="asignar(` + i.pk + `)">Asignar</a>
+                                    </div>
+                                   </div>
+                                </div>
 				            </div>
 				            <div class="card-action">
 				              <div class="row">
                                 <div class="col s4">
-				                    <a class="right black-text"><b>Asignar</b></a>
+				                    <a class="right black-text" onclick="displayChoferes(`+ i.pk + `)" style="cursor: pointer">
+                                        <b>Asignar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
 				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
-                                    + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] + `)"><b>Ver mapa</b></a>
+                                    + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] + `)"><b>Mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-									<a onclick="cancelarServicio(`+ i.pk + `)"
+									<a onclick="cancelarServicio(`+ i.pk + `)" style="cursor: pointer"
 									 class="right black-text"><b>Cancelar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
@@ -243,12 +258,12 @@
 				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
                                     + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1]
 									+ `,` + i.chofer.latlgn.coordinates[1] + `,` + i.chofer.latlgn.coordinates[0] + `)"
-									><b>Ver mapa</b></a>
+									><b>Mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
                                 <div class="col s4">
-				                    <a onclick="concluirServicio(`+ i.pk + `)"
+				                    <a onclick="concluirServicio(`+ i.pk + `, "completado")"
 				                    href="#" class="right black-text"><b>Concluir</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
@@ -276,8 +291,6 @@
                          <div id="servicio` + i.pk + `">
                             <div class="card servicio_container darken-1 no_top no_bottom">
 				            <div class="card-content white-text left-align">
-											<label class="texto"><b>Ford Ikon 2016</b></label>
-				              <br>
 											<label class="texto"><b>Chofer:</b></label>
 											<label class="texto">`+
 											 i.chofer.nombre + ' ' + i.chofer.a_paterno + ' ' + i.chofer.a_materno +
@@ -303,7 +316,8 @@
 				            <div class="card-action">
 				              <div class="row">
                                 <div class="col s4">
-				                    <a class="right black-text"><b>Finalizar</b></a>
+				                    <a class="right black-text" onclick="concluirServicio(`+ i.pk + `, "servicio")">
+                                        <b>Finalizar</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -311,7 +325,7 @@
 				                    <a href="#modal1" class="right black-text modal-trigger" onclick="addMarcadoresDestinos(`
                                     + i.origen.coordinates[0] + `,` + i.origen.coordinates[1] + `,` + i.destino.coordinates[0] + `,` + i.destino.coordinates[1] 
 									+ `,` + i.chofer.latlgn.coordinates[1] + `,` + i.chofer.latlgn.coordinates[0] + `)"
-									><b>Ver mapa</b></a>
+									><b>Mapa</b></a>
 				                    <br>
 				                    <hr class="linea3 right">
                                 </div>
@@ -346,7 +360,39 @@
         })
 	}
 
-	function concluirServicio(id) {
+	function displayChoferes(id) {
+        $('#asignar_chofer' + id).show();
+	    $.ajax({
+			url: "/ws/list_vehiculos_activos/",
+			type: "GET",
+			cache: false,
+			success: function (json) {
+                    $("#listaChoferes"+ id).empty().html('');
+                    $('#listaChoferes'+ id).append(
+                        $("<option></option>")
+                            .attr("value", "")
+                            .text("Conductor")
+                    );
+
+				for (i in json) {
+                    $('#listaChoferes' + id).append(
+                        $("<option></option>")
+                            .attr("value", json[i].chofer.id)
+                            .text(json[i].chofer.nombre + ' ' + json[i].chofer.a_paterno )
+                    );
+                }
+                $('#listaChoferes' + id).material_select();
+			}
+        })
+
+    }
+
+    function test(id) {
+	    $('#listaChoferes' + id).material_select();
+	    console.log($('#listaChoferes' + id).val());
+    }
+
+	function concluirServicio(id, estado) {
 		$.ajax({
 			url: "/ws/cambiarEstatusServicio/",
 			type: "POST",
@@ -357,13 +403,32 @@
 			},
 			success: function (json) {
 				console.log('cambio con exito', json)
-				$('#completado'+ id ).empty();
+				$('#'+ estado + id ).empty();
 			},
 			error: function (xhr, errmsg, err) {
                     alert(errmsg, err);
                 }
         })
 	}
+
+	function asignar(servicio) {
+	    var chofer = $('#listaChoferes' + servicio).val();
+	    $.ajax({
+			url: "/ws/asignar_chofer/",
+			type: "POST",
+			cache: false,
+			data: {
+				servicio : servicio,
+				chofer : chofer
+			},
+			success: function (json) {
+				alert('Conductor asignado exitosamente')
+			},
+			error: function (xhr, errmsg, err) {
+                    alert(xhr.responseJSON.Error);
+                }
+        })
+    }
 
 	function reenviarSolicitud( id, idx) {
 	    // pop idx
@@ -378,9 +443,13 @@
 
     function addMarcadoresDestinos(origen_lon, origen_lat, destino_lon, destino_lat, chofer_lon = null, chofer_lat = null  ) {
 
-	    console.log('markers', origen_lon, origen_lat, destino_lon, destino_lat);
+        for(let i=0; i < marcadores.length; i++){
+            marcadores[i].setMap(null);
+        }
 
-	    var locations = [
+        marcadores = []
+
+        locations = [
             {lat: +origen_lat, lng: +origen_lon},
             {lat: +destino_lat, lng: +destino_lon},
         ];
@@ -391,10 +460,22 @@
 			})
 		}
 
+		console.log(locations);
+
 	    map.setCenter({
                     lat: +origen_lat,
                     lng: +origen_lon
                 });
+
+       // setMapOnAll(null);
+
+        locations.map( e => {
+            var mark = new google.maps.Marker({
+                position: e,
+                map: map
+            });
+            marcadores.push(mark);
+        })
 
 
 	    /*
@@ -405,14 +486,17 @@
                 position: {lat: origen_lat, lng: origen_lon}
             });
             */
-	    var markers = locations.map(function(location) {
-          return new google.maps.Marker({
-            position: location,
-          });
-        });
+	    function setMapOnAll(map) {
+            for (var i = 0; i < marcadores.length; i++) {
+            marcadores[i].setMap(map);
+            }
+        }
 
-	    var markerCluster = new MarkerClusterer(map, markers,
-            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+        //  var markerCluster = new MarkerClusterer(map, marcadores,
+        //     {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+        setMapOnAll(map);
+
     }
 
 

@@ -13,13 +13,21 @@
 		}
 </style> -->
 
+
+     <!-- Hack raro para que funcione autocomplete en modal -->
+<style>
+    .pac-container {
+        z-index: 10000 !important;
+    }
+</style>
+
      <div id="modal2" class="modal">
         <div class="modal-content">
             <h4>Añadir dirección</h4>
                     <div class="row">
 						<div class="col s12 input-field" style="float: right">
-							<input type="text" placeholder="" id="searchDireccion"/>
-                            <label for="searchDireccion">Buscar ubicación</label>
+                            <input type="text" placeholder="" id="nuevaDireccion"/>
+                            <label for="nuevaDireccion">Buscar ubicación</label>
 						</div>
                     </div>
             <div id="map2" style="width:100%;height:450px;border:1px solid #DCDCDC;"></div>
@@ -53,6 +61,7 @@
 			<div class="row">
                 <div class="col s1"></div>
 				<div class="col s7">
+
 					<!--
                     <div class="row">
 						<div class="col s2">Ubicación:</div>
@@ -211,6 +220,23 @@
         var marker2;
 
         function initMap() {
+
+              pickupLocation = new google.maps.places.Autocomplete(
+    /** @type {!HTMLInputElement} */
+    (document.getElementById('searchTextField')), {
+      types: ['geocode']
+    });
+
+    dropLocation = new google.maps.places.Autocomplete(
+    /** @type {!HTMLInputElement} */
+    (document.getElementById('nuevaDireccion')), {
+      types: ['geocode']
+    });
+
+
+            // startMap();
+
+
             if (map !== undefined)
                 return;
             map = new google.maps.Map(document.getElementById('map'), {
@@ -218,8 +244,16 @@
                 zoom: 14
             });
 
+            map2 = new google.maps.Map(document.getElementById('map2'), {
+                center: {lat: lat, lng: lgn},
+                zoom: 14
+            });
+
             var input = /** @type {!HTMLInputElement} */(
                 document.getElementById('searchTextField'));
+
+            var input2 = /** @type {!HTMLInputElement} */(
+                document.getElementById('searchDireccion'));
 
             var types = [];
 
@@ -227,8 +261,19 @@
             autocomplete.setTypes(types);
             autocomplete.bindTo('bounds', map);
 
+            var autocomplete2 = new google.maps.places.Autocomplete(input2);
+            autocomplete2.setTypes(types);
+            autocomplete2.bindTo('bounds', map2);
+
             var infowindow = new google.maps.InfoWindow();
             marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                anchorPoint: new google.maps.Point(0, -29),
+                // position: {lat: lat, lng: lgn},
+            });
+
+            marker2 = new google.maps.Marker({
                 map: map,
                 draggable: true,
                 anchorPoint: new google.maps.Point(0, -29),
@@ -255,6 +300,57 @@
                             } 
                         }
                     );
+            });
+
+            marker2.addListener('dragend', function () {
+                lat = this.position.lat();
+                lgn = this.position.lng();
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
+                // geocodePosition(marker.getPosition());
+
+                geocoder = new google.maps.Geocoder();
+                geocoder.geocode({
+                        latLng: marker2.getPosition()
+                    },
+                        function(results, status)
+                        {
+                            if (status == google.maps.GeocoderStatus.OK)
+                            {
+                                destino_text = results[0].formatted_address
+                            }
+                        }
+                    );
+            });
+
+            autocomplete2.addListener('place_changed', function () {
+                infowindow.close();
+                marker2.setVisible(false);
+                var place = autocomplete2.getPlace();
+                console.log('place',place)
+                if (!place.geometry) {
+                    window.alert("Autocomplete's returned place contains no geometry");
+                    return;
+                }
+                // If the place has a geometry, then present it on a map.
+                if (place.geometry.viewport) {
+                    map2.fitBounds(place.geometry.viewport);
+                } else {
+                    map2.setCenter(place.geometry.location);
+                    map2.setZoom(17);  // Why 17? Because it looks good.
+                }
+                marker2.setPosition(place.geometry.location);
+                marker2.setVisible(true);
+
+                destino_text = place.formatted_address;
+
+                lat = place.geometry.location.lat()
+                lgn = place.geometry.location.lng();
+
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
             });
             
             marker.setVisible(true);
@@ -287,7 +383,39 @@
                 $('#lgn').val(lgn);
 
             });
+
+            autocomplete2.addListener('place_changed', function () {
+                infowindow.close();
+                marker2.setVisible(false);
+                var place = autocomplete2.getPlace();
+                console.log('place',place)
+                if (!place.geometry) {
+                    window.alert("Autocomplete's returned place contains no geometry");
+                    return;
+                }
+                // If the place has a geometry, then present it on a map.
+                if (place.geometry.viewport) {
+                    map2.fitBounds(place.geometry.viewport);
+                } else {
+                    map2.setCenter(place.geometry.location);
+                    map2.setZoom(17);  // Why 17? Because it looks good.
+                }
+                marker2.setPosition(place.geometry.location);
+                marker2.setVisible(true);
+
+                destino_text = place.formatted_address;
+
+                lat = place.geometry.location.lat()
+                lgn = place.geometry.location.lng();
+
+                $('#lat').val(lat);
+                $('#lgn').val(lgn);
+
+            });
+
         }
+
+
 </script>
 		
 
@@ -299,7 +427,7 @@
     	$('select').material_select();
 
     	// Empieza mapa de modal
-    	startMap();
+
 
             $.ajax({
 			url: "/ws/list_vehiculos_activos/",
@@ -386,7 +514,7 @@
                     $('#direccion_origen').append(
                         $("<option></option>")
                             .attr("value", "")
-                            .text("Ubicación del usuario")
+                            .text("Destino del usuario")
                     );
                     for (i in json) {
                         $('#direccion_origen').append(
@@ -587,6 +715,7 @@
                 anchorPoint: new google.maps.Point(0, -29),
                 // position: {lat: lat, lng: lgn},
             });
+            console.log('sigo aca')
 
             marker2.addListener('dragend', function () {
                 lat = this.position.lat();
@@ -602,6 +731,7 @@
                     },
                         function(results, status)
                         {
+                            console.log('results geocoder', results, status);
                             if (status == google.maps.GeocoderStatus.OK)
                             {
                                 destino_text = results[0].formatted_address
@@ -612,6 +742,7 @@
 
             marker2.setVisible(true);
 
+            console.log('sigo aca x2')
             autocomplete2.addListener('place_changed', function () {
                 infowindow.close();
                 marker2.setVisible(false);
