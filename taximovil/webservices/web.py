@@ -73,7 +73,7 @@ class AsignarChofer(APIView):
             chofer = Chofer.objects.get(pk=id_chofer)
             servicio = Servicio.objects.get(pk=id_servicio)
             estatus_servicio = EstatusServicio.objects.get(pk=2)
-            if chofer.estatus and servicio.estatus.pk==1:
+            if chofer.activo and servicio.estatus.pk==1:
                 bs = BitacoraEstatusServicio(servicio=servicio, estatus=estatus_servicio)
                 bs.save()
                 servicio.estatus = estatus_servicio
