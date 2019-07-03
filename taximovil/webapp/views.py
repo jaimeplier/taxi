@@ -148,7 +148,7 @@ def login_unauthorized(request):
     template_name = 'config/login_no_autorizado.html'
     return render(request, template_name)
 
-class EmpresaCrear(PermissionRequiredMixin, CreateView):
+class EmpresaCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_empresa'
@@ -201,7 +201,7 @@ class EmpresaListarAjaxListView(BaseDatatableView, LoginRequiredMixin):
         return Empresa.objects.all()
 
 
-class EmpresaActualizar(PermissionRequiredMixin, UpdateView):
+class EmpresaActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_empresa'
@@ -313,7 +313,7 @@ def usuario_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ChoferCrear(PermissionRequiredMixin, CreateView):
+class ChoferCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_chofer'
@@ -418,7 +418,7 @@ class ChoferListarAjaxListView(BaseDatatableView):
         return Chofer.objects.all_users()
 
 
-class ChoferActualizar(PermissionRequiredMixin, UpdateView):
+class ChoferActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_chofer'
@@ -493,7 +493,7 @@ class ChoferUbicacion(ListView):
         return Chofer.objects.filter(pk=self.kwargs['pk'])
 
 
-class SitioCrear(PermissionRequiredMixin, CreateView):
+class SitioCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_sitio'
@@ -543,7 +543,7 @@ class SitioListarAjaxListView(BaseDatatableView):
         return Sitio.objects.all()
 
 
-class SitioActualizar(PermissionRequiredMixin, UpdateView):
+class SitioActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_sitio'
@@ -572,7 +572,7 @@ def sitio_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ZonaCrear(PermissionRequiredMixin, CreateView):
+class ZonaCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_zona'
@@ -646,7 +646,7 @@ class ZonaListarAjaxListView(BaseDatatableView):
         return Zona.objects.all()
 
 
-class ZonaActualizar(PermissionRequiredMixin, UpdateView):
+class ZonaActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_zona'
@@ -682,7 +682,7 @@ def zona_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class BaseCrear(PermissionRequiredMixin, CreateView):
+class BaseCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_base'
@@ -757,7 +757,7 @@ class BaseListarAjaxListView(BaseDatatableView):
         return Base.objects.all()
 
 
-class BaseActualizar(PermissionRequiredMixin, UpdateView):
+class BaseActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_base'
@@ -838,7 +838,7 @@ def base_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class PaisCrear(PermissionRequiredMixin, CreateView):
+class PaisCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_pais'
@@ -888,7 +888,7 @@ class PaisListarAjaxListView(BaseDatatableView):
         return Pais.objects.all()
 
 
-class PaisActualizar(PermissionRequiredMixin, UpdateView):
+class PaisActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_pais'
@@ -917,7 +917,7 @@ def pais_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class CiudadCrear(PermissionRequiredMixin, CreateView):
+class CiudadCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_ciudad'
@@ -976,7 +976,7 @@ class CiudadListarAjaxListView(BaseDatatableView):
         return Ciudad.objects.all()
 
 
-class CiudadActualizar(PermissionRequiredMixin, UpdateView):
+class CiudadActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_ciudad'
@@ -1011,7 +1011,7 @@ def ciudad_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class SucursalCrear(PermissionRequiredMixin, CreateView):
+class SucursalCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_sucursal'
@@ -1072,7 +1072,7 @@ class SucursalListarAjaxListView(BaseDatatableView):
         return Sucursal.objects.all()
 
 
-class SucursalActualizar(PermissionRequiredMixin, UpdateView):
+class SucursalActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_sucursal'
@@ -1107,7 +1107,7 @@ def sucursal_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class FormaPagoCrear(PermissionRequiredMixin, CreateView):
+class FormaPagoCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_tipopago'
@@ -1157,7 +1157,7 @@ class FormaPagoListarAjaxListView(BaseDatatableView):
         return TipoPago.objects.all()
 
 
-class FormaPagoActualizar(PermissionRequiredMixin, UpdateView):
+class FormaPagoActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_tipopago'
@@ -1185,7 +1185,7 @@ def forma_pago_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class TipoVehiculoCrear(PermissionRequiredMixin, CreateView):
+class TipoVehiculoCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_tipovehiculo'
@@ -1235,7 +1235,7 @@ class TipoVehiculoListarAjaxListView(BaseDatatableView):
         return TipoVehiculo.objects.all()
 
 
-class TipoVehiculoActualizar(PermissionRequiredMixin, UpdateView):
+class TipoVehiculoActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_tipovehiculo'
@@ -1263,7 +1263,7 @@ def tipoVehiculoEliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ClienteCrear(PermissionRequiredMixin, CreateView):
+class ClienteCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_cliente'
@@ -1320,7 +1320,7 @@ class ClienteListarAjaxListView(BaseDatatableView):
         return Cliente.objects.filter(estatus=True, rol=2)
 
 
-class ClienteActualizar(PermissionRequiredMixin, UpdateView):
+class ClienteActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_cliente'
@@ -1354,7 +1354,7 @@ def cliente_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class TipoServicioCrear(PermissionRequiredMixin, CreateView):
+class TipoServicioCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_tiposervicio'
@@ -1404,7 +1404,7 @@ class TipoServicioListarAjaxListView(BaseDatatableView):
         return TipoServicio.objects.all()
 
 
-class TipoServicioActualizar(PermissionRequiredMixin, UpdateView):
+class TipoServicioActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_tiposervicio'
@@ -1432,7 +1432,7 @@ def tipoServicio_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class MarcaCrear(PermissionRequiredMixin, CreateView):
+class MarcaCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_marca'
@@ -1482,7 +1482,7 @@ class MarcaListarAjaxListView(BaseDatatableView):
         return Marca.objects.all()
 
 
-class MarcaActualizar(PermissionRequiredMixin, UpdateView):
+class MarcaActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_marca'
@@ -1510,7 +1510,7 @@ def marca_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class ModeloCrear(PermissionRequiredMixin, CreateView):
+class ModeloCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_modelo'
@@ -1562,7 +1562,7 @@ class ModeloListarAjaxListView(BaseDatatableView):
         return Modelo.objects.all()
 
 
-class ModeloActualizar(PermissionRequiredMixin, UpdateView):
+class ModeloActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_modelo'
@@ -1590,7 +1590,7 @@ def modelo_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class PropietarioCrear(PermissionRequiredMixin, CreateView):
+class PropietarioCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_propietario'
@@ -1647,7 +1647,7 @@ class PropietarioListarAjaxListView(BaseDatatableView):
         return Propietario.objects.filter(estatus=True, rol=4)
 
 
-class PropietarioActualizar(PermissionRequiredMixin, UpdateView):
+class PropietarioActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_propietario'
@@ -1676,7 +1676,7 @@ def propietario_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class VehiculoCrear(PermissionRequiredMixin, CreateView):
+class VehiculoCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_vehiculo'
@@ -1732,7 +1732,7 @@ class VehiculoListarAjaxListView(BaseDatatableView):
         return Vehiculo.objects.filter(estatus=True)
 
 
-class VehiculoActualizar(PermissionRequiredMixin, UpdateView):
+class VehiculoActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_vehiculo'
@@ -1761,7 +1761,7 @@ def vehiculo_eliminar(request, pk):
     return JsonResponse({'result': 1})
 
 
-class TarifaCrear(PermissionRequiredMixin, CreateView):
+class TarifaCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_tarifa'
@@ -2005,7 +2005,7 @@ class VehiculosChoferAjaxList(BaseDatatableView):
         return Vehiculo.objects.filter(estatus=True)
 
 
-class ComisionCrear(PermissionRequiredMixin, CreateView):
+class ComisionCrear(CreateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'add_comisiones'
@@ -2057,7 +2057,7 @@ class ComisionListarAjaxListView(BaseDatatableView):
         return Comisiones.objects.all()
 
 
-class ComisionActualizar(PermissionRequiredMixin, UpdateView):
+class ComisionActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_comisiones'
