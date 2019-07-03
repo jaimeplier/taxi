@@ -1788,7 +1788,7 @@ class TarifaCrear(PermissionRequiredMixin, CreateView):
         return reverse('webapp:list_tarifa')
 
 
-class TarifaActualizar(PermissionRequiredMixin, UpdateView):
+class TarifaActualizar(UpdateView):
     redirect_field_name = 'next'
     login_url = '/webapp/'
     permission_required = 'change_tarifa'
