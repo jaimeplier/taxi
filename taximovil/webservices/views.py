@@ -112,7 +112,7 @@ class LoginChofer(APIView):
         try:
             c = Chofer.objects.get(email=email)
             cv = ChoferHasVehiculo.objects.filter(vehiculo__placa=placas, estatus=True)
-            if c.estatus==False:
+            if c.estatus == False:
                 response_data['resultado'] = 0
                 response_data['error'] = "Tu usuario ha sido inhabilitado, contacta al administrador"
                 return Response(response_data)
@@ -176,6 +176,8 @@ class LogoutChofer(APIView):
             c.activo = False
             c.save()
             request.user.auth_token.delete()
+            devices = FCMDevice.objects.filter(user=request.user)
+            devices.delete()
         except (AttributeError, ObjectDoesNotExist):
             return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"result": 1}, status=status.HTTP_200_OK)
@@ -204,7 +206,7 @@ class LoginUsuario(APIView):
             return Response(response_data)
         user = authenticate(email=email, password=password)
         if user is not None:
-            if user.estatus==False:
+            if user.estatus == False:
                 response_data['resultado'] = 0
                 response_data['error'] = "Tu usuario ha sido inhabilitado, contacta al administrador"
                 return Response(response_data)
@@ -240,6 +242,8 @@ class LogoutCliente(APIView):
     def get(self, request):
         try:
             request.user.auth_token.delete()
+            devices = FCMDevice.objects.filter(user=request.user)
+            devices.delete()
         except (AttributeError, ObjectDoesNotExist):
             return Response({"result": 0}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"result": 1}, status=status.HTTP_200_OK)

@@ -15,6 +15,7 @@ class ChoferPermission(permissions.BasePermission):
             return request.user.rol.pk == 3 or request.user.rol.pk == 1 or request.user.rol.pk == 12
         return False
 
+
 class CallcenterPermission(permissions.BasePermission):
     """
     Permisos del chofer
@@ -29,6 +30,7 @@ class CallcenterPermission(permissions.BasePermission):
             return request.user.rol.pk == 1 or request.user.rol.pk == 9 or request.user.rol.pk == 12
         return False
 
+
 class AdministradorPermission(permissions.BasePermission):
     """
     Permisos del administrador
@@ -41,6 +43,7 @@ class AdministradorPermission(permissions.BasePermission):
         if request.user is not None:
             return request.user.rol.pk == 9 or request.user.rol.pk == 1
         return False
+
 
 class AdministradorSitioPermission(permissions.BasePermission):
     """
@@ -57,6 +60,7 @@ class AdministradorSitioPermission(permissions.BasePermission):
             return request.user.rol.pk == 9 or request.user.rol.pk == 1 or request.user.rol.pk == 10 or request.user.rol.pk == 5
         return False
 
+
 class AdministradorCiudadPermission(permissions.BasePermission):
     """
     Permisos del administrador
@@ -70,6 +74,7 @@ class AdministradorCiudadPermission(permissions.BasePermission):
         if request.user is not None:
             return request.user.rol.pk == 9 or request.user.rol.pk == 1 or request.user.rol.pk == 5
         return False
+
 
 class IsOwnerPermission(permissions.BasePermission):
     """
