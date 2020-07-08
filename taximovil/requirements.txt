@@ -11,7 +11,7 @@ django-datatables-view==1.16.0
 django-filter==1.1.0
 django-rest-framework==0.1.0
 django-widgets-improved==1.5.0
-djangorestframework==3.7.7
+djangorestframework==3.9.1
 djangorestframework-gis==0.13
 drf-yasg==1.4.7
 drfdocs==0.0.11
